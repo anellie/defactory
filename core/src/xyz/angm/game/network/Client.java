@@ -1,6 +1,8 @@
 package xyz.angm.game.network;
 
 import com.badlogic.gdx.Gdx;
+import com.esotericsoftware.kryonet.Connection;
+import com.esotericsoftware.kryonet.Listener;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -12,24 +14,22 @@ public class Client extends NetworkInterface {
 
     private static final int SERVER_WAIT_TIME = 1000;
 
-    private com.esotericsoftware.kryonet.Client kryoClient;
+    private final com.esotericsoftware.kryonet.Client kryoClient = new com.esotericsoftware.kryonet.Client();
 
-    /** Searches and connects to a server. Can block the thread for up to {@value SERVER_WAIT_TIME}ms,
-     * so it should run in a separate thread.
-     * @return If a server was found and connected to */
-    public boolean connect() {
+    @Override
+    public boolean start() {
         InetAddress address = searchServer();
         if (address == null) {
             Gdx.app.log("Client", "No servers found.");
             return false;
         }
 
-        kryoClient = new com.esotericsoftware.kryonet.Client();
         kryoClient.start();
         registerClasses(kryoClient.getKryo());
 
         try {
             kryoClient.connect(3000, address, PORT);
+            setupListeners();
         } catch (IOException e) {
             Gdx.app.error("Client", "Couldn't connect to server at address " + address.getHostName() + "!");
             return false;
@@ -48,6 +48,15 @@ public class Client extends NetworkInterface {
             Thread.currentThread().interrupt();
         }
         return searchRunnable.getAddress();
+    }
+
+    private void setupListeners() {
+        kryoClient.addListener(new Listener() {
+            @Override
+            public void received(Connection connection, Object object) {
+                // TODO Handle receiving packets
+            }
+        });
     }
 
     @Override

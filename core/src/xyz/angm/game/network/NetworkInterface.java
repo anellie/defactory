@@ -14,6 +14,10 @@ public abstract class NetworkInterface {
     void registerClasses(Kryo kryo) {
     }
 
+    /** Will start the interface along with a discovery thread.
+     * @return Success of starting the interface and establishing a connection. */
+    public abstract boolean start();
+
     /** Sends an object to either the server, or all clients.
      * @param toSend The object to be sent over network */
     public abstract void send(Object toSend);
