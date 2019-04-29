@@ -15,10 +15,11 @@ abstract class Screen extends ScreenAdapter {
     /** The stage containing all 2D actors. */
     final Stage stage = new Stage(new FitViewport(1920, 1080));
 
-    /** Constructs an empty screen and sets game.
+    /** Constructs an empty screen.
      * @param game The game the screen is running under. */
     Screen(Game game) {
         this.game = game;
+        Gdx.input.setInputProcessor(stage);
     }
 
     @Override
