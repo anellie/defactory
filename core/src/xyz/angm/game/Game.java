@@ -4,9 +4,10 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.kotcrab.vis.ui.VisUI;
 import xyz.angm.game.ui.MenuScreen;
 
+/** The main class of the game. */
 public class Game extends com.badlogic.gdx.Game {
 
-	private AssetManager assets = new AssetManager();
+	private final AssetManager assets = new AssetManager();
 
 	@Override
 	public void create () {

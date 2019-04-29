@@ -5,15 +5,18 @@ import com.badlogic.gdx.Gdx;
 import java.io.IOException;
 import java.net.InetAddress;
 
+/** A client for receiving network communications from a server.
+ * Uses {@link ClientDiscoveryRunnable} to find a server.
+ * In the context of the game, the server is run by the player, and the clients are beasts controlled by other players. */
 public class Client extends NetworkInterface {
 
     private static final int SERVER_WAIT_TIME = 1000;
 
     private com.esotericsoftware.kryonet.Client kryoClient;
 
-    // Search for a server and connect.
-    // NOTE: This method can take SERVER_WAIT_TIME to execute while searching servers. Run it on a separate thread!
-    @Override
+    /** Searches and connects to a server. Can block the thread for up to {@value SERVER_WAIT_TIME}ms,
+     * so it should run in a separate thread.
+     * @return If a server was found and connected to */
     public boolean connect() {
         InetAddress address = searchServer();
         if (address == null) {
@@ -23,7 +26,6 @@ public class Client extends NetworkInterface {
 
         kryoClient = new com.esotericsoftware.kryonet.Client();
         kryoClient.start();
-        kryoClient.addListener(listener);
         registerClasses(kryoClient.getKryo());
 
         try {
@@ -48,11 +50,13 @@ public class Client extends NetworkInterface {
         return searchRunnable.getAddress();
     }
 
+    @Override
     public void send(Object toSend) {
         kryoClient.sendTCP(toSend);
     }
 
-    public void disconnect() {
+    @Override
+    public void dispose() {
         kryoClient.close();
     }
 }

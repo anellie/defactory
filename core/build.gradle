@@ -1,5 +1,10 @@
 [compileJava, compileTestJava]*.options*.encoding = "UTF-8"
 
+task doc(type: Javadoc) {
+    source = sourceSets.main.java
+    title = "Game documentation"
+}
+
 eclipse.project {
     name = appName + "-core"
 }

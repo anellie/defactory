@@ -8,10 +8,13 @@ import java.net.InetAddress;
 import java.net.InterfaceAddress;
 import java.util.Enumeration;
 
+/** Searches the local network on all network interfaces for a {@link ServerDiscoveryRunnable}.
+ * It will wait for a response indefinitely, so it should be stopped after a few seconds. */
 class ClientDiscoveryRunnable implements Runnable {
 
     private InetAddress address;
 
+    /** @return The address of the server discovery daemon, if any responded. */
     InetAddress getAddress() {
         return address;
     }

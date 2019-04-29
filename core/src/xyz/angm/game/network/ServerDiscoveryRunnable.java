@@ -7,6 +7,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 
+/** Waits for a {@link ClientDiscoveryRunnable} to ping it and gives a response for the client to find it. */
 class ServerDiscoveryRunnable implements Runnable {
 
     @Override

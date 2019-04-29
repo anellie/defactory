@@ -7,11 +7,16 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import xyz.angm.game.Game;
 
+/** An abstract class shared between all screens. */
 abstract class Screen extends ScreenAdapter {
 
-    Game game;
-    Stage stage = new Stage(new FitViewport(1920, 1080));
+    /** The game the screen is running under. */
+    final Game game;
+    /** The stage containing all 2D actors. */
+    final Stage stage = new Stage(new FitViewport(1920, 1080));
 
+    /** Constructs an empty screen and sets game.
+     * @param game The game the screen is running under. */
     Screen(Game game) {
         this.game = game;
     }

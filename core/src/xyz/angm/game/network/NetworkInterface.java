@@ -1,37 +1,23 @@
 package xyz.angm.game.network;
 
 import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryonet.Connection;
-import com.esotericsoftware.kryonet.Listener;
 
+/** A simple network interface for sending and receiving packets.
+ * TODO Asses if this interface makes sense, or Client/Server should be fully separated. */
 public abstract class NetworkInterface {
 
+    /** The port all network communication takes place on. */
     static final int PORT = 35953;
 
-    final Listener listener = new Listener() {
-        @Override
-        public void received(Connection connection, Object object) {
-            // TODO Handle receiving packets
-        }
-
-        @Override
-        public void disconnected(Connection connection) {
-            // TODO Handle disconnect
-        }
-    };
-
+    /** Registers all required classes for network communication.
+     * @param kryo The kryo instance to register on */
     void registerClasses(Kryo kryo) {
     }
 
-    public boolean connect() {
-        throw new UnsupportedOperationException("This Interface cannot connect.");
-    }
-
-    public void start() {
-        throw new UnsupportedOperationException("This Interface cannot be started.");
-    }
-
-    public abstract void disconnect();
-
+    /** Sends an object to either the server, or all clients.
+     * @param toSend The object to be sent over network */
     public abstract void send(Object toSend);
+
+    /** Should be called when the interface should disconnect/close and free all resources. */
+    public abstract void dispose();
 }

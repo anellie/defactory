@@ -6,18 +6,20 @@ import com.esotericsoftware.kryonet.Listener;
 
 import java.io.IOException;
 
+/** A server capable of connecting to an unlimited amount of clients.
+ * The player trying to defend themselves from beasts is the one hosting the server.
+ * Automatically starts a server discovery thread for clients to find. */
 public class Server extends NetworkInterface {
 
     private com.esotericsoftware.kryonet.Server kryoServer;
 
-    @Override
+    /** Will start the server along with a discovery thread to find it. */
     public void start() {
         Thread discoveryThread = new Thread(new ServerDiscoveryRunnable());
         discoveryThread.start();
 
         kryoServer = new com.esotericsoftware.kryonet.Server();
         kryoServer.start();
-        kryoServer.addListener(listener);
         registerClasses(kryoServer.getKryo());
 
         try {
@@ -35,11 +37,13 @@ public class Server extends NetworkInterface {
         });
     }
 
+    @Override
     public void send(Object toSend) {
         kryoServer.sendToAllTCP(toSend);
     }
 
-    public void disconnect() {
+    @Override
+    public void dispose() {
         kryoServer.close();
     }
 }
