@@ -55,6 +55,8 @@ project(":core") {
         compile "com.kotcrab.vis:vis-ui:1.4.2"
         compile "com.badlogicgames.box2dlights:box2dlights:$box2DLightsVersion"
         compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
+
+        compile "com.esotericsoftware:kryonet:2.22.0-RC1"
     }
 }
 
