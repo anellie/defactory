@@ -12,6 +12,7 @@ public abstract class NetworkInterface {
     /** Registers all required classes for network communication.
      * @param kryo The kryo instance to register on */
     void registerClasses(Kryo kryo) {
+        kryo.register(Long.class);
     }
 
     /** Will start the interface along with a discovery thread.

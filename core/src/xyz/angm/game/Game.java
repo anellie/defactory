@@ -27,7 +27,7 @@ public class Game extends com.badlogic.gdx.Game {
 
     /** Starts a game as the player. Will create a server for players playing as beasts to join.*/
     public void startGame() {
-        netIface = new Server();
+        netIface = new Server(this);
         netIface.start();
         setScreen(new GameScreen(this));
     }
@@ -35,7 +35,6 @@ public class Game extends com.badlogic.gdx.Game {
     /** Joins a server. Allows the player to play as a beast trying to destroy the base. */
     public void joinGame() {
         netIface = new Client();
-        netIface.start();
-        // TODO game screen
+        setScreen(new GameScreen(this, (Client) netIface));
     }
 }

@@ -15,7 +15,11 @@ class TerrainGenerator {
     private static final double STONE_CHANCE = 0.3f;
     private static final double WATER_CHANCE = 0.2f;
 
-    private final SimplexNoiseGenerator noiseGenerator = new SimplexNoiseGenerator();
+    private final SimplexNoiseGenerator noiseGenerator;
+
+    TerrainGenerator(long seed) {
+        noiseGenerator = new SimplexNoiseGenerator(seed);
+    }
 
     /** Creates a Texture displaying the ground, using the proper terrain.
      * @return A Texture constructed using a Pixmap.*/
@@ -50,8 +54,8 @@ class TerrainGenerator {
                                 {0, 1, -1}, {0, -1, -1}};
         private int[] perm = new int[512];
 
-        SimplexNoiseGenerator() {
-            Random random = new Random(23445); // Using a fixed seed for consistent generation
+        SimplexNoiseGenerator(long seed) {
+            Random random = new Random(seed);
             int[] p = new int[256];
             for (int i = 0; i < p.length; i++) p[i] = random.nextInt(255);
             for (int i = 0; i < perm.length; i++) perm[i] = p[i & 255];

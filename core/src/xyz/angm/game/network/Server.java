@@ -3,6 +3,8 @@ package xyz.angm.game.network;
 import com.badlogic.gdx.Gdx;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
+import xyz.angm.game.Game;
+import xyz.angm.game.ui.GameScreen;
 
 import java.io.IOException;
 import java.util.concurrent.Executors;
@@ -16,6 +18,13 @@ public class Server extends NetworkInterface {
 
     private final com.esotericsoftware.kryonet.Server kryoServer = new com.esotericsoftware.kryonet.Server();
     private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+    private final Game game;
+
+    /** Create a new server.
+     * @param game The game to use for syncing with clients. */
+    public Server(Game game) {
+        this.game = game;
+    }
 
     @Override
     public boolean start() {
@@ -50,7 +59,8 @@ public class Server extends NetworkInterface {
         kryoServer.addListener(new Listener() {
             @Override
             public void connected(Connection connection) {
-                // TODO Handle connecting players
+                // Sync world seed to client
+                connection.sendTCP(new Long(((GameScreen) game.getScreen()).getWorld().seed));
             }
 
             @Override

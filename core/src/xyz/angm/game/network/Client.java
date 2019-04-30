@@ -6,6 +6,7 @@ import com.esotericsoftware.kryonet.Listener;
 
 import java.io.IOException;
 import java.net.InetAddress;
+import java.util.function.Consumer;
 
 /** A client for receiving network communications from a server.
  * Uses {@link ClientDiscoveryRunnable} to find a server.
@@ -29,7 +30,6 @@ public class Client extends NetworkInterface {
 
         try {
             kryoClient.connect(3000, address, PORT);
-            setupListeners();
         } catch (IOException e) {
             Gdx.app.error("Client", "Couldn't connect to server at address " + address.getHostName() + "!");
             return false;
@@ -50,11 +50,13 @@ public class Client extends NetworkInterface {
         return searchRunnable.getAddress();
     }
 
-    private void setupListeners() {
+    /** Add a listener to be called when an object is received from the server.
+     * @param listener The consumer to be called. The object will be the one sent from the server. */
+    public void addListener(Consumer<Object> listener) {
         kryoClient.addListener(new Listener() {
             @Override
             public void received(Connection connection, Object object) {
-                // TODO Handle receiving packets
+                listener.accept(object);
             }
         });
     }
