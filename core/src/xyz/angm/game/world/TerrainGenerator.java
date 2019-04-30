@@ -1,18 +1,43 @@
 package xyz.angm.game.world;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
+
 import java.util.Random;
 
 /** Generates random terrain using a noise function. */
-public class TerrainGenerator {
+class TerrainGenerator {
 
     private final SimplexNoiseGenerator noiseGenerator = new SimplexNoiseGenerator();
+
+    /** Creates a Texture displaying the ground, using the proper terrain.
+     * @return A Texture constructed using a Pixmap.*/
+    Texture createWorldMapTexture() {
+        Pixmap map = new Pixmap(1920, 1080, Pixmap.Format.RGB888);
+        map.setColor(Color.LIGHT_GRAY);
+        map.fill(); // Turn all pixels into stone at first to improve draw performance by reducing calls to JNI
+
+        for (int x = 0; x < map.getWidth(); x++) {
+            for (int y = 0; y < map.getHeight(); y++) {
+                double noise = noiseGenerator.generateDot(x, y);
+
+                if (noise < 0.2f) map.setColor(Color.BLUE);         // Water
+                else if (noise < 0.6f) map.setColor(Color.GREEN);   // Grass
+                else continue; // Stone was already drawn by the fill() call at the top; this draw can be skipped
+                map.drawPixel(x, y);
+            }
+        }
+
+        return new Texture(map);
+    }
 
     private class SimplexNoiseGenerator {
 
         // These values heavily influence terrain/noise generation.
         private static final int OCTAVES = 3;
-        private static final double ROUGHNESS = 0.4;
-        private static final double SCALE = 0.01;
+        private static final double ROUGHNESS = 0.1;
+        private static final double SCALE = 0.001;
 
         private int[][] grad3 = {{1, 1, 0}, {-1, 1, 0}, {1, -1, 0}, {-1, -1, 0}, {1, 0, 1},
                                 {-1, 0, 1}, {1, 0, -1}, {-1, 0, -1}, {0, 1, 1}, {0, -1, 1},

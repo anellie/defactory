@@ -5,6 +5,7 @@ import com.kotcrab.vis.ui.VisUI;
 import xyz.angm.game.network.Client;
 import xyz.angm.game.network.NetworkInterface;
 import xyz.angm.game.network.Server;
+import xyz.angm.game.ui.GameScreen;
 import xyz.angm.game.ui.MenuScreen;
 
 /** The main class of the game. */
@@ -28,7 +29,7 @@ public class Game extends com.badlogic.gdx.Game {
     public void startGame() {
         netIface = new Server();
         netIface.start();
-        // TODO game screen
+        setScreen(new GameScreen(this));
     }
 
     /** Joins a server. Allows the player to play as a beast trying to destroy the base. */
