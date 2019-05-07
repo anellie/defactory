@@ -29,4 +29,10 @@ public class World {
     public Player getPlayer() {
         return player;
     }
+
+    /** Should be called every frame on the server so the world can update.
+     * @param delta Time since last call to this method in seconds. */
+    public void act(float delta) {
+        player.act(delta);
+    }
 }

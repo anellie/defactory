@@ -53,4 +53,10 @@ public class GameScreen extends Screen {
     public World getWorld() {
         return world;
     }
+
+    @Override
+    public void render(float delta) {
+        world.act(delta); // Update world
+        super.render(delta);
+    }
 }

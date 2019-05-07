@@ -21,18 +21,30 @@ public class IntVector2 {
         this.y = y;
     }
 
-    /** Copies the vector.
-     * @return A new vector at the same position. */
-    public IntVector2 copy() {
-        return new IntVector2(this.x, this.y);
-    }
-
     /** Sets from the given vector.
      * @param v Applies values from this vector.
      * @return Itself. */
     public IntVector2 set(IntVector2 v) {
         x = v.x;
         y = v.y;
+        return this;
+    }
+
+    /** Adds the given vector.
+     * @param v Applies values from this vector.
+     * @return Itself. */
+    public IntVector2 add(IntVector2 v) {
+        x += v.x;
+        y += v.y;
+        return this;
+    }
+
+    /** Multiplies both axes with the given value.
+     * @param num Axes are multiplied with this value.
+     * @return Itself. */
+    public IntVector2 multiply(float num) {
+        x *= num;
+        y *= num;
         return this;
     }
 }
