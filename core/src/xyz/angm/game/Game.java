@@ -46,8 +46,6 @@ public class Game extends com.badlogic.gdx.Game {
     }
 
     private void registerAllAssets() {
-        // Queue all PNG files in the 'textures' asset directory for loading with the asset manager
-        for (FileHandle file : Gdx.files.internal("./textures").list(".png"))
-            assets.load(file.toString(), Texture.class);
+        assets.load("textures/player.png", Texture.class);
     }
 }
