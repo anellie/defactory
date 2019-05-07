@@ -26,4 +26,13 @@ public class IntVector2 {
     public IntVector2 copy() {
         return new IntVector2(this.x, this.y);
     }
+
+    /** Sets from the given vector.
+     * @param v Applies values from this vector.
+     * @return Itself. */
+    public IntVector2 set(IntVector2 v) {
+        x = v.x;
+        y = v.y;
+        return this;
+    }
 }

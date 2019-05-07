@@ -60,7 +60,7 @@ public class Server extends NetworkInterface {
             @Override
             public void connected(Connection connection) {
                 // Sync world seed to client
-                connection.sendTCP(new Long(((GameScreen) game.getScreen()).getWorld().seed));
+                connection.sendTCP(((GameScreen) game.getScreen()).getWorld().seed);
             }
 
             @Override
@@ -75,7 +75,7 @@ public class Server extends NetworkInterface {
 
     // Update entities on all clients connected to this server
     private void updateClientsEntities() {
-        // TODO
+        kryoServer.sendToAllTCP(((GameScreen) game.getScreen()).getWorld().getPlayer());
     }
 
     // Update map (placed blocks) on all clients connected to this server

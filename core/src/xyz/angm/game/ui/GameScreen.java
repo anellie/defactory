@@ -2,6 +2,7 @@ package xyz.angm.game.ui;
 
 import xyz.angm.game.Game;
 import xyz.angm.game.network.Client;
+import xyz.angm.game.world.entities.Player;
 import xyz.angm.game.world.World;
 
 /** The screen active while the game is running. */
@@ -23,9 +24,11 @@ public class GameScreen extends Screen {
     public GameScreen(Game game, Client client) {
         super(game);
         client.addListener((Object obj) -> {
-            if (obj instanceof Long) { // Long is the seed
+            if (obj instanceof Long) { // Long is the seed; world needs to init now
                 world = new World((Long) obj);
                 world.registerActors(stage);
+            } else if (obj instanceof Player) { // Player should be synced
+                world.getPlayer().getPosition().set(((Player) obj).getPosition()); // get is why java causes 836 cancer cases per year
             }
         });
         client.start();
