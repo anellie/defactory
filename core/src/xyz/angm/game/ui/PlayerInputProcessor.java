@@ -2,7 +2,6 @@ package xyz.angm.game.ui;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
-import xyz.angm.game.world.entities.Player;
 
 public class PlayerInputProcessor extends InputAdapter { // ToDo Map Inputs
 
@@ -17,12 +16,16 @@ public class PlayerInputProcessor extends InputAdapter { // ToDo Map Inputs
     public boolean keyDown(int keycode) {
         switch (keycode){
             case Input.Keys.A: // Left
+                screen.getWorld().getPlayer().getVelocity().x +=2;
                 break;
             case Input.Keys.D: // Right
+                screen.getWorld().getPlayer().getVelocity().x -=2;
                 break;
             case Input.Keys.W: // UP
+                screen.getWorld().getPlayer().getVelocity().y -=2;
                 break;
             case Input.Keys.S: // Down
+                screen.getWorld().getPlayer().getVelocity().y +=2;
                 break;
             case Input.Keys.E: // Inventory
                 break;
@@ -35,12 +38,16 @@ public class PlayerInputProcessor extends InputAdapter { // ToDo Map Inputs
     public boolean keyUp(int keycode) {
         switch (keycode){
             case Input.Keys.A: // Left
+                screen.getWorld().getPlayer().getVelocity().x -=2;
                 break;
             case Input.Keys.D: // Right
+                screen.getWorld().getPlayer().getVelocity().x +=2;
                 break;
             case Input.Keys.W: // UP
+                screen.getWorld().getPlayer().getVelocity().y +=2;
                 break;
             case Input.Keys.S: // Down
+                screen.getWorld().getPlayer().getVelocity().y -=2;
                 break;
             case Input.Keys.E: // Inventory
                 break;
