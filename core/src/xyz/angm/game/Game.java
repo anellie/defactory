@@ -15,6 +15,7 @@ import xyz.angm.game.ui.LoadingScreen;
 public class Game extends com.badlogic.gdx.Game {
 
     /** Static since loading texture more than once is pointless. Also prevents passing textures around everywhere. */
+    @SuppressWarnings("LibGDXStaticResource") // Only applies to Android
     public static final AssetManager assets = new AssetManager();
 
     private NetworkInterface netIface;

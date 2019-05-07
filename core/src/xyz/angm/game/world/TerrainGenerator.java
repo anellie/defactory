@@ -17,6 +17,7 @@ class TerrainGenerator {
 
     private final SimplexNoiseGenerator noiseGenerator;
 
+    /** Create a terrain generator. Seed is used for randomness; same seed = same world */
     TerrainGenerator(long seed) {
         noiseGenerator = new SimplexNoiseGenerator(seed);
     }
@@ -49,10 +50,10 @@ class TerrainGenerator {
         private static final double ROUGHNESS = 0.1;
         private static final double SCALE = 0.001;
 
-        private int[][] grad3 = {{1, 1, 0}, {-1, 1, 0}, {1, -1, 0}, {-1, -1, 0}, {1, 0, 1},
+        private final int[][] grad3 = {{1, 1, 0}, {-1, 1, 0}, {1, -1, 0}, {-1, -1, 0}, {1, 0, 1},
                                 {-1, 0, 1}, {1, 0, -1}, {-1, 0, -1}, {0, 1, 1}, {0, -1, 1},
                                 {0, 1, -1}, {0, -1, -1}};
-        private int[] perm = new int[512];
+        private final int[] perm = new int[512];
 
         SimplexNoiseGenerator(long seed) {
             Random random = new Random(seed);

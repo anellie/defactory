@@ -8,11 +8,11 @@ import com.kotcrab.vis.ui.widget.VisTextButton;
 import xyz.angm.game.Game;
 
 /** The menu screen. */
-public class MenuScreen extends Screen {
+class MenuScreen extends Screen {
 
     /** Constructs the screen with the main menu active.
      * @param game The game the screen is running under. */
-    public MenuScreen(Game game) {
+    MenuScreen(Game game) {
         super(game);
 
         table.add(new VisLabel("Hello World!")).row();

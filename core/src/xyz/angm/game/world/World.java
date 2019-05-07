@@ -6,6 +6,7 @@ import xyz.angm.game.world.entities.Player;
 /** Represents the game world and contains all entities and the world map. */
 public class World {
 
+    /** Seed used for generating terrain. See {@link TerrainGenerator}. */
     public final long seed;
     private final WorldMap map;
     private Player player = new Player();

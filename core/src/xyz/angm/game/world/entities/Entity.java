@@ -9,7 +9,7 @@ import java.io.Serializable;
 /** An entity is a component capable of changing its position and interacting with the world. */
 abstract class Entity implements Serializable {
 
-    private static final float MOVEMENT_MULTIPLIER = 20f;
+    private static final float MOVEMENT_MULTIPLIER = 100f;
 
     /** The position of the entity. */
     private final Vector2 position = new Vector2();

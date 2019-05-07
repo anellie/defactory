@@ -1,6 +1,7 @@
 package xyz.angm.game.ui;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.kotcrab.vis.ui.widget.VisLabel;
@@ -19,7 +20,13 @@ public class GameScreen extends Screen {
      * @param game The game the screen is running under. */
     public GameScreen(Game game) {
         super(game);
-        Gdx.input.setInputProcessor(new PlayerInputProcessor(this));
+
+        // Create a multiplexer for handling input for both UI and in-world (https://github.com/libgdx/libgdx/wiki/Event-handling#inputmultiplexer)
+        InputMultiplexer inputMultiplexer = new InputMultiplexer();
+        inputMultiplexer.addProcessor(stage);
+        inputMultiplexer.addProcessor(new PlayerInputProcessor(this));
+        Gdx.input.setInputProcessor(inputMultiplexer);
+
         world = new World(System.currentTimeMillis());
         world.registerActors(stage);
     }
