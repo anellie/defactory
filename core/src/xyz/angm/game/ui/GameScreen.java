@@ -1,5 +1,6 @@
 package xyz.angm.game.ui;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.kotcrab.vis.ui.widget.VisLabel;
@@ -18,6 +19,7 @@ public class GameScreen extends Screen {
      * @param game The game the screen is running under. */
     public GameScreen(Game game) {
         super(game);
+        Gdx.input.setInputProcessor(new PlayerInputProcessor(this));
         world = new World(System.currentTimeMillis());
         world.registerActors(stage);
     }

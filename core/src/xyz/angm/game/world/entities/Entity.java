@@ -1,30 +1,32 @@
 package xyz.angm.game.world.entities;
 
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import xyz.angm.game.util.IntVector2;
 
 import java.io.Serializable;
 
 /** An entity is a component capable of changing its position and interacting with the world. */
 abstract class Entity implements Serializable {
 
+    private static final float MOVEMENT_MULTIPLIER = 20f;
+
     /** The position of the entity. */
-    private final IntVector2 position = new IntVector2();
+    private final Vector2 position = new Vector2();
     /** The speed the entity is travelling at. */
-    private final IntVector2 velocity = new IntVector2(1, -1);
+    private final Vector2 velocity = new Vector2();
     /** A vector used for calculation. It's a class member to prevent creating one-time-use vectors. */
-    private final transient IntVector2 tmpIV = new IntVector2();
+    private final transient Vector2 tmpV = new Vector2();
     /** The entities health. 0 will cause the entity to be disposed. */
     int health;
     /** Actor for displaying on the screen. */
     transient Image actor;
 
-    public IntVector2 getPosition() {
+    public Vector2 getPosition() {
         return position;
     }
 
-    public IntVector2 getVelocity() {
+    public Vector2 getVelocity() {
         return velocity;
     }
 
@@ -32,8 +34,7 @@ abstract class Entity implements Serializable {
      * @param delta Time since last call to this method in seconds. */
     public void act(float delta) {
         // Update position by velocity. Time between calls is used to prevent FPS from affecting entity speed
-        position.add(tmpIV.set(velocity).multiply(delta));
-
+        position.add(tmpV.set(velocity).scl(delta * MOVEMENT_MULTIPLIER));
         actor.setPosition(position.x, position.y);
     }
 
