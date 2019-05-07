@@ -14,7 +14,9 @@ import xyz.angm.game.ui.LoadingScreen;
 /** The main class of the game. */
 public class Game extends com.badlogic.gdx.Game {
 
-    private final AssetManager assets = new AssetManager();
+    /** Static since loading texture more than once is pointless. Also prevents passing textures around everywhere. */
+    public static final AssetManager assets = new AssetManager();
+
     private NetworkInterface netIface;
 
     @Override
@@ -40,12 +42,6 @@ public class Game extends com.badlogic.gdx.Game {
     public void joinGame() {
         netIface = new Client();
         setScreen(new GameScreen(this, (Client) netIface));
-    }
-
-    /** Returns all assets. All assets are loaded post-LoadingScreen.
-     * @return The asset manager containing all assets. */
-    public AssetManager getAssets() {
-        return assets;
     }
 
     private void registerAllAssets() {

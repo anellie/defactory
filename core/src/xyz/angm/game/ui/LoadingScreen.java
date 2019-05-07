@@ -21,9 +21,9 @@ public class LoadingScreen extends Screen {
     public void render(float delta) {
         super.render(delta);
 
-        game.getAssets().update();
-        progressBar.setValue(game.getAssets().getProgress() * 100f);
+        Game.assets.update();
+        progressBar.setValue(Game.assets.getProgress() * 100f);
 
-        if (game.getAssets().isFinished()) game.setScreen(new MenuScreen(game));
+        if (Game.assets.isFinished()) game.setScreen(new MenuScreen(game));
     }
 }
