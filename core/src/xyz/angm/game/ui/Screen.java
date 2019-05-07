@@ -9,8 +9,12 @@ import com.kotcrab.vis.ui.widget.VisTable;
 import xyz.angm.game.Game;
 
 /** An abstract class shared between all screens. */
-abstract class Screen extends ScreenAdapter {
+public abstract class Screen extends ScreenAdapter {
 
+    /** Height to be used for all viewports. */
+    public static final int VIEWPORT_HEIGHT = 1080;
+    /** Height to be used for all viewports. */
+    public static final int VIEWPORT_WIDTH = 1920;
     /** Height to be used for VisTextButton. */
     static final float BUTTON_HEIGHT = 48f;
     /** Width to be used for VisTextButton. */
@@ -19,7 +23,7 @@ abstract class Screen extends ScreenAdapter {
     /** The game the screen is running under. */
     final Game game;
     /** The stage containing all 2D actors. */
-    final Stage stage = new Stage(new FitViewport(1920, 1080));
+    final Stage stage = new Stage(new FitViewport(VIEWPORT_WIDTH, VIEWPORT_HEIGHT));
     /** A table for GUI elements. Is empty by default. */
     final VisTable table = new VisTable(true);
 

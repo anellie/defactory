@@ -6,8 +6,11 @@ import com.badlogic.gdx.graphics.Texture;
 
 import java.util.Random;
 
+import static xyz.angm.game.ui.Screen.VIEWPORT_HEIGHT;
+import static xyz.angm.game.ui.Screen.VIEWPORT_WIDTH;
+
 /** Generates random terrain using a noise function. */
-class TerrainGenerator {
+public class TerrainGenerator {
 
     private static final Color GRASS_COLOR = new Color(0x2C8324FF);
     private static final Color STONE_COLOR = new Color(0x8B8B86FF);
@@ -15,9 +18,13 @@ class TerrainGenerator {
     private static final double STONE_CHANCE = 0.3f;
     private static final double WATER_CHANCE = 0.2f;
 
+    /** Multiplicator for the world map. Takes the viewport size as base. */
+    public static final int WORLD_SIZE_MULTIPLICATOR = 3;
+
     private final SimplexNoiseGenerator noiseGenerator;
 
-    /** Create a terrain generator. Seed is used for randomness; same seed = same world */
+    /** Create a terrain generator. Seed is used for randomness; same seed = same world
+     * @param seed Seed to be used */
     TerrainGenerator(long seed) {
         noiseGenerator = new SimplexNoiseGenerator(seed);
     }
@@ -25,7 +32,7 @@ class TerrainGenerator {
     /** Creates a Texture displaying the ground, using the proper terrain.
      * @return A Texture constructed using a Pixmap.*/
     Texture createWorldMapTexture() {
-        Pixmap map = new Pixmap(1920, 1080, Pixmap.Format.RGB888);
+        Pixmap map = new Pixmap(WORLD_SIZE_MULTIPLICATOR * VIEWPORT_WIDTH, WORLD_SIZE_MULTIPLICATOR * VIEWPORT_HEIGHT, Pixmap.Format.RGB888);
         map.setColor(GRASS_COLOR);
         map.fill(); // Turn all pixels into grass at first to improve draw performance by reducing calls to JNI
 

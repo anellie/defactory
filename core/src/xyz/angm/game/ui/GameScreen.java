@@ -2,6 +2,7 @@ package xyz.angm.game.ui;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.kotcrab.vis.ui.widget.VisLabel;
@@ -14,7 +15,7 @@ import xyz.angm.game.world.World;
 /** The screen active while the game is running. */
 public class GameScreen extends Screen {
 
-    private World world;
+    private World world = new World(System.currentTimeMillis());
 
     /** Constructs the screen and generates a new world. Run only when server is active.
      * @param game The game the screen is running under. */
@@ -26,9 +27,6 @@ public class GameScreen extends Screen {
         inputMultiplexer.addProcessor(stage);
         inputMultiplexer.addProcessor(new PlayerInputProcessor(this));
         Gdx.input.setInputProcessor(inputMultiplexer);
-
-        world = new World(System.currentTimeMillis());
-        world.registerActors(stage);
     }
 
     /** Constructs the screen and waits for the world from the server.
@@ -39,7 +37,6 @@ public class GameScreen extends Screen {
         client.addListener((Object obj) -> {
             if (obj instanceof Long) { // Long is the seed; world needs to init now
                 world = new World((Long) obj);
-                world.registerActors(stage);
             } else if (obj instanceof Player) { // Player should be synced
                 world.getPlayer().getPosition().set(((Player) obj).getPosition()); // get is why java causes 836 cancer cases per year
             }
@@ -65,7 +62,14 @@ public class GameScreen extends Screen {
 
     @Override
     public void render(float delta) {
-        world.act(delta); // Update world
-        super.render(delta);
+        Gdx.gl.glClearColor(0.05f, 0.05f, 0.05f, 1f);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        if (world == null) return;  // Waiting for server connect
+        world.act(delta);           // Update world
+        world.render(delta);        // Render world. World render is separate to allow for different camera positions
+
+        stage.act(delta);
+        stage.draw();
     }
 }
