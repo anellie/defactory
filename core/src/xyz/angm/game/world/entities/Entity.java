@@ -12,7 +12,7 @@ abstract class Entity implements Serializable {
     /** The position of the entity. */
     private final IntVector2 position = new IntVector2();
     /** The speed the entity is travelling at. */
-    private final IntVector2 velocity = new IntVector2();
+    private final IntVector2 velocity = new IntVector2(1, -1);
     /** A vector used for calculation. It's a class member to prevent creating one-time-use vectors. */
     private final transient IntVector2 tmpIV = new IntVector2();
     /** The entities health. 0 will cause the entity to be disposed. */
@@ -33,6 +33,8 @@ abstract class Entity implements Serializable {
     public void act(float delta) {
         // Update position by velocity. Time between calls is used to prevent FPS from affecting entity speed
         position.add(tmpIV.set(velocity).multiply(delta));
+
+        actor.setPosition(position.x, position.y);
     }
 
     /** Adds itself to the given stage.
