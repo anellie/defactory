@@ -9,14 +9,14 @@ import java.io.Serializable;
 /** An entity is a component capable of changing its position and interacting with the world. */
 abstract class Entity implements Serializable {
 
-    private static final float MOVEMENT_MULTIPLIER = 100f;
-
     /** The position of the entity. */
     private final Vector2 position = new Vector2();
     /** The speed the entity is travelling at. */
     private final Vector2 velocity = new Vector2();
     /** A vector used for calculation. It's a class member to prevent creating one-time-use vectors. */
     private final transient Vector2 tmpV = new Vector2();
+    /** The multiplier used to apply velocity. */
+    float movementMultiplier = 100f;
     /** The entities health. 0 will cause the entity to be disposed. */
     int health;
     /** Actor for displaying on the screen. */
@@ -34,7 +34,7 @@ abstract class Entity implements Serializable {
      * @param delta Time since last call to this method in seconds. */
     public void act(float delta) {
         // Update position by velocity. Time between calls is used to prevent FPS from affecting entity speed
-        position.add(tmpV.set(velocity).scl(delta * MOVEMENT_MULTIPLIER));
+        position.add(tmpV.set(velocity).scl(delta * movementMultiplier));
         actor.setPosition(position.x, position.y);
     }
 

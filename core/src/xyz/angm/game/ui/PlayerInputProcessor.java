@@ -32,6 +32,9 @@ class PlayerInputProcessor extends InputAdapter {
                 break;
             case Input.Keys.E: // Inventory TODO
                 break;
+            case Input.Keys.SHIFT_LEFT: // Sprint
+                screen.getWorld().getPlayer().sprint(true);
+                break;
             default:
                 break;
         }
@@ -54,6 +57,9 @@ class PlayerInputProcessor extends InputAdapter {
                 screen.getWorld().getPlayer().getVelocity().y++;
                 break;
             case Input.Keys.E: // Inventory TODO
+                break;
+            case Input.Keys.SHIFT_LEFT: // Sprint
+                screen.getWorld().getPlayer().sprint(false);
                 break;
             default:
                 break;
