@@ -4,26 +4,16 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.kotcrab.vis.ui.widget.VisLabel;
-import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import xyz.angm.game.Game;
 
 /** The menu screen. */
 public class MenuScreen extends Screen {
 
-    /** Height to be used for VisTextButton. */
-    static final float BUTTON_HEIGHT = 48f;
-    /** Width to be used for VisTextButton. */
-    static final float BUTTON_WIDTH = 400f;
-
     /** Constructs the screen with the main menu active.
      * @param game The game the screen is running under. */
     public MenuScreen(Game game) {
         super(game);
-
-        VisTable table = new VisTable(true);
-        stage.addActor(table);
-        table.setFillParent(true);
 
         table.add(new VisLabel("Hello World!")).row();
 

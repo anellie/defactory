@@ -3,15 +3,11 @@ package xyz.angm.game.ui;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.kotcrab.vis.ui.widget.VisLabel;
-import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import xyz.angm.game.Game;
 import xyz.angm.game.network.Client;
 import xyz.angm.game.world.entities.Player;
 import xyz.angm.game.world.World;
-
-import static xyz.angm.game.ui.MenuScreen.BUTTON_HEIGHT;
-import static xyz.angm.game.ui.MenuScreen.BUTTON_WIDTH;
 
 /** The screen active while the game is running. */
 public class GameScreen extends Screen {
@@ -42,11 +38,7 @@ public class GameScreen extends Screen {
 
         boolean connected = client.start();
         if (!connected) {
-            VisTable table = new VisTable(true);
-            stage.addActor(table);
-            table.setFillParent(true);
             table.add(new VisLabel("No server was found!")).row();
-
             VisTextButton backButton = new VisTextButton("Return");
             backButton.addListener(new ClickListener() {
                 @Override
