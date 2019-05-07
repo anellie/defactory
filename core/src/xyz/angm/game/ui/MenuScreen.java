@@ -11,8 +11,10 @@ import xyz.angm.game.Game;
 /** The menu screen. */
 public class MenuScreen extends Screen {
 
-    private static final float BUTTON_HEIGHT = 48f;
-    private static final float BUTTON_WIDTH = 400f;
+    /** Height to be used for VisTextButton. */
+    static final float BUTTON_HEIGHT = 48f;
+    /** Width to be used for VisTextButton. */
+    static final float BUTTON_WIDTH = 400f;
 
     /** Constructs the screen with the main menu active.
      * @param game The game the screen is running under. */
