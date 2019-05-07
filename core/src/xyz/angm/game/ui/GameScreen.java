@@ -34,13 +34,7 @@ public class GameScreen extends Screen {
      * @param client The client to wait for events with. Client should not have connected yet! */
     public GameScreen(Game game, Client client) {
         super(game);
-        client.addListener((Object obj) -> {
-            if (obj instanceof Long) { // Long is the seed; world needs to init now
-                world = new World((Long) obj);
-            } else if (obj instanceof Player) { // Player should be synced
-                world.getPlayer().getPosition().set(((Player) obj).getPosition()); // get is why java causes 836 cancer cases per year
-            }
-        });
+        client.addListener(this::serverPacketReceived);
 
         boolean connected = client.start();
         if (!connected) {
@@ -71,5 +65,16 @@ public class GameScreen extends Screen {
 
         stage.act(delta);
         stage.draw();
+    }
+
+    // Packet/Object received from server. Only call on client instances.
+    private void serverPacketReceived(Object packet) {
+        if (packet instanceof Long) {           // Long is the seed; world needs to init now
+            Gdx.app.postRunnable(() -> world = new World((Long) packet)); // World requires render context
+        } else if (packet instanceof Player) {  // Player should be synced
+            Player serverPlayer = (Player) packet;
+            Player localPlayer = world.getPlayer();
+            localPlayer.getPosition().set(serverPlayer.getPosition());
+        }
     }
 }

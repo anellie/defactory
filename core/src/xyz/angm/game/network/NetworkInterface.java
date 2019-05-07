@@ -1,9 +1,10 @@
 package xyz.angm.game.network;
 
+import com.badlogic.gdx.math.Vector2;
 import com.esotericsoftware.kryo.Kryo;
+import xyz.angm.game.world.entities.Player;
 
-/** A simple network interface for sending and receiving packets.
- * TODO Asses if this interface makes sense, or Client/Server should be fully separated. */
+/** A simple network interface for sending and receiving packets. */
 public abstract class NetworkInterface {
 
     /** The port all network communication takes place on. */
@@ -12,7 +13,9 @@ public abstract class NetworkInterface {
     /** Registers all required classes for network communication.
      * @param kryo The kryo instance to register on */
     void registerClasses(Kryo kryo) {
-        kryo.register(Long.class);
+        kryo.register(Player.class);
+
+        kryo.register(Vector2.class);
     }
 
     /** Will start the interface along with a discovery thread.
