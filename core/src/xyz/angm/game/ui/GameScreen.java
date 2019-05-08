@@ -16,11 +16,13 @@ import xyz.angm.game.world.World;
 public class GameScreen extends Screen {
 
     private World world = new World(System.currentTimeMillis());
+    private PlayerHud playerHud = new PlayerHud(this);
 
     /** Constructs the screen and generates a new world. Run only when server is active.
      * @param game The game the screen is running under. */
     public GameScreen(Game game) {
         super(game);
+        stage.addActor(playerHud);
 
         // Create a multiplexer for handling input for both UI and in-world (https://github.com/libgdx/libgdx/wiki/Event-handling#inputmultiplexer)
         InputMultiplexer inputMultiplexer = new InputMultiplexer();

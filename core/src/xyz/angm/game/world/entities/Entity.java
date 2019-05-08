@@ -44,4 +44,8 @@ abstract class Entity implements Serializable {
         stage.addActor(actor);
         actor.setPosition(position.x, position.y);
     }
+
+    public int getHealth() {
+        return health;
+    }
 }

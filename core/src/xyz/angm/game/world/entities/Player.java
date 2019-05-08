@@ -11,7 +11,8 @@ import static xyz.angm.game.world.TerrainGenerator.WORLD_SIZE_MULTIPLICATOR;
 /** The player in the game. Their goal is building a base to defend against beasts.*/
 public class Player extends Entity {
 
-    private static final int PLAYER_HEALTH = 20;
+    /** The maximum player health. */
+    public static final int PLAYER_HEALTH = 20;
     private static final float SPRINT_MULTIPLIER = 2.5f;
 
     /** Constructs a Player. Requires AssetManager in Game to be ready. */
