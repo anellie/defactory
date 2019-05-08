@@ -68,7 +68,9 @@ public class World {
     /** Zooms the world map; scaling it bigger or smaller.
      * @param zoom The zoom amount. */
     public void zoomMap(float zoom) {
-        ((OrthographicCamera) stage.getCamera()).zoom += zoom;
+        // Limit the zoom from 0 to world size to prevent unwanted behavior
+        ((OrthographicCamera) stage.getCamera()).zoom =
+                Math.max(0, Math.min(WORLD_SIZE_MULTIPLICATOR, ((OrthographicCamera) stage.getCamera()).zoom + zoom));
     }
 
     /** Should be called when the player clicked the screen. Will place or break a block at the clicked position.
