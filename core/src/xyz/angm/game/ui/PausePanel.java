@@ -14,22 +14,36 @@ import static xyz.angm.game.ui.Screen.BUTTON_WIDTH;
 /** A pause panel displayed when pressing escape. */
 class PausePanel extends VisTable {
 
+    private final GameScreen screen;
+
     /** Construct a new panel. */
-    PausePanel() {
+    PausePanel(GameScreen screen) {
+        super();
+        this.screen = screen;
+
         setFillParent(true);
         setBackground(VisUI.getSkin().getDrawable("black-transparent"));
 
         add(new VisLabel("Pause Menu")).row();
 
+        VisTextButton resumeGameButton = new VisTextButton("Resume Game");
         VisTextButton exitGameButton = new VisTextButton("Exit Game");
-        add(exitGameButton).size(BUTTON_WIDTH, BUTTON_HEIGHT).row();
 
+        resumeGameButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                screen.togglePausePanel();
+            }
+        });
         exitGameButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 Gdx.app.exit();
             }
         });
+
+        add(resumeGameButton).size(BUTTON_WIDTH, BUTTON_HEIGHT).row();
+        add(exitGameButton).size(BUTTON_WIDTH, BUTTON_HEIGHT).row();
     }
 }
 

@@ -83,9 +83,9 @@ public class GameScreen extends Screen {
 
     /** Toggles the pause menu. */
     void togglePausePanel() {
-        stage.clear();
+            stage.clear();
         if (!pauseMenuActive) { // Open the pause menu
-            stage.addActor(new PausePanel());
+            stage.addActor(new PausePanel(this));
         } else { // Closes the pause menu
             stage.addActor(playerHud);
         }
