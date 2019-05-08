@@ -91,4 +91,9 @@ public class GameScreen extends Screen {
         }
         pauseMenuActive = !pauseMenuActive;
     }
+
+    /** Goes back to Main Menu */
+    void backToMainMenu() {
+        game.setScreen(new MenuScreen(game));
+    }
 }
