@@ -13,8 +13,9 @@ class PlayerHud extends Group {
     private static final int BAR_HEIGHT = 15;
 
     private final GameScreen screen;
-    private final VisProgressBar healthBar = new VisProgressBar(0, PLAYER_HEALTH, 1, false);
-    private final VisProgressBar staminaBar = new VisProgressBar(0, PLAYER_STAMINA, PLAYER_STAMINA / BAR_WIDTH, false);
+    private final VisProgressBar healthBar = new VisProgressBar(0, PLAYER_HEALTH, 1, false, "health-bar");
+    private final VisProgressBar staminaBar =
+            new VisProgressBar(0, PLAYER_STAMINA, PLAYER_STAMINA / BAR_WIDTH, false, "stamina-bar");
 
     /** Construct a new HUD.
      * @param screen The screen the HUD will be a part of */

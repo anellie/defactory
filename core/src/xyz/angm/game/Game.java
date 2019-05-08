@@ -1,13 +1,20 @@
 package xyz.angm.game;
 
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.kotcrab.vis.ui.VisUI;
 import xyz.angm.game.network.Client;
 import xyz.angm.game.network.NetworkInterface;
 import xyz.angm.game.network.Server;
 import xyz.angm.game.ui.GameScreen;
 import xyz.angm.game.ui.LoadingScreen;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /** The main class of the game. */
 public class Game extends com.badlogic.gdx.Game {
@@ -22,6 +29,7 @@ public class Game extends com.badlogic.gdx.Game {
     public void create() {
         VisUI.load(); // VisUI is a framework for game GUIs like menus
         registerAllAssets();
+        createSkin();
         setScreen(new LoadingScreen(this));
     }
 
@@ -43,9 +51,38 @@ public class Game extends com.badlogic.gdx.Game {
         setScreen(new GameScreen(this, (Client) netIface));
     }
 
+    // Registers all assets required by the game
     private void registerAllAssets() {
         assets.load("textures/player.png", Texture.class);
         assets.load("textures/cursor.png", Texture.class);
         assets.load("textures/selector.png", Texture.class);
+    }
+
+    // Creates the libGDX skin used for some elements.
+    private void createSkin() {
+        Skin skin = VisUI.getSkin();
+
+        // Create a map of all colors needed; loop over it and create a drawable for each
+        Map<String, Color> colors = new HashMap<>();
+        colors.put("red", Color.RED);
+        colors.put("green", Color.GREEN);
+        colors.put("black-transparent", new Color(0x00000088));
+        for (Map.Entry<String, Color> color : colors.entrySet()) {
+            Pixmap pm = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+            pm.setColor(color.getValue());
+            pm.fill();
+            skin.add(color.getKey(), new Texture(pm));
+        }
+
+        // Progress bars
+        ProgressBar.ProgressBarStyle healthBarStyle = new ProgressBar.ProgressBarStyle(skin.get("default-horizontal", ProgressBar.ProgressBarStyle.class));
+        healthBarStyle.knobBefore = skin.newDrawable("progressbar-filled", colors.get("red"));
+        healthBarStyle.knob = skin.newDrawable("progressbar-filled", colors.get("red"));
+        skin.add("health-bar", healthBarStyle);
+
+        ProgressBar.ProgressBarStyle staminaBarStyle = new ProgressBar.ProgressBarStyle(skin.get("default-horizontal", ProgressBar.ProgressBarStyle.class));
+        staminaBarStyle.knobBefore = skin.newDrawable("progressbar-filled", colors.get("green"));
+        staminaBarStyle.knob = skin.newDrawable("progressbar-filled", colors.get("green"));
+        skin.add("stamina-bar", staminaBarStyle);
     }
 }
