@@ -1,5 +1,6 @@
 package xyz.angm.game.world;
 
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -47,19 +48,26 @@ public class World {
         stage.draw();
     }
 
-    // These values determine the min/max positions of the camera. These prevent the camera from displaying out-of-bounds areas.
-    private static final int MIN_CAMERA_X = VIEWPORT_WIDTH / 2;
-    private static final int MIN_CAMERA_Y = VIEWPORT_HEIGHT / 2;
-    private static final int MAX_CAMERA_X = (VIEWPORT_WIDTH * WORLD_SIZE_MULTIPLICATOR) - MIN_CAMERA_X;
-    private static final int MAX_CAMERA_Y = (VIEWPORT_HEIGHT * WORLD_SIZE_MULTIPLICATOR) - MIN_CAMERA_Y;
+    /** Zooms the world map; scaling it bigger or smaller.
+     * @param zoom The zoom amount. */
+    public void zoomMap(float zoom) {
+        ((OrthographicCamera) stage.getCamera()).zoom += zoom;
+    }
 
     private void updateCamera() {
+        final float zoom = ((OrthographicCamera) stage.getCamera()).zoom;
+        // These values determine the min/max positions of the camera. These prevent the camera from displaying out-of-bounds areas.
+        final float minCameraX = (zoom * VIEWPORT_WIDTH) / 2f;
+        final float minCameraY = (zoom * VIEWPORT_HEIGHT) / 2f;
+        final float maxCameraX = (VIEWPORT_WIDTH * WORLD_SIZE_MULTIPLICATOR) - minCameraX;
+        final float maxCameraY = (VIEWPORT_HEIGHT * WORLD_SIZE_MULTIPLICATOR) - minCameraY;
+
         final Vector3 position = stage.getCamera().position;
         position.x = player.getPosition().x;
         position.y = player.getPosition().y;
 
         // Ensure the edges of the screen will not scroll into view
-        position.x = Math.max(MIN_CAMERA_X, Math.min(MAX_CAMERA_X, position.x));
-        position.y = Math.max(MIN_CAMERA_Y, Math.min(MAX_CAMERA_Y, position.y));
+        position.x = Math.max(minCameraX, Math.min(maxCameraX, position.x));
+        position.y = Math.max(minCameraY, Math.min(maxCameraY, position.y));
     }
 }

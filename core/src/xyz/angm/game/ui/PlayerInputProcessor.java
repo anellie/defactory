@@ -6,6 +6,8 @@ import com.badlogic.gdx.InputAdapter;
 /** An input processor for handling inputs by the player. Does not handle UI. */
 class PlayerInputProcessor extends InputAdapter {
 
+    private static final float SCROLL_SCALING = 0.01f;
+
     private final GameScreen screen;
 
     /** Create an input processor.
@@ -64,6 +66,13 @@ class PlayerInputProcessor extends InputAdapter {
             default:
                 break;
         }
+        return true;
+    }
+
+    @Override
+    public boolean scrolled(int amount) {
+        float scrolled = (float) amount * SCROLL_SCALING;
+        screen.getWorld().zoomMap(scrolled);
         return true;
     }
 }
