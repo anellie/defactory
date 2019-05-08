@@ -38,7 +38,8 @@ class PlayerInputProcessor extends InputAdapter {
                 screen.getWorld().getPlayer().sprint(true);
                 break;
             case Input.Keys.ESCAPE: // Pause Menu
-                screen.getPausePanel();
+                screen.togglePausePanel();
+                break;
             default:
                 break;
         }

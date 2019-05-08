@@ -81,17 +81,14 @@ public class GameScreen extends Screen {
         }
     }
 
-    public PausePanel getPausePanel() {
-        PausePanel PauseMenu = new PausePanel();
-        if (!pauseMenuActive) { // Open the Pause Menu by pressing ESCAPE
-            pauseMenuActive = true;
-            stage.addActor(PauseMenu);
-        } else if (pauseMenuActive) { // Closes the Pause Menu by pressing ESCAPE
-            pauseMenuActive = false;
-            stage.clear();
+    /** Toggles the pause menu. */
+    void togglePausePanel() {
+        stage.clear();
+        if (!pauseMenuActive) { // Open the pause menu
+            stage.addActor(new PausePanel());
+        } else { // Closes the pause menu
             stage.addActor(playerHud);
         }
-
-        return PauseMenu;
+        pauseMenuActive = !pauseMenuActive;
     }
 }
