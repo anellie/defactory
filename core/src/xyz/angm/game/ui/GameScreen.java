@@ -9,12 +9,13 @@ import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import xyz.angm.game.Game;
 import xyz.angm.game.network.Client;
-import xyz.angm.game.world.entities.Player;
 import xyz.angm.game.world.World;
+import xyz.angm.game.world.entities.Player;
 
 /** The screen active while the game is running. */
 public class GameScreen extends Screen {
 
+    private boolean pauseMenuActive = false ;
     private World world = new World(System.currentTimeMillis());
     private PlayerHud playerHud = new PlayerHud(this);
 
@@ -78,5 +79,19 @@ public class GameScreen extends Screen {
             Player localPlayer = world.getPlayer();
             localPlayer.getPosition().set(serverPlayer.getPosition());
         }
+    }
+
+    public PausePanel getPausePanel() {
+        PausePanel PauseMenu = new PausePanel();
+        if (!pauseMenuActive) { // Open the Pause Menu by pressing ESCAPE
+            pauseMenuActive = true;
+            stage.addActor(PauseMenu);
+        } else if (pauseMenuActive) { // Closes the Pause Menu by pressing ESCAPE
+            pauseMenuActive = false;
+            stage.clear();
+            stage.addActor(playerHud);
+        }
+
+        return PauseMenu;
     }
 }

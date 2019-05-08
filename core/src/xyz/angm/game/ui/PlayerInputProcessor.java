@@ -37,6 +37,8 @@ class PlayerInputProcessor extends InputAdapter {
             case Input.Keys.SHIFT_LEFT: // Sprint
                 screen.getWorld().getPlayer().sprint(true);
                 break;
+            case Input.Keys.ESCAPE: // Pause Menu
+                screen.getPausePanel();
             default:
                 break;
         }
