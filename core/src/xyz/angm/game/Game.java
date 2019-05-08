@@ -56,6 +56,7 @@ public class Game extends com.badlogic.gdx.Game {
         assets.load("textures/player.png", Texture.class);
         assets.load("textures/cursor.png", Texture.class);
         assets.load("textures/selector.png", Texture.class);
+        assets.load("textures/blockTest.png", Texture.class);
     }
 
     // Creates the libGDX skin used for some elements.

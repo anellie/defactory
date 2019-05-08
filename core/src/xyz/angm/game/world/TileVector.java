@@ -5,7 +5,7 @@ import com.badlogic.gdx.math.Vector2;
 import static xyz.angm.game.world.WorldMap.TILE_SIZE;
 
 /** A 2D vector using integers for storing its values. Used for storing positions of blocks in the world map. */
-class TileVector {
+public class TileVector {
 
     /** The first axis of the vector. */
     private int x;

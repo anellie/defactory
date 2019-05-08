@@ -73,6 +73,15 @@ class PlayerInputProcessor extends InputAdapter {
     }
 
     @Override
+    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        if (button == Input.Buttons.LEFT || button == Input.Buttons.RIGHT) {
+            screen.getWorld().mapClicked(screenX, screenY, (button == Input.Buttons.RIGHT));
+            return true;
+        }
+        return false;
+    }
+
+    @Override
     public boolean scrolled(int amount) {
         float scrolled = (float) amount * SCROLL_SCALING;
         screen.getWorld().zoomMap(scrolled);

@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import xyz.angm.game.Game;
+import xyz.angm.game.world.blocks.Block;
 import xyz.angm.game.world.entities.Player;
 
 import static xyz.angm.game.ui.Screen.VIEWPORT_HEIGHT;
@@ -67,6 +68,23 @@ public class World {
      * @param zoom The zoom amount. */
     public void zoomMap(float zoom) {
         ((OrthographicCamera) stage.getCamera()).zoom += zoom;
+    }
+
+    /** Should be called when the player clicked the screen. Will place or break a block at the clicked position.
+     * @param x The x position of the click in screen coordinates.
+     * @param y The y position of the click in screen coordinates.
+     * @param rightClick If the click was a right click. Left click assumed if false. */
+    public void mapClicked(int x, int y, boolean rightClick) {
+        if (rightClick) {
+            // todo
+        } else {
+            tmpV.set(x, y);
+            stage.screenToStageCoordinates(tmpV);
+
+            Block block = new Block(new TileVector().set(tmpV));
+            map.addBlock(block);
+            block.registerToStage(stage);
+        }
     }
 
     private void updateCamera() {
