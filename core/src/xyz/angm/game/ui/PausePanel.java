@@ -27,12 +27,19 @@ class PausePanel extends VisTable {
         add(new VisLabel("Pause Menu")).row();
 
         VisTextButton resumeGameButton = new VisTextButton("Resume Game");
+        VisTextButton gameMainMenu = new VisTextButton("MainMenu");
         VisTextButton exitGameButton = new VisTextButton("Exit Game");
 
         resumeGameButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 screen.togglePausePanel();
+            }
+        });
+        gameMainMenu.addListener(new ClickListener() {
+            @Override
+            public  void clicked(InputEvent event, float x, float y) {
+                screen.backToMainMenu();
             }
         });
         exitGameButton.addListener(new ClickListener() {
@@ -43,6 +50,7 @@ class PausePanel extends VisTable {
         });
 
         add(resumeGameButton).size(BUTTON_WIDTH, BUTTON_HEIGHT).row();
+        add(gameMainMenu).size(BUTTON_WIDTH, BUTTON_HEIGHT).row();
         add(exitGameButton).size(BUTTON_WIDTH, BUTTON_HEIGHT).row();
     }
 }
