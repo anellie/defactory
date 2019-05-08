@@ -7,8 +7,13 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
 /** A class containing all map data:
  * - Texture data for rendering the map
- * - Tile data for getting the terrain type (TODO). */
+ * - Tile data for getting the terrain type (TODO)
+ * - All blocks placed on the terrain (TODO).
+ */
 class WorldMap extends Image {
+
+    /** Size of every tile a block can be placed in pixels. */
+    static final int TILE_SIZE = 16;
 
     /** Constructs a map; generating its content during construction.
      * @param generator The world generator to obtain data from. */

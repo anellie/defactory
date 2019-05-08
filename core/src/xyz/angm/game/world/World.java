@@ -1,9 +1,14 @@
 package xyz.angm.game.world;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import xyz.angm.game.Game;
 import xyz.angm.game.world.entities.Player;
 
 import static xyz.angm.game.ui.Screen.VIEWPORT_HEIGHT;
@@ -15,9 +20,13 @@ public class World {
 
     /** Seed used for generating terrain. See {@link TerrainGenerator}. */
     public final long seed;
-    private final Stage stage = new Stage(new FitViewport(VIEWPORT_WIDTH, VIEWPORT_HEIGHT));
     private final WorldMap map;
     private Player player = new Player();
+
+    private final Stage stage = new Stage(new FitViewport(VIEWPORT_WIDTH, VIEWPORT_HEIGHT));
+    private final Image selector = new Image(Game.assets.get("textures/selector.png", Texture.class));
+    private final TileVector selectorPosition = new TileVector();
+    private final Vector2 tmpV = new Vector2();
 
     /** Constructs a new world along with it's map.
      * @param seed The seed for world generation. */
@@ -26,6 +35,7 @@ public class World {
         map = new WorldMap(new TerrainGenerator(seed));
 
         stage.addActor(map);
+        stage.addActor(selector);
         player.registerToStage(stage);
     }
 
@@ -39,6 +49,11 @@ public class World {
      * @param delta Time since last call to this method in seconds. */
     public void act(float delta) {
         player.act(delta);
+
+        tmpV.set(Gdx.input.getX(), Gdx.input.getY());
+        stage.screenToStageCoordinates(tmpV);
+        selectorPosition.set(tmpV);
+        selector.setPosition(selectorPosition.getX(), selectorPosition.getY());
     }
 
     /** Should be called every frame when the world should render itself and all components.

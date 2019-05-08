@@ -1,8 +1,6 @@
 package xyz.angm.game;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.kotcrab.vis.ui.VisUI;
 import xyz.angm.game.network.Client;
@@ -47,5 +45,7 @@ public class Game extends com.badlogic.gdx.Game {
 
     private void registerAllAssets() {
         assets.load("textures/player.png", Texture.class);
+        assets.load("textures/cursor.png", Texture.class);
+        assets.load("textures/selector.png", Texture.class);
     }
 }
