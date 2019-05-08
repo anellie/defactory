@@ -15,6 +15,7 @@ import xyz.angm.game.world.entities.Player;
 import static xyz.angm.game.ui.Screen.VIEWPORT_HEIGHT;
 import static xyz.angm.game.ui.Screen.VIEWPORT_WIDTH;
 import static xyz.angm.game.world.TerrainGenerator.WORLD_SIZE_MULTIPLICATOR;
+import static xyz.angm.game.world.entities.Entity.ENTITY_SIZE;
 
 /** Represents the game world and contains all entities and the world map. */
 public class World {
@@ -96,8 +97,8 @@ public class World {
         final float maxCameraY = (VIEWPORT_HEIGHT * WORLD_SIZE_MULTIPLICATOR) - minCameraY;
 
         final Vector3 position = stage.getCamera().position;
-        position.x = player.getPosition().x;
-        position.y = player.getPosition().y;
+        position.x = player.getPosition().x + (ENTITY_SIZE / 2f);
+        position.y = player.getPosition().y + (ENTITY_SIZE / 2f);
 
         // Ensure the edges of the screen will not scroll into view
         position.x = Math.max(minCameraX, Math.min(maxCameraX, position.x));
