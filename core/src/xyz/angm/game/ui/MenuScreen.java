@@ -15,7 +15,7 @@ class MenuScreen extends Screen {
     MenuScreen(Game game) {
         super(game);
 
-        table.add(new VisLabel("Hello World!")).row();
+        table.add(new VisLabel("Hello World!")).padBottom(BUTTON_HEIGHT).row();
 
         VisTextButton startGameButton = new VisTextButton("Start Game");
         VisTextButton joinGameButton = new VisTextButton("Join Game");

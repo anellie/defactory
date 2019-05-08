@@ -18,13 +18,13 @@ class PausePanel extends VisTable {
 
     /** Construct a new panel. */
     PausePanel(GameScreen screen) {
-        super();
+        super(true);
         this.screen = screen;
 
         setFillParent(true);
         setBackground(VisUI.getSkin().getDrawable("black-transparent"));
 
-        add(new VisLabel("Pause Menu")).row();
+        add(new VisLabel("Pause Menu")).padBottom(BUTTON_HEIGHT).row();
 
         VisTextButton resumeGameButton = new VisTextButton("Resume Game");
         VisTextButton gameMainMenu = new VisTextButton("MainMenu");

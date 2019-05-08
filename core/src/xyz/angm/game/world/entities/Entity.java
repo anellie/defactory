@@ -7,7 +7,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import java.io.Serializable;
 
 /** An entity is a component capable of changing its position and interacting with the world. */
-abstract class Entity implements Serializable {
+public abstract class Entity implements Serializable {
+
+    /** The size of all entity actors. */
+    public static final int ENTITY_SIZE = 32;
 
     /** The position of the entity. */
     private final Vector2 position = new Vector2();
