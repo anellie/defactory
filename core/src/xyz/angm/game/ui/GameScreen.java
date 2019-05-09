@@ -78,12 +78,14 @@ public class GameScreen extends Screen {
             Player serverPlayer = (Player) packet;
             Player localPlayer = world.getPlayer();
             localPlayer.getPosition().set(serverPlayer.getPosition());
+        } else if (packet == Client.Status.DISCONNECTED) { // Disconnect from server
+            backToMainMenu();
         }
     }
 
     /** Toggles the pause menu. */
     void togglePausePanel() {
-            stage.clear();
+        stage.clear();
         if (!pauseMenuActive) { // Open the pause menu
             stage.addActor(new PausePanel(this));
         } else { // Closes the pause menu
@@ -94,6 +96,14 @@ public class GameScreen extends Screen {
 
     /** Goes back to Main Menu */
     void backToMainMenu() {
+        dispose();
         game.setScreen(new MenuScreen(game));
+    }
+
+    @Override
+    public void dispose() {
+        super.dispose();
+        world.dispose();
+        game.disposeNetworkInterface();
     }
 }

@@ -38,7 +38,7 @@ public class Server extends NetworkInterface {
             kryoServer.bind(PORT);
             setupListeners();
         } catch (IOException e) {
-            Gdx.app.error("Server", "Could not open port! Game already running?");
+            Gdx.app.error("Server", "Could not open port! Game already running?", e);
             return false;
         }
         return true;

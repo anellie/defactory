@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import xyz.angm.game.Game;
 import xyz.angm.game.world.blocks.Block;
@@ -18,7 +19,7 @@ import static xyz.angm.game.world.TerrainGenerator.WORLD_SIZE_MULTIPLICATOR;
 import static xyz.angm.game.world.entities.Entity.ENTITY_SIZE;
 
 /** Represents the game world and contains all entities and the world map. */
-public class World {
+public class World implements Disposable {
 
     /** Seed used for generating terrain. See {@link TerrainGenerator}. */
     public final long seed;
@@ -105,5 +106,10 @@ public class World {
         // Ensure the edges of the screen will not scroll into view
         position.x = Math.max(minCameraX, Math.min(maxCameraX, position.x));
         position.y = Math.max(minCameraY, Math.min(maxCameraY, position.y));
+    }
+
+    @Override
+    public void dispose() {
+        stage.dispose();
     }
 }

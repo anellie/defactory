@@ -36,6 +36,7 @@ public class Game extends com.badlogic.gdx.Game {
     @Override
     public void dispose() {
         assets.dispose();
+        disposeNetworkInterface();
     }
 
     /** Starts a game as the player. Will create a server for players playing as beasts to join.*/
@@ -49,6 +50,11 @@ public class Game extends com.badlogic.gdx.Game {
     public void joinGame() {
         netIface = new Client();
         setScreen(new GameScreen(this, (Client) netIface));
+    }
+
+    /** Removes and properly disposes of the network interface. Should be called when exiting gameplay (returning to menu). */
+    public void disposeNetworkInterface() {
+        netIface.dispose();
     }
 
     // Registers all assets required by the game
