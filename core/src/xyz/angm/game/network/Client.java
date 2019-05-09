@@ -76,6 +76,9 @@ public class Client extends NetworkInterface {
         kryoClient.close();
     }
 
-    /** See addListener. Given to a listener when server disconnects. */
-    public enum Status { DISCONNECTED; }
+    /** Used for giving status messages to listeners. */
+    public enum Status {
+        /** Used when kryoClient fires an disconnect event. */
+        DISCONNECTED
+    }
 }

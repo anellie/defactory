@@ -11,13 +11,17 @@ import xyz.angm.game.world.TileVector;
  * Different block implementations have different function. */
 public class Block implements Disposable {
 
+    /** Size of a blocks actor in pixels. */
+    private static final int BLOCK_SIZE = 16;
+
     private final TileVector position;
-    private int hp;
     private final transient Image actor = new Image(Game.assets.get("textures/blockTest.png", Texture.class));
 
+    /** Construct a new block at the specified position. Call registerToStage to display it.
+     * @param position The position of the block. Actor position is also set with this. */
     public Block(TileVector position) {
         this.position = position;
-        actor.setSize(16, 16);
+        actor.setSize(BLOCK_SIZE, BLOCK_SIZE);
     }
 
     public TileVector getPosition() {

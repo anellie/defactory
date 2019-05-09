@@ -24,7 +24,7 @@ public class World implements Disposable {
     /** Seed used for generating terrain. See {@link TerrainGenerator}. */
     public final long seed;
     private final WorldMap map;
-    private Player player = new Player();
+    private final Player player = new Player();
 
     private final Stage stage = new Stage(new FitViewport(VIEWPORT_WIDTH, VIEWPORT_HEIGHT));
     private final Image selector = new Image(Game.assets.get("textures/selector.png", Texture.class));
@@ -107,6 +107,13 @@ public class World implements Disposable {
         // Ensure the edges of the screen will not scroll into view
         position.x = Math.max(minCameraX, Math.min(maxCameraX, position.x));
         position.y = Math.max(minCameraY, Math.min(maxCameraY, position.y));
+    }
+
+    /** The world's viewport needs to be updated as well.
+     * @param height The new viewport height
+     * @param width The new viewport width*/
+    public void resizeViewport(int width, int height) {
+        stage.getViewport().update(width, height, true);
     }
 
     @Override

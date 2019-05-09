@@ -14,12 +14,10 @@ import static xyz.angm.game.ui.Screen.BUTTON_WIDTH;
 /** A pause panel displayed when pressing escape. */
 class PausePanel extends VisTable {
 
-    private final GameScreen screen;
-
-    /** Construct a new panel. */
+    /** Construct a new panel.
+     * @param screen Screen the panel will be displayed in */
     PausePanel(GameScreen screen) {
         super(true);
-        this.screen = screen;
 
         setFillParent(true);
         setBackground(VisUI.getSkin().getDrawable("black-transparent"));
@@ -39,7 +37,7 @@ class PausePanel extends VisTable {
         gameMainMenu.addListener(new ClickListener() {
             @Override
             public  void clicked(InputEvent event, float x, float y) {
-                screen.backToMainMenu();
+                screen.returnToMainMenu();
             }
         });
         exitGameButton.addListener(new ClickListener() {

@@ -35,7 +35,7 @@ public abstract class Entity implements Serializable {
 
     /** Should be called every frame on the server so the entity can update.
      * @param delta Time since last call to this method in seconds. */
-    public void act(float delta) {
+    void act(float delta) {
         // Update position by velocity. Time between calls is used to prevent FPS from affecting entity speed
         position.add(tmpV.set(velocity).scl(delta * movementMultiplier));
         actor.setPosition(position.x, position.y);

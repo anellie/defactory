@@ -16,13 +16,14 @@ import xyz.angm.game.world.entities.Player;
 public class GameScreen extends Screen {
 
     private boolean pauseMenuActive = false ;
-    private World world = new World(System.currentTimeMillis());
-    private PlayerHud playerHud = new PlayerHud(this);
+    private World world;
+    private final PlayerHud playerHud = new PlayerHud(this);
 
     /** Constructs the screen and generates a new world. Run only when server is active.
      * @param game The game the screen is running under. */
     public GameScreen(Game game) {
         super(game);
+        world = new World(System.currentTimeMillis());
         stage.addActor(playerHud);
 
         // Create a multiplexer for handling input for both UI and in-world (https://github.com/libgdx/libgdx/wiki/Event-handling#inputmultiplexer)
@@ -46,7 +47,7 @@ public class GameScreen extends Screen {
             backButton.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    game.setScreen(new MenuScreen(game));
+                    returnToMainMenu();
                 }
             });
             table.add(backButton).size(BUTTON_WIDTH, BUTTON_HEIGHT);
@@ -79,7 +80,7 @@ public class GameScreen extends Screen {
             Player localPlayer = world.getPlayer();
             localPlayer.getPosition().set(serverPlayer.getPosition());
         } else if (packet == Client.Status.DISCONNECTED) { // Disconnect from server
-            backToMainMenu();
+            returnToMainMenu();
         }
     }
 
@@ -94,10 +95,16 @@ public class GameScreen extends Screen {
         pauseMenuActive = !pauseMenuActive;
     }
 
-    /** Goes back to Main Menu */
-    void backToMainMenu() {
+    /** Goes back to the main menu. */
+    void returnToMainMenu() {
         dispose();
         game.setScreen(new MenuScreen(game));
+    }
+
+    @Override
+    public void resize(int width, int height) {
+        super.resize(width, height);
+        world.resizeViewport(width, height);
     }
 
     @Override
