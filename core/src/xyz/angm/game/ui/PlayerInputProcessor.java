@@ -71,7 +71,7 @@ class PlayerInputProcessor extends InputAdapter {
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         if (button == Input.Buttons.LEFT || button == Input.Buttons.RIGHT) {
-            screen.getWorld().mapClicked(screenX, screenY, (button == Input.Buttons.RIGHT));
+            screen.mapClicked(screenX, screenY, (button == Input.Buttons.RIGHT));
             return true;
         }
         return false;

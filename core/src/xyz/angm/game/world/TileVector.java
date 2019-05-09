@@ -34,8 +34,15 @@ public class TileVector {
     /** Sets from the given vector. Both axes are floored.
      * @param v Applies values from this vector.
      * @return Itself. */
-    TileVector set(Vector2 v) {
+    public TileVector set(Vector2 v) {
         return set((int) v.x, (int) v.y);
+    }
+
+    /** Sets from the given vector.
+     * @param v Applies values from this vector.
+     * @return Itself. */
+    public TileVector set(TileVector v) {
+        return set(v.x, v.y);
     }
 
     /** Returns true if both axes match. */

@@ -30,7 +30,6 @@ public class World implements Disposable {
     private final Image selector = new Image(Game.assets.get("textures/selector.png", Texture.class));
     private final TileVector selectorPosition = new TileVector();
     private final Vector2 tmpV = new Vector2();
-    private final TileVector tmpTV = new TileVector();
 
     /** Constructs a new world along with it's map.
      * @param seed The seed for world generation. */
@@ -75,21 +74,32 @@ public class World implements Disposable {
                 Math.max(0, Math.min(WORLD_SIZE_MULTIPLICATOR, ((OrthographicCamera) stage.getCamera()).zoom + zoom));
     }
 
-    /** Should be called when the player clicked the screen. Will place or break a block at the clicked position.
-     * @param x The x position of the click in screen coordinates.
-     * @param y The y position of the click in screen coordinates.
-     * @param rightClick If the click was a right click. Left click assumed if false. */
-    public void mapClicked(int x, int y, boolean rightClick) {
-        tmpV.set(x, y);
-        stage.screenToStageCoordinates(tmpV);
-
+    /** Should be called when the player clicked a tile. Will place or break a block.
+     * @param position The tile clicked
+     * @param rightClick If the click was a right click. Left click assumed if false.
+     * @return The block that was placed; null indicates the block was removed. */
+    public Block mapClicked(TileVector position, boolean rightClick) {
         if (rightClick) {
-            map.removeBlock(tmpTV.set(tmpV));
+            removeBlock(position);
+            return null;
         } else {
-            Block block = new Block(new TileVector().set(tmpV));
-            map.addBlock(block);
-            block.registerToStage(stage);
+            Block block = new Block(position);
+            addBlock(block);
+            return block;
         }
+    }
+
+    /** Adds the block to the world.
+     * @param block The block to add. */
+    public void addBlock(Block block) {
+        map.addBlock(block);
+        block.registerToStage(stage);
+    }
+
+    /** Removes a block.
+     * @param position The position of the block to remove. */
+    public void removeBlock(TileVector position) {
+        map.removeBlock(position);
     }
 
     private void updateCamera() {
@@ -119,5 +129,13 @@ public class World implements Disposable {
     @Override
     public void dispose() {
         stage.dispose();
+    }
+
+    /** Turns a vector with screen coordinates into one with corresponding world coordinates.
+     * @param v The vector to transform.
+     * @return The transformed vector given as an argument. */
+    public Vector2 screenToWorldCoordinates(Vector2 v) {
+        stage.screenToStageCoordinates(v);
+        return v;
     }
 }

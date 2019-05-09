@@ -2,6 +2,7 @@ package xyz.angm.game.network;
 
 import com.badlogic.gdx.Gdx;
 import com.esotericsoftware.kryonet.Connection;
+import com.esotericsoftware.kryonet.FrameworkMessage;
 import com.esotericsoftware.kryonet.Listener;
 import xyz.angm.game.Game;
 import xyz.angm.game.ui.GameScreen;
@@ -65,7 +66,7 @@ public class Server extends NetworkInterface {
 
             @Override
             public void received(Connection connection, Object object) {
-                throw new UnsupportedOperationException("Clients should not send packets yet!");
+                if (!(object instanceof FrameworkMessage.KeepAlive)) throw new UnsupportedOperationException("Clients should not send packets yet!");
             }
         });
 

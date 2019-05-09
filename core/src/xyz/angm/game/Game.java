@@ -52,6 +52,13 @@ public class Game extends com.badlogic.gdx.Game {
         setScreen(new GameScreen(this, (Client) netIface));
     }
 
+    /** Only callable on the server.
+     * @return The server if one exists.
+     * @throws ClassCastException when called on client. */
+    public Server getServer() {
+        return (Server) netIface;
+    }
+
     /** Removes and properly disposes of the network interface. Should be called when exiting gameplay (returning to menu). */
     public void disposeNetworkInterface() {
         netIface.dispose();
