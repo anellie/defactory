@@ -78,6 +78,12 @@ class PlayerInputProcessor extends InputAdapter {
     }
 
     @Override
+    public boolean mouseMoved(int screenX, int screenY) {
+        screen.getWorld().updateSelector(screenX, screenY);
+        return true;
+    }
+
+    @Override
     public boolean scrolled(int amount) {
         float scrolled = (float) amount * SCROLL_SCALING;
         screen.getWorld().zoomMap(scrolled);

@@ -1,6 +1,5 @@
 package xyz.angm.game.world;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
@@ -52,11 +51,6 @@ public class World implements Disposable {
      * @param delta Time since last call to this method in seconds. */
     public void act(float delta) {
         player.act(delta);
-
-        tmpV.set(Gdx.input.getX(), Gdx.input.getY());
-        stage.screenToStageCoordinates(tmpV);
-        selectorPosition.set(tmpV);
-        selector.setPosition(selectorPosition.getX(), selectorPosition.getY());
     }
 
     /** Should be called every frame when the world should render itself and all components.
@@ -64,6 +58,16 @@ public class World implements Disposable {
     public void render(float delta) {
         updateCamera();
         stage.draw();
+    }
+
+    /** Updates the block selector position.
+     * @param x The X axis of the screen coordinates
+     * @param y The Y axis of the screen coordinates */
+    public void updateSelector(int x, int y) {
+        tmpV.set(x, y);
+        stage.screenToStageCoordinates(tmpV);
+        selectorPosition.set(tmpV);
+        selector.setPosition(selectorPosition.getX(), selectorPosition.getY());
     }
 
     /** Zooms the world map; scaling it bigger or smaller.
