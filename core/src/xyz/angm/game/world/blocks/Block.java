@@ -3,12 +3,13 @@ package xyz.angm.game.world.blocks;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.utils.Disposable;
 import xyz.angm.game.Game;
 import xyz.angm.game.world.TileVector;
 
 /** A block can be placed by the player, onto a tile in the world map.
  * Different block implementations have different function. */
-public class Block {
+public class Block implements Disposable {
 
     private final TileVector position;
     private int hp;
@@ -28,5 +29,10 @@ public class Block {
     public void registerToStage(Stage stage) {
         stage.addActor(actor);
         actor.setPosition(position.getX(), position.getY());
+    }
+
+    @Override
+    public void dispose() {
+        actor.remove();
     }
 }

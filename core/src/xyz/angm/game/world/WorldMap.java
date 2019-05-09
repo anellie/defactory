@@ -33,7 +33,17 @@ class WorldMap extends Image {
         });
     }
 
+    /** Adds the block given to the list of blocks.
+     * @param block Block to add */
     void addBlock(Block block) {
         blocks.put(block.getPosition(), block);
+    }
+
+    /** Removes a block at the given position.
+     * @param position The position to remove the block at. */
+    void removeBlock(TileVector position) {
+        Block block = blocks.get(position);
+        if (block != null) block.dispose();
+        blocks.remove(position);
     }
 }

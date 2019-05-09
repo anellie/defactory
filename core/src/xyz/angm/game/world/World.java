@@ -30,6 +30,7 @@ public class World implements Disposable {
     private final Image selector = new Image(Game.assets.get("textures/selector.png", Texture.class));
     private final TileVector selectorPosition = new TileVector();
     private final Vector2 tmpV = new Vector2();
+    private final TileVector tmpTV = new TileVector();
 
     /** Constructs a new world along with it's map.
      * @param seed The seed for world generation. */
@@ -79,12 +80,12 @@ public class World implements Disposable {
      * @param y The y position of the click in screen coordinates.
      * @param rightClick If the click was a right click. Left click assumed if false. */
     public void mapClicked(int x, int y, boolean rightClick) {
-        if (rightClick) {
-            // todo
-        } else {
-            tmpV.set(x, y);
-            stage.screenToStageCoordinates(tmpV);
+        tmpV.set(x, y);
+        stage.screenToStageCoordinates(tmpV);
 
+        if (rightClick) {
+            map.removeBlock(tmpTV.set(tmpV));
+        } else {
             Block block = new Block(new TileVector().set(tmpV));
             map.addBlock(block);
             block.registerToStage(stage);
