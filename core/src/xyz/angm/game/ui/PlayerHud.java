@@ -1,8 +1,12 @@
 package xyz.angm.game.ui;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.kotcrab.vis.ui.layout.GridGroup;
 import com.kotcrab.vis.ui.widget.VisProgressBar;
 import com.kotcrab.vis.ui.widget.VisWindow;
+import xyz.angm.game.Game;
 
 import static xyz.angm.game.world.entities.Player.PLAYER_HEALTH;
 import static xyz.angm.game.world.entities.Player.PLAYER_STAMINA;
@@ -30,6 +34,14 @@ class PlayerHud extends Group {
         barWindow.add(staminaBar).size(BAR_WIDTH, BAR_HEIGHT);
         barWindow.pack();
         addActor(barWindow);
+
+        // Window containing a selection of blocks the player can build
+        VisWindow buildWindow = new VisWindow("Build");
+        GridGroup buildSelection = new GridGroup(32, 4);
+        buildSelection.addActor(new Image(Game.assets.get("textures/blockTest.png", Texture.class)));
+        buildWindow.add(buildSelection).size(300, 150);
+        buildWindow.pack();
+        addActor(buildWindow);
     }
 
     @Override
