@@ -9,7 +9,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import xyz.angm.game.Game;
-import xyz.angm.game.world.blocks.Block;
 import xyz.angm.game.world.entities.Player;
 
 import static xyz.angm.game.ui.Screen.VIEWPORT_HEIGHT;

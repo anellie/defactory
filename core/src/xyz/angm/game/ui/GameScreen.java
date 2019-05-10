@@ -10,9 +10,9 @@ import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import xyz.angm.game.Game;
 import xyz.angm.game.network.Client;
+import xyz.angm.game.world.Block;
 import xyz.angm.game.world.TileVector;
 import xyz.angm.game.world.World;
-import xyz.angm.game.world.blocks.Block;
 import xyz.angm.game.world.entities.Player;
 
 /** The screen active while the game is running. */
