@@ -2,8 +2,6 @@ package xyz.angm.game.world;
 
 import com.badlogic.gdx.math.Vector2;
 
-import static xyz.angm.game.world.WorldMap.TILE_SIZE;
-
 /** A 2D vector using integers for storing its values. Used for storing positions of blocks in the world map. */
 public class TileVector {
 
@@ -25,9 +23,8 @@ public class TileVector {
      * @param y The second axis.
      * @return Itself. */
     private TileVector set(int x, int y) {
-        // Ensure the vector stays in the tile grid
-        this.x = (x / TILE_SIZE) * TILE_SIZE;
-        this.y = (y / TILE_SIZE) * TILE_SIZE;
+        this.x = x;
+        this.y = y;
         return this;
     }
 

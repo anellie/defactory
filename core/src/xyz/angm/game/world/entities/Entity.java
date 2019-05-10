@@ -10,7 +10,7 @@ import java.io.Serializable;
 public abstract class Entity implements Serializable {
 
     /** The size of all entity actors. */
-    public static final int ENTITY_SIZE = 32;
+    public static final int ENTITY_SIZE = 2;
 
     /** The position of the entity. */
     private final Vector2 position = new Vector2();
@@ -48,6 +48,7 @@ public abstract class Entity implements Serializable {
     public void registerToStage(Stage stage) {
         stage.addActor(actor);
         actor.setPosition(position.x, position.y);
+        actor.setSize(ENTITY_SIZE, ENTITY_SIZE);
     }
 
     public int getHealth() {

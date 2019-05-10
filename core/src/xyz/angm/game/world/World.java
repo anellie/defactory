@@ -11,13 +11,14 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import xyz.angm.game.Game;
 import xyz.angm.game.world.entities.Player;
 
-import static xyz.angm.game.ui.Screen.VIEWPORT_HEIGHT;
-import static xyz.angm.game.ui.Screen.VIEWPORT_WIDTH;
 import static xyz.angm.game.world.TerrainGenerator.WORLD_SIZE_MULTIPLICATOR;
 import static xyz.angm.game.world.entities.Entity.ENTITY_SIZE;
 
 /** Represents the game world and contains all entities and the world map. */
 public class World implements Disposable {
+
+    public static final float WORLD_VIEWPORT_WIDTH = 120f;
+    public static final float WORLD_VIEWPORT_HEIGHT = 67.5f;
 
     /** Seed used for generating terrain. See {@link TerrainGenerator}. */
     public final long seed;
@@ -25,7 +26,7 @@ public class World implements Disposable {
     private final Player player = new Player();
     private final PhysicsEngine physics = new PhysicsEngine(player);
 
-    private final Stage stage = new Stage(new FitViewport(VIEWPORT_WIDTH, VIEWPORT_HEIGHT));
+    private final Stage stage = new Stage(new FitViewport(WORLD_VIEWPORT_WIDTH, WORLD_VIEWPORT_HEIGHT));
     private Vector2 cameraPosition = player.getPosition();
     private final Image selector = new Image(Game.assets.get("textures/selector.png", Texture.class));
     private final TileVector selectorPosition = new TileVector();
@@ -40,6 +41,8 @@ public class World implements Disposable {
         stage.addActor(map);
         stage.addActor(selector);
         player.registerToStage(stage);
+
+        selector.setSize(1, 1);
     }
 
     /** Returns the player entity.
@@ -126,10 +129,10 @@ public class World implements Disposable {
     private void updateCamera() {
         final float zoom = ((OrthographicCamera) stage.getCamera()).zoom;
         // These values determine the min/max positions of the camera. These prevent the camera from displaying out-of-bounds areas.
-        final float minCameraX = (zoom * VIEWPORT_WIDTH) / 2f;
-        final float minCameraY = (zoom * VIEWPORT_HEIGHT) / 2f;
-        final float maxCameraX = (VIEWPORT_WIDTH * WORLD_SIZE_MULTIPLICATOR) - minCameraX;
-        final float maxCameraY = (VIEWPORT_HEIGHT * WORLD_SIZE_MULTIPLICATOR) - minCameraY;
+        final float minCameraX = (zoom * WORLD_VIEWPORT_WIDTH) / 2f;
+        final float minCameraY = (zoom * WORLD_VIEWPORT_HEIGHT) / 2f;
+        final float maxCameraX = (WORLD_VIEWPORT_WIDTH * WORLD_SIZE_MULTIPLICATOR) - minCameraX;
+        final float maxCameraY = (WORLD_VIEWPORT_HEIGHT * WORLD_SIZE_MULTIPLICATOR) - minCameraY;
 
         if (player.getPosition() != cameraPosition) { // Camera is free; needs to be conformed to bounds
             cameraPosition.x = Math.max(minCameraX, Math.min(maxCameraX, cameraPosition.x));

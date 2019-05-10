@@ -10,9 +10,6 @@ import xyz.angm.game.Game;
  * Different block types have different function. */
 public class Block implements Disposable {
 
-    /** Size of a block actor in pixels. */
-    private static final int BLOCK_SIZE = 16;
-
     private int type;
     private final TileVector position = new TileVector();
     private transient Image actor;
@@ -42,7 +39,7 @@ public class Block implements Disposable {
     void registerToStage(Stage stage) {
         if (actor == null) actor = new Image(Game.assets.get(getProperties().getFullTexturePath(), Texture.class));
         stage.addActor(actor);
-        actor.setSize(BLOCK_SIZE, BLOCK_SIZE);
+        actor.setSize(1, 1);
         actor.setPosition(position.getX(), position.getY());
     }
 
