@@ -16,6 +16,7 @@ class PlayerInputProcessor extends InputProcessor {
 
     @Override
     public boolean keyDown(int keycode) {
+        super.keyDown(keycode);
         switch (keycode) {
             case Input.Keys.A: // Left
                 screen.getWorld().getPlayer().getVelocity().x--;

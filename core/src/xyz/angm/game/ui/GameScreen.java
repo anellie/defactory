@@ -70,9 +70,10 @@ public class GameScreen extends Screen {
         Gdx.gl.glClearColor(0.05f, 0.05f, 0.05f, 1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        if (world == null) return;  // Waiting for server connect
-        world.act(delta);           // Update world
-        world.render(delta);        // Render world. World render is separate to allow for different camera positions
+        if (world != null) {        // Waiting for server connect; or display 'no server found' message
+            world.act(delta);       // Update world
+            world.render(delta);    // Render world. World render is separate to allow for different camera positions
+        }
 
         stage.act(delta);
         stage.draw();

@@ -27,7 +27,6 @@ class ServerDiscoveryRunnable implements Runnable {
                     byte[] sendData = "DISCOVER_GAME_RESPONSE".getBytes();
                     DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, packet.getAddress(), packet.getPort());
                     socket.send(sendPacket);
-                    break;
                 }
             }
         } catch (IOException ex) {
