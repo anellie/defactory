@@ -43,6 +43,7 @@ public class World implements Disposable {
         player.registerToStage(stage);
 
         selector.setSize(1, 1);
+        ((OrthographicCamera) stage.getCamera()).zoom = 0.5f;
     }
 
     /** Returns the player entity.
