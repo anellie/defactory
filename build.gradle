@@ -57,6 +57,8 @@ project(":core") {
         compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
 
         compile "com.esotericsoftware:kryonet:2.22.0-RC1"
+
+        compile "com.fasterxml.jackson.core:jackson-databind:2.9.8"
     }
 }
 

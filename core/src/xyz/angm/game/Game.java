@@ -12,6 +12,7 @@ import xyz.angm.game.network.NetworkInterface;
 import xyz.angm.game.network.Server;
 import xyz.angm.game.ui.GameScreen;
 import xyz.angm.game.ui.LoadingScreen;
+import xyz.angm.game.world.BlockProperties;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -69,7 +70,10 @@ public class Game extends com.badlogic.gdx.Game {
         assets.load("textures/player.png", Texture.class);
         assets.load("textures/cursor.png", Texture.class);
         assets.load("textures/selector.png", Texture.class);
-        assets.load("textures/blockTest.png", Texture.class);
+
+        for (BlockProperties properties : BlockProperties.getAllBlocks()) {
+            assets.load(properties.getFullTexturePath(), Texture.class);
+        }
     }
 
     // Creates the libGDX skin used for some elements.
