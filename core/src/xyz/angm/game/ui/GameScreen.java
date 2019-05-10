@@ -29,12 +29,7 @@ public class GameScreen extends Screen {
         super(game);
         world = new World(System.currentTimeMillis());
         stage.addActor(playerHud);
-
-        // Create a multiplexer for handling input for both UI and in-world (https://github.com/libgdx/libgdx/wiki/Event-handling#inputmultiplexer)
-        InputMultiplexer inputMultiplexer = new InputMultiplexer();
-        inputMultiplexer.addProcessor(stage);
-        inputMultiplexer.addProcessor(new PlayerInputProcessor(this));
-        Gdx.input.setInputProcessor(inputMultiplexer);
+        initInput(new PlayerInputProcessor(this));
     }
 
     /** Constructs the screen and waits for the world from the server.
@@ -58,6 +53,14 @@ public class GameScreen extends Screen {
         }
     }
 
+    // Create a multiplexer for handling input for both UI and in-world (https://github.com/libgdx/libgdx/wiki/Event-handling#inputmultiplexer)
+    private void initInput(InputProcessor processor) {
+        InputMultiplexer inputMultiplexer = new InputMultiplexer();
+        inputMultiplexer.addProcessor(stage);
+        inputMultiplexer.addProcessor(processor);
+        Gdx.input.setInputProcessor(inputMultiplexer);
+    }
+
     public World getWorld() {
         return world;
     }
@@ -78,7 +81,11 @@ public class GameScreen extends Screen {
     // Packet/Object received from server. Only call on client instances.
     private void serverPacketReceived(Object packet) {
         if (packet instanceof Long) { // Long is the seed; world needs to init now
-            Gdx.app.postRunnable(() -> world = new World((Long) packet)); // World requires render context
+            Gdx.app.postRunnable(() -> {
+                world = new World((Long) packet);
+                world.freeCamera();
+                initInput(new SpectatorInputProcessor(this));
+            });
         }
         else if (world == null) {
             // The client is not ready to receive packets yet. All packets are ignored until the seed is sent.
@@ -89,7 +96,7 @@ public class GameScreen extends Screen {
             localPlayer.getPosition().set(serverPlayer.getPosition());
         }
         else if (packet == Client.Status.DISCONNECTED) { // Disconnect from server
-            returnToMainMenu();
+            Gdx.app.postRunnable(this::returnToMainMenu); // Disposing game screen requires render context
         }
         else if (packet instanceof Block) { // Block should be placed
             world.addBlock((Block) packet);

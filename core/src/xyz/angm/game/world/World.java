@@ -25,6 +25,7 @@ public class World implements Disposable {
     private final Player player = new Player();
 
     private final Stage stage = new Stage(new FitViewport(VIEWPORT_WIDTH, VIEWPORT_HEIGHT));
+    private Vector2 cameraPosition = player.getPosition();
     private final Image selector = new Image(Game.assets.get("textures/selector.png", Texture.class));
     private final TileVector selectorPosition = new TileVector();
     private final Vector2 tmpV = new Vector2();
@@ -57,6 +58,18 @@ public class World implements Disposable {
     public void render(float delta) {
         updateCamera();
         stage.draw();
+    }
+
+    /** Causes the camera to be independent on the player's position. Call on client. */
+    public void freeCamera() {
+        cameraPosition = cameraPosition.cpy();
+    }
+
+    /** Moves the camera. Requires freeCamera to be called; will throw exception otherwise.
+     * @param v The vector added to the camera position. */
+    public void moveCamera(Vector2 v) {
+        if (player.getPosition() == cameraPosition) throw new UnsupportedOperationException("Camera needs to be freed first!");
+        cameraPosition.add(v);
     }
 
     /** Updates the block selector position.
@@ -113,9 +126,14 @@ public class World implements Disposable {
         final float maxCameraX = (VIEWPORT_WIDTH * WORLD_SIZE_MULTIPLICATOR) - minCameraX;
         final float maxCameraY = (VIEWPORT_HEIGHT * WORLD_SIZE_MULTIPLICATOR) - minCameraY;
 
+        if (player.getPosition() != cameraPosition) { // Camera is free; needs to be conformed to bounds
+            cameraPosition.x = Math.max(minCameraX, Math.min(maxCameraX, cameraPosition.x));
+            cameraPosition.y = Math.max(minCameraY, Math.min(maxCameraY, cameraPosition.y));
+        }
+
         final Vector3 position = stage.getCamera().position;
-        position.x = player.getPosition().x + (ENTITY_SIZE / 2f);
-        position.y = player.getPosition().y + (ENTITY_SIZE / 2f);
+        position.x = cameraPosition.x + (ENTITY_SIZE / 2f);
+        position.y = cameraPosition.y + (ENTITY_SIZE / 2f);
 
         // Ensure the edges of the screen will not scroll into view
         position.x = Math.max(minCameraX, Math.min(maxCameraX, position.x));
