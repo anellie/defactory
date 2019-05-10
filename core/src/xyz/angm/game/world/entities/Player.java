@@ -19,6 +19,7 @@ public class Player extends Entity {
 
     private float stamina = PLAYER_STAMINA;
     private boolean isSprinting = false;
+    private int blockSelected = 0;
 
     /** Constructs a Player. Requires AssetManager in Game to be ready. */
     public Player() {
@@ -50,5 +51,13 @@ public class Player extends Entity {
 
     public float getStamina() {
         return stamina;
+    }
+
+    public int getBlockSelected() {
+        return blockSelected;
+    }
+
+    public void setBlockSelected(int blockSelected) {
+        this.blockSelected = blockSelected;
     }
 }

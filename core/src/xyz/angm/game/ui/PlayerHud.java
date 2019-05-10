@@ -1,14 +1,20 @@
 package xyz.angm.game.ui;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.ButtonGroup;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Align;
 import com.kotcrab.vis.ui.layout.GridGroup;
+import com.kotcrab.vis.ui.widget.VisImageButton;
 import com.kotcrab.vis.ui.widget.VisProgressBar;
 import com.kotcrab.vis.ui.widget.VisWindow;
 import xyz.angm.game.Game;
 import xyz.angm.game.world.BlockProperties;
 
+import static xyz.angm.game.ui.Screen.VIEWPORT_WIDTH;
 import static xyz.angm.game.world.entities.Player.PLAYER_HEALTH;
 import static xyz.angm.game.world.entities.Player.PLAYER_STAMINA;
 
@@ -38,14 +44,28 @@ class PlayerHud extends Group {
 
         // Window containing a selection of blocks the player can build
         VisWindow buildWindow = new VisWindow("Build");
-        GridGroup buildSelection = new GridGroup(32, 4);
+        GridGroup buildSelectionContainer = new GridGroup(32, 4);
+        ButtonGroup<VisImageButton> buildSelectionButtons = new ButtonGroup<>();
+        buildSelectionButtons.setMinCheckCount(1);
+        buildSelectionButtons.setMaxCheckCount(1);
 
         for (BlockProperties properties : BlockProperties.getAllBlocks()) {
-            buildSelection.addActor(new Image(Game.assets.get(properties.getFullTexturePath(), Texture.class)));
+            VisImageButton button = new VisImageButton(new TextureRegionDrawable(Game.assets.get(properties.getFullTexturePath(), Texture.class)),
+                    properties.name);
+            buildSelectionButtons.add(button);
+            buildSelectionContainer.addActor(button);
+            button.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    screen.getWorld().getPlayer().setBlockSelected(properties.id);
+                }
+            });
         }
 
-        buildWindow.add(buildSelection).size(300, 150);
+        buildSelectionButtons.getButtons().get(0).setChecked(true);
+        buildWindow.add(buildSelectionContainer).size(300, 150);
         buildWindow.pack();
+        buildWindow.setPosition(VIEWPORT_WIDTH, 0, Align.bottomRight);
         addActor(buildWindow);
     }
 

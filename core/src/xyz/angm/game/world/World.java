@@ -86,7 +86,7 @@ public class World implements Disposable {
             removeBlock(position);
             return null;
         } else {
-            Block block = new Block(position, 0);
+            Block block = new Block(position, getPlayer().getBlockSelected());
             addBlock(block);
             return block;
         }
