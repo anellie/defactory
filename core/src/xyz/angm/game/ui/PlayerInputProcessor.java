@@ -13,7 +13,6 @@ class PlayerInputProcessor extends InputAdapter {
     /** Create an input processor.
      * @param screen The screen to bind to */
     PlayerInputProcessor(GameScreen screen) {
-        super();
         this.screen = screen;
     }
 
