@@ -23,6 +23,7 @@ public class World implements Disposable {
     public final long seed;
     private final WorldMap map;
     private final Player player = new Player();
+    private final PhysicsEngine physics = new PhysicsEngine(player);
 
     private final Stage stage = new Stage(new FitViewport(VIEWPORT_WIDTH, VIEWPORT_HEIGHT));
     private Vector2 cameraPosition = player.getPosition();
@@ -50,6 +51,7 @@ public class World implements Disposable {
     /** Should be called every frame on the server so the world can update.
      * @param delta Time since last call to this method in seconds. */
     public void act(float delta) {
+        physics.act(delta);
         player.act(delta);
     }
 
@@ -108,14 +110,17 @@ public class World implements Disposable {
     /** Adds the block to the world.
      * @param block The block to add. */
     public void addBlock(Block block) {
-        map.addBlock(block);
-        block.registerToStage(stage);
+        if (map.addBlock(block)) { // Return value of false indicates a block was already present
+            block.registerToStage(stage);
+            physics.blockPlaced(block.getPosition());
+        }
     }
 
     /** Removes a block.
      * @param position The position of the block to remove. */
     public void removeBlock(TileVector position) {
         map.removeBlock(position);
+        physics.blockRemoved(position);
     }
 
     private void updateCamera() {

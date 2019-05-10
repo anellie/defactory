@@ -19,7 +19,7 @@ public abstract class Entity implements Serializable {
     /** A vector used for calculation. It's a class member to prevent creating one-time-use vectors. */
     private final transient Vector2 tmpV = new Vector2();
     /** The multiplier used to apply velocity. */
-    float movementMultiplier = 100f;
+    float movementMultiplier = 5f;
     /** The entities health. 0 will cause the entity to be disposed. */
     int health;
     /** Actor for displaying on the screen. */
@@ -33,11 +33,13 @@ public abstract class Entity implements Serializable {
         return velocity;
     }
 
+    public float getMovementMultiplier() {
+        return movementMultiplier;
+    }
+
     /** Should be called every frame on the server so the entity can update.
      * @param delta Time since last call to this method in seconds. */
     void act(float delta) {
-        // Update position by velocity. Time between calls is used to prevent FPS from affecting entity speed
-        position.add(tmpV.set(velocity).scl(delta * movementMultiplier));
         actor.setPosition(position.x, position.y);
     }
 

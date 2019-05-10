@@ -33,9 +33,12 @@ class WorldMap extends Image {
     }
 
     /** Adds the block given to the list of blocks.
-     * @param block Block to add */
-    void addBlock(Block block) {
+     * @param block Block to add
+     * @return false when block already exists; true if placing it was successful */
+    boolean addBlock(Block block) {
+        if (blocks.containsKey(block.getPosition())) return false;
         blocks.put(block.getPosition(), block);
+        return true;
     }
 
     /** Removes a block at the given position.

@@ -4,6 +4,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.physics.box2d.Box2D;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.kotcrab.vis.ui.VisUI;
@@ -29,6 +30,7 @@ public class Game extends com.badlogic.gdx.Game {
     @Override
     public void create() {
         VisUI.load(); // VisUI is a framework for game GUIs like menus
+        Box2D.init(); // Box2D is a 2D physics engine
         registerAllAssets();
         createSkin();
         setScreen(new LoadingScreen(this));
