@@ -2,6 +2,7 @@ package xyz.angm.game.network;
 
 import com.badlogic.gdx.Gdx;
 import com.esotericsoftware.kryonet.Connection;
+import com.esotericsoftware.kryonet.FrameworkMessage;
 import com.esotericsoftware.kryonet.Listener;
 import xyz.angm.game.Game;
 import xyz.angm.game.ui.GameScreen;
@@ -38,7 +39,7 @@ public class Server extends NetworkInterface {
             kryoServer.bind(PORT);
             setupListeners();
         } catch (IOException e) {
-            Gdx.app.error("Server", "Could not open port! Game already running?");
+            Gdx.app.error("Server", "Could not open port! Game already running?", e);
             return false;
         }
         return true;
@@ -65,21 +66,15 @@ public class Server extends NetworkInterface {
 
             @Override
             public void received(Connection connection, Object object) {
-                // TODO Handle receiving packets
+                if (!(object instanceof FrameworkMessage.KeepAlive)) throw new UnsupportedOperationException("Clients should not send packets yet!");
             }
         });
 
         scheduler.scheduleAtFixedRate(this::updateClientsEntities, 50, 50, TimeUnit.MILLISECONDS);
-        scheduler.scheduleAtFixedRate(this::updateClientsMap, 1000, 1000, TimeUnit.MILLISECONDS);
     }
 
     // Update entities on all clients connected to this server
     private void updateClientsEntities() {
-        kryoServer.sendToAllTCP(((GameScreen) game.getScreen()).getWorld().getPlayer());
-    }
-
-    // Update map (placed blocks) on all clients connected to this server
-    private void updateClientsMap() {
-        // TODO
+        send(((GameScreen) game.getScreen()).getWorld().getPlayer());
     }
 }

@@ -1,24 +1,22 @@
 package xyz.angm.game.ui;
 
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputAdapter;
 
 /** An input processor for handling inputs by the player. Does not handle UI. */
-class PlayerInputProcessor extends InputAdapter {
-
-    private static final float SCROLL_SCALING = 0.01f;
+class PlayerInputProcessor extends InputProcessor {
 
     private final GameScreen screen;
 
     /** Create an input processor.
      * @param screen The screen to bind to */
     PlayerInputProcessor(GameScreen screen) {
-        super();
+        super(screen);
         this.screen = screen;
     }
 
     @Override
     public boolean keyDown(int keycode) {
+        super.keyDown(keycode);
         switch (keycode) {
             case Input.Keys.A: // Left
                 screen.getWorld().getPlayer().getVelocity().x--;
@@ -32,13 +30,8 @@ class PlayerInputProcessor extends InputAdapter {
             case Input.Keys.S: // Down
                 screen.getWorld().getPlayer().getVelocity().y--;
                 break;
-            case Input.Keys.E: // Inventory TODO
-                break;
             case Input.Keys.SHIFT_LEFT: // Sprint
                 screen.getWorld().getPlayer().sprint(true);
-                break;
-            case Input.Keys.ESCAPE: // Pause Menu
-                screen.togglePausePanel();
                 break;
             default:
                 break;
@@ -61,8 +54,6 @@ class PlayerInputProcessor extends InputAdapter {
             case Input.Keys.S: // Down
                 screen.getWorld().getPlayer().getVelocity().y++;
                 break;
-            case Input.Keys.E: // Inventory TODO
-                break;
             case Input.Keys.SHIFT_LEFT: // Sprint
                 screen.getWorld().getPlayer().sprint(false);
                 break;
@@ -75,16 +66,15 @@ class PlayerInputProcessor extends InputAdapter {
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         if (button == Input.Buttons.LEFT || button == Input.Buttons.RIGHT) {
-            screen.getWorld().mapClicked(screenX, screenY, (button == Input.Buttons.RIGHT));
+            screen.mapClicked(screenX, screenY, (button == Input.Buttons.RIGHT));
             return true;
         }
         return false;
     }
 
     @Override
-    public boolean scrolled(int amount) {
-        float scrolled = (float) amount * SCROLL_SCALING;
-        screen.getWorld().zoomMap(scrolled);
+    public boolean mouseMoved(int screenX, int screenY) {
+        screen.getWorld().updateSelector(screenX, screenY);
         return true;
     }
 }

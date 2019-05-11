@@ -1,0 +1,12 @@
+[
+  {
+    "id": 0,
+    "name": "Testing",
+    "texture": "blockTest"
+  },
+  {
+    "id": 1,
+    "name": "Testing v2",
+    "texture": "blockTest2"
+  }
+]

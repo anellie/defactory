@@ -2,5 +2,5 @@ package xyz.angm.game.world.entities;
 
 /** Represents an enemy the player is trying to defend against.
  * The goal of beasts is to destroy the player's base, attacking in waves. */
-public class Beast extends Entity {
+class Beast extends Entity {
 }

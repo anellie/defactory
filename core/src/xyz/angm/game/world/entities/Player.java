@@ -4,9 +4,9 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import xyz.angm.game.Game;
 
-import static xyz.angm.game.ui.Screen.VIEWPORT_HEIGHT;
-import static xyz.angm.game.ui.Screen.VIEWPORT_WIDTH;
 import static xyz.angm.game.world.TerrainGenerator.WORLD_SIZE_MULTIPLICATOR;
+import static xyz.angm.game.world.World.WORLD_VIEWPORT_HEIGHT;
+import static xyz.angm.game.world.World.WORLD_VIEWPORT_WIDTH;
 
 /** The player in the game. Their goal is building a base to defend against beasts.*/
 public class Player extends Entity {
@@ -14,17 +14,18 @@ public class Player extends Entity {
     /** The maximum player health. */
     public static final int PLAYER_HEALTH = 20;
     /** The maximum stamina. Sprinting depletes stamina; not sprinting refills */
-    public static final float PLAYER_STAMINA = 5f;
-    private static final float SPRINT_MULTIPLIER = 2.5f;
+    public static final float PLAYER_STAMINA = 7.5f;
+    private static final float SPRINT_MULTIPLIER = 1.5f;
 
     private float stamina = PLAYER_STAMINA;
     private boolean isSprinting = false;
+    private int blockSelected = 0;
 
     /** Constructs a Player. Requires AssetManager in Game to be ready. */
     public Player() {
         health = PLAYER_HEALTH;
         actor = new Image(Game.assets.get("textures/player.png", Texture.class));
-        getPosition().set((WORLD_SIZE_MULTIPLICATOR / 2f) * VIEWPORT_WIDTH, (WORLD_SIZE_MULTIPLICATOR / 2f) * VIEWPORT_HEIGHT);
+        getPosition().set((WORLD_SIZE_MULTIPLICATOR / 2f) * WORLD_VIEWPORT_WIDTH, (WORLD_SIZE_MULTIPLICATOR / 2f) * WORLD_VIEWPORT_HEIGHT);
     }
 
     /** Toggles the player sprinting. Sprinting causes the player to move faster.
@@ -50,5 +51,13 @@ public class Player extends Entity {
 
     public float getStamina() {
         return stamina;
+    }
+
+    public int getBlockSelected() {
+        return blockSelected;
+    }
+
+    public void setBlockSelected(int blockSelected) {
+        this.blockSelected = blockSelected;
     }
 }

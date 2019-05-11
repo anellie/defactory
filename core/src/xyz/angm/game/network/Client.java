@@ -51,12 +51,17 @@ public class Client extends NetworkInterface {
     }
 
     /** Add a listener to be called when an object is received from the server.
-     * @param listener The consumer to be called. The object will be the one sent from the server. */
+     * Will also be called on disconnect; the object will be a DisconnectNotifier.
+     * @param listener The consumer to be called. */
     public void addListener(Consumer<Object> listener) {
         kryoClient.addListener(new Listener() {
             @Override
             public void received(Connection connection, Object object) {
                 listener.accept(object);
+            }
+            @Override
+            public void disconnected(Connection connection) {
+                listener.accept(Status.DISCONNECTED);
             }
         });
     }
@@ -69,5 +74,11 @@ public class Client extends NetworkInterface {
     @Override
     public void dispose() {
         kryoClient.close();
+    }
+
+    /** Used for giving status messages to listeners. */
+    public enum Status {
+        /** Used when kryoClient fires an disconnect event. */
+        DISCONNECTED
     }
 }
