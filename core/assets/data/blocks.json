@@ -1,12 +1,15 @@
 [
   {
     "id": 0,
-    "name": "Testing",
-    "texture": "blockTest"
+    "name": "Turret",
+    "texture": "turret",
+    "type": "TURRET"
   },
   {
     "id": 1,
-    "name": "Testing v2",
-    "texture": "blockTest2"
+    "name": "Conveyor Belt",
+    "texture": "conveyorBelt",
+    "type": "CONVEYOR",
+    "isSensor": true
   }
 ]

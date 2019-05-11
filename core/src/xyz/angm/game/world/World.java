@@ -12,7 +12,6 @@ import xyz.angm.game.Game;
 import xyz.angm.game.world.entities.Player;
 
 import static xyz.angm.game.world.TerrainGenerator.WORLD_SIZE_MULTIPLICATOR;
-import static xyz.angm.game.world.entities.Entity.ENTITY_SIZE;
 
 /** Represents the game world and contains all entities and the world map. */
 public class World implements Disposable {
@@ -105,7 +104,7 @@ public class World implements Disposable {
             removeBlock(position);
             return null;
         } else {
-            Block block = new Block(position, getPlayer().getBlockSelected());
+            Block block = new Block(position, getPlayer().getBlockSelected(), Block.Direction.DOWN /* TODO properly set the direction*/);
             addBlock(block);
             return block;
         }
@@ -116,7 +115,7 @@ public class World implements Disposable {
     public void addBlock(Block block) {
         if (map.addBlock(block)) { // Return value of false indicates a block was already present
             block.registerToStage(stage);
-            physics.blockPlaced(block.getPosition());
+            physics.blockPlaced(block);
         }
     }
 
@@ -141,8 +140,8 @@ public class World implements Disposable {
         }
 
         final Vector3 position = stage.getCamera().position;
-        position.x = cameraPosition.x + (ENTITY_SIZE / 2f);
-        position.y = cameraPosition.y + (ENTITY_SIZE / 2f);
+        position.x = cameraPosition.x + (player.entitySize / 2f);
+        position.y = cameraPosition.y + (player.entitySize / 2f);
 
         // Ensure the edges of the screen will not scroll into view
         position.x = Math.max(minCameraX, Math.min(maxCameraX, position.x));
@@ -162,10 +161,8 @@ public class World implements Disposable {
     }
 
     /** Turns a vector with screen coordinates into one with corresponding world coordinates.
-     * @param v The vector to transform.
-     * @return The transformed vector given as an argument. */
-    public Vector2 screenToWorldCoordinates(Vector2 v) {
+     * @param v The vector to transform. */
+    public void screenToWorldCoordinates(Vector2 v) {
         stage.screenToStageCoordinates(v);
-        return v;
     }
 }
