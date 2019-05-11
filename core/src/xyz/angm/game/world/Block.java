@@ -1,7 +1,7 @@
 package xyz.angm.game.world;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Disposable;
 import xyz.angm.game.Game;
@@ -41,11 +41,11 @@ public class Block implements Disposable {
         return BlockProperties.getProperties(type);
     }
 
-    /** Adds itself to the given stage.
-     * @param stage Stage to be added to */
-    void registerToStage(Stage stage) {
+    /** Adds itself to the given group.
+     * @param group Group to be added to */
+    void registerToGroup(Group group) {
         if (actor == null) actor = new Image(Game.assets.get(getProperties().getFullTexturePath(), Texture.class));
-        stage.addActor(actor);
+        group.addActor(actor);
         actor.setSize(1, 1);
         actor.setPosition(position.getX(), position.getY());
     }

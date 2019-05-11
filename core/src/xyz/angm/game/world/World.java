@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Disposable;
@@ -29,6 +30,8 @@ public class World implements Disposable {
     private Vector2 cameraPosition = player.getPosition();
     private final Image selector = new Image(Game.assets.get("textures/selector.png", Texture.class));
     private final TileVector selectorPosition = new TileVector();
+    private final Group blockGroup = new Group();
+
     private final Vector2 tmpV = new Vector2();
 
     /** Constructs a new world along with it's map.
@@ -38,8 +41,9 @@ public class World implements Disposable {
         map = new WorldMap(new TerrainGenerator(seed));
 
         stage.addActor(map);
-        stage.addActor(selector);
+        stage.addActor(blockGroup);
         player.registerToStage(stage);
+        stage.addActor(selector);
 
         selector.setSize(1, 1);
         ((OrthographicCamera) stage.getCamera()).zoom = 0.5f;
@@ -114,7 +118,7 @@ public class World implements Disposable {
      * @param block The block to add. */
     public void addBlock(Block block) {
         if (map.addBlock(block)) { // Return value of false indicates a block was already present
-            block.registerToStage(stage);
+            block.registerToGroup(blockGroup);
             physics.blockPlaced(block);
         }
     }
