@@ -1,9 +1,5 @@
 package xyz.angm.game.world.entities;
 
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import xyz.angm.game.Game;
-
 import static xyz.angm.game.world.TerrainGenerator.WORLD_SIZE_MULTIPLICATOR;
 import static xyz.angm.game.world.World.WORLD_VIEWPORT_HEIGHT;
 import static xyz.angm.game.world.World.WORLD_VIEWPORT_WIDTH;
@@ -25,7 +21,7 @@ public class Player extends Entity {
     public Player() {
         super(2);
         health = PLAYER_HEALTH;
-        actor = new Image(Game.assets.get("textures/player.png", Texture.class));
+        actorTexture = "textures/player.png";
         getPosition().set((WORLD_SIZE_MULTIPLICATOR / 2f) * WORLD_VIEWPORT_WIDTH, (WORLD_SIZE_MULTIPLICATOR / 2f) * WORLD_VIEWPORT_HEIGHT);
     }
 

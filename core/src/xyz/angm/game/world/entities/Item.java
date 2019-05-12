@@ -5,8 +5,17 @@ import xyz.angm.game.world.TileVector;
 /** An item entity. Created when a machine creating materials is connected with conveyor belts. */
 public class Item extends Entity {
 
-    public Item(TileVector position) {
+    private final ItemType type;
+
+    public Item(TileVector position, ItemType type) {
         super(1);
-        this.getPosition().set(position.getX(), position.getY());
+        this.type = type;
+        getPosition().set(position.getX(), position.getY());
+        actorTexture = "textures/items/" + type.name().toLowerCase() + ".png";
+    }
+
+    /** All available item types. */
+    public enum ItemType {
+        STONE, IRON, GOLD, DIAMOND
     }
 }

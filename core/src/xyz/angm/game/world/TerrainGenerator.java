@@ -1,8 +1,9 @@
 package xyz.angm.game.world;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.TextureData;
+import xyz.angm.game.Game;
 
 import java.util.Random;
 
@@ -12,9 +13,6 @@ import static xyz.angm.game.ui.Screen.VIEWPORT_WIDTH;
 /** Generates random terrain using a noise function. */
 public class TerrainGenerator {
 
-    private static final Color GRASS_COLOR = new Color(0x2C8324FF);
-    private static final Color STONE_COLOR = new Color(0x8B8B86FF);
-    private static final Color WATER_COLOR = new Color(0x5DA6EFFF);
     private static final double STONE_CHANCE = 0.25f;
     private static final double WATER_CHANCE = 0.15f;
 
@@ -32,17 +30,27 @@ public class TerrainGenerator {
     /** Creates a Texture displaying the ground, using the proper terrain.
      * @return A Texture constructed using a Pixmap.*/
     Texture createWorldMapTexture() {
-        Pixmap map = new Pixmap(WORLD_SIZE_MULTIPLICATOR * VIEWPORT_WIDTH, WORLD_SIZE_MULTIPLICATOR * VIEWPORT_HEIGHT, Pixmap.Format.RGB888);
-        map.setColor(GRASS_COLOR);
-        map.fill(); // Turn all pixels into grass at first to improve draw performance by reducing calls to JNI
+        TextureData grassTD = Game.assets.get("textures/map/grass.png", Texture.class).getTextureData();
+        TextureData stoneTD = Game.assets.get("textures/map/stone.png", Texture.class).getTextureData();
+        TextureData waterTD = Game.assets.get("textures/map/water.png", Texture.class).getTextureData();
+        grassTD.prepare();
+        stoneTD.prepare();
+        waterTD.prepare();
+        Pixmap grass = grassTD.consumePixmap();
+        Pixmap stone = stoneTD.consumePixmap();
+        Pixmap water = waterTD.consumePixmap();
 
+        Pixmap map = new Pixmap(WORLD_SIZE_MULTIPLICATOR * VIEWPORT_WIDTH, WORLD_SIZE_MULTIPLICATOR * VIEWPORT_HEIGHT, Pixmap.Format.RGB888);
         for (int x = 0; x < map.getWidth(); x++) {
             for (int y = 0; y < map.getHeight(); y++) {
                 double noise = noiseGenerator.generateDot(x, y);
 
-                if (noise < WATER_CHANCE) map.setColor(WATER_COLOR);
-                else if (noise > (1 - STONE_CHANCE)) map.setColor(STONE_COLOR);
-                else continue; // Grass was already drawn by the fill() call at the top; this draw can be skipped
+                Pixmap copyFrom;
+                if (noise < WATER_CHANCE) copyFrom = water;
+                else if (noise > (1 - STONE_CHANCE)) copyFrom = stone;
+                else copyFrom = grass;
+
+                map.setColor(copyFrom.getPixel((x % copyFrom.getWidth()), (y % copyFrom.getWidth())));
                 map.drawPixel(x, y);
             }
         }
