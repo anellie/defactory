@@ -31,7 +31,7 @@ class ServerDiscoveryRunnable implements Runnable {
             }
         } catch (IOException ex) {
             Gdx.app.error("Server", "Could not initialize discovery thread. Exiting.");
-            System.exit(-1);
+            // System.exit(-1);
         }
     }
 }

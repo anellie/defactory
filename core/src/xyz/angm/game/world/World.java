@@ -67,6 +67,7 @@ public class World implements Disposable {
     public void render(float delta) {
         updateCamera();
         stage.draw();
+        physics.render((OrthographicCamera) stage.getCamera());
     }
 
     /** Causes the camera to be independent on the player's position. Call on client. */
