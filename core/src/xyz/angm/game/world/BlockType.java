@@ -6,6 +6,8 @@ public enum BlockType {
     DEFAULT,
     /** A block capable of moving entities on top of it. */
     CONVEYOR,
+    /** A block emitting light. */
+    TORCH,
     /** A block capable of damaging enemies over a given range. */
     TURRET,
     /** A block capable of healing other blocks in a given range. */

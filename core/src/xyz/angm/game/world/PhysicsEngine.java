@@ -1,5 +1,6 @@
 package xyz.angm.game.world;
 
+import box2dLight.Light;
 import box2dLight.PointLight;
 import box2dLight.RayHandler;
 import com.badlogic.gdx.graphics.Color;
@@ -20,12 +21,15 @@ class PhysicsEngine {
     private static final float TIME_STEP = 1/60f;
     /** Scaling for the player hitbox. 2f is 1:1, hitbox needs to be slightly smaller however.*/
     private static final float PLAYER_SCALE = 2.08f;
+    /** Color of the light source of BlockType.TORCH blocks. */
+    private static final Color TORCH_LIGHT_COLOR = new Color(0xFF8D0099);
 
     private final World pWorld = new World(new Vector2(0, 0), true);
     private final WorldContactListener contactListener = new WorldContactListener();
     private final HashMap<TileVector, Body> blocks = new HashMap<>();
     private final Body playerBody;
     private final RayHandler rayHandler = new RayHandler(pWorld);
+    private final HashMap<Body, Light> blockLights = new HashMap<>();
 
     private float timeSinceLastStep = 0f;
     private final BodyDef blockDef = new BodyDef();
@@ -107,6 +111,12 @@ class PhysicsEngine {
         blockBody.setUserData(block);
         blockShape.dispose();
         blocks.put(block.getPosition(), blockBody);
+
+        if (block.getProperties().type == BlockType.TORCH) {
+            PointLight torchLight = new PointLight(rayHandler, 16, TORCH_LIGHT_COLOR, 10, 0, 0);
+            torchLight.attachToBody(blockBody);
+            blockLights.put(blockBody, torchLight);
+        }
     }
 
     /** Call when a block was removed. Will remove the block from the physics simulation.
@@ -114,7 +124,10 @@ class PhysicsEngine {
      * @param position The position of the block removed. */
     void blockRemoved(TileVector position) {
         Body block = blocks.remove(position);
-        if (block != null) pWorld.destroyBody(block);
+        if (block != null) {
+            if (((Block) block.getUserData()).getProperties().type == BlockType.TORCH) blockLights.remove(block).remove(true);
+            pWorld.destroyBody(block);
+        }
     }
 
     /** Listens for contacts between entities and handles all contact-based interactions. */

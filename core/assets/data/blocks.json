@@ -11,5 +11,12 @@
     "texture": "conveyorBelt",
     "type": "CONVEYOR",
     "isSensor": true
+  },
+  {
+    "id": 2,
+    "name": "Torch",
+    "texture": "torch",
+    "type": "TORCH",
+    "isSensor": true
   }
 ]
