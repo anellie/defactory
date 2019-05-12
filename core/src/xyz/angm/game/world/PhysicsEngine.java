@@ -51,7 +51,7 @@ class PhysicsEngine {
 
         FixtureDef playerFixDef = new FixtureDef();
         playerFixDef.shape = playerShape;
-        playerFixDef.density = 0.5f;
+        playerFixDef.density = 1f;
         playerFixDef.friction = 0.4f;
         playerFixDef.restitution = 0.6f;
         pBody.createFixture(playerFixDef);
