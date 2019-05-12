@@ -23,7 +23,9 @@ public class BlockProperties {
     /** Health of a block; eg how much enemy hits it can take. */
     public int health = 1;
     /** The type of the block. See Type enum. */
-    public final BlockType type = BlockType.DEFAULT;
+    public BlockType type = BlockType.DEFAULT;
+    /** Set the block to be a physics sensor (meaning it cannot collide with other entities). */
+    public boolean isSensor = false;
 
     /** TURRET specific: The interval in which the turret fires. */
     public float turretFireRate = 1f;

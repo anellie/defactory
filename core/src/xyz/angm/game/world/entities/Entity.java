@@ -9,21 +9,24 @@ import java.io.Serializable;
 /** An entity is a component capable of changing its position and interacting with the world. */
 public abstract class Entity implements Serializable {
 
-    /** The size of all entity actors. */
-    public static final int ENTITY_SIZE = 2;
-
     /** The position of the entity. */
     private final Vector2 position = new Vector2();
     /** The speed the entity is travelling at. */
     private final Vector2 velocity = new Vector2();
-    /** A vector used for calculation. It's a class member to prevent creating one-time-use vectors. */
-    private final transient Vector2 tmpV = new Vector2();
     /** The multiplier used to apply velocity. */
     float movementMultiplier = 5f;
     /** The entities health. 0 will cause the entity to be disposed. */
     int health;
+    /** The size of the actor. */
+    public final int entitySize;
     /** Actor for displaying on the screen. */
     transient Image actor;
+
+    /** Create a new entity.
+     * @param entitySize The size of the entity in meters. (eg 1 block = 1 meter) */
+    Entity(int entitySize) {
+        this.entitySize = entitySize;
+    }
 
     public Vector2 getPosition() {
         return position;
@@ -48,7 +51,7 @@ public abstract class Entity implements Serializable {
     public void registerToStage(Stage stage) {
         stage.addActor(actor);
         actor.setPosition(position.x, position.y);
-        actor.setSize(ENTITY_SIZE, ENTITY_SIZE);
+        actor.setSize(entitySize, entitySize);
     }
 
     public int getHealth() {

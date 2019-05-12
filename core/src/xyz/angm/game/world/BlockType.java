@@ -4,6 +4,8 @@ package xyz.angm.game.world;
 public enum BlockType {
     /** A block with no special properties. */
     DEFAULT,
+    /** A block capable of moving entities on top of it. */
+    CONVEYOR,
     /** A block capable of damaging enemies over a given range. */
     TURRET,
     /** A block capable of healing other blocks in a given range. */

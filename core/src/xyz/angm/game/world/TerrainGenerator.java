@@ -15,8 +15,8 @@ public class TerrainGenerator {
     private static final Color GRASS_COLOR = new Color(0x2C8324FF);
     private static final Color STONE_COLOR = new Color(0x8B8B86FF);
     private static final Color WATER_COLOR = new Color(0x5DA6EFFF);
-    private static final double STONE_CHANCE = 0.3f;
-    private static final double WATER_CHANCE = 0.2f;
+    private static final double STONE_CHANCE = 0.25f;
+    private static final double WATER_CHANCE = 0.15f;
 
     /** Multiplicator for the world map. Takes the viewport size as base. */
     public static final int WORLD_SIZE_MULTIPLICATOR = 3;
@@ -41,7 +41,7 @@ public class TerrainGenerator {
                 double noise = noiseGenerator.generateDot(x, y);
 
                 if (noise < WATER_CHANCE) map.setColor(WATER_COLOR);
-                else if (noise < (STONE_CHANCE + WATER_CHANCE)) map.setColor(STONE_COLOR);
+                else if (noise > (1 - STONE_CHANCE)) map.setColor(STONE_COLOR);
                 else continue; // Grass was already drawn by the fill() call at the top; this draw can be skipped
                 map.drawPixel(x, y);
             }

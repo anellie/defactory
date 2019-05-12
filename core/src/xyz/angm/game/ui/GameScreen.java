@@ -21,6 +21,7 @@ public class GameScreen extends Screen {
     private boolean pauseMenuActive = false ;
     private World world;
     private final PlayerHud playerHud = new PlayerHud(this);
+    private final InputMultiplexer inputMultiplexer = new InputMultiplexer();
     private final Vector2 tmpV = new Vector2();
 
     /** Constructs the screen and generates a new world. Run only when server is active.
@@ -55,7 +56,6 @@ public class GameScreen extends Screen {
 
     // Create a multiplexer for handling input for both UI and in-world (https://github.com/libgdx/libgdx/wiki/Event-handling#inputmultiplexer)
     private void initInput(InputProcessor processor) {
-        InputMultiplexer inputMultiplexer = new InputMultiplexer();
         inputMultiplexer.addProcessor(stage);
         inputMultiplexer.addProcessor(processor);
         Gdx.input.setInputProcessor(inputMultiplexer);
@@ -127,8 +127,10 @@ public class GameScreen extends Screen {
         stage.clear();
         if (!pauseMenuActive) { // Open the pause menu
             stage.addActor(new PausePanel(this));
+            Gdx.input.setInputProcessor(stage);
         } else { // Closes the pause menu
             stage.addActor(playerHud);
+            Gdx.input.setInputProcessor(inputMultiplexer);
         }
         pauseMenuActive = !pauseMenuActive;
     }

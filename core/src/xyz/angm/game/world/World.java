@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Disposable;
@@ -12,7 +13,6 @@ import xyz.angm.game.Game;
 import xyz.angm.game.world.entities.Player;
 
 import static xyz.angm.game.world.TerrainGenerator.WORLD_SIZE_MULTIPLICATOR;
-import static xyz.angm.game.world.entities.Entity.ENTITY_SIZE;
 
 /** Represents the game world and contains all entities and the world map. */
 public class World implements Disposable {
@@ -30,6 +30,8 @@ public class World implements Disposable {
     private Vector2 cameraPosition = player.getPosition();
     private final Image selector = new Image(Game.assets.get("textures/selector.png", Texture.class));
     private final TileVector selectorPosition = new TileVector();
+    private final Group blockGroup = new Group();
+
     private final Vector2 tmpV = new Vector2();
 
     /** Constructs a new world along with it's map.
@@ -39,10 +41,12 @@ public class World implements Disposable {
         map = new WorldMap(new TerrainGenerator(seed));
 
         stage.addActor(map);
-        stage.addActor(selector);
+        stage.addActor(blockGroup);
         player.registerToStage(stage);
+        stage.addActor(selector);
 
         selector.setSize(1, 1);
+        ((OrthographicCamera) stage.getCamera()).zoom = 0.5f;
     }
 
     /** Returns the player entity.
@@ -104,7 +108,7 @@ public class World implements Disposable {
             removeBlock(position);
             return null;
         } else {
-            Block block = new Block(position, getPlayer().getBlockSelected());
+            Block block = new Block(position, getPlayer().getBlockSelected(), Block.Direction.DOWN /* TODO properly set the direction*/);
             addBlock(block);
             return block;
         }
@@ -114,8 +118,8 @@ public class World implements Disposable {
      * @param block The block to add. */
     public void addBlock(Block block) {
         if (map.addBlock(block)) { // Return value of false indicates a block was already present
-            block.registerToStage(stage);
-            physics.blockPlaced(block.getPosition());
+            block.registerToGroup(blockGroup);
+            physics.blockPlaced(block);
         }
     }
 
@@ -140,8 +144,8 @@ public class World implements Disposable {
         }
 
         final Vector3 position = stage.getCamera().position;
-        position.x = cameraPosition.x + (ENTITY_SIZE / 2f);
-        position.y = cameraPosition.y + (ENTITY_SIZE / 2f);
+        position.x = cameraPosition.x + (player.entitySize / 2f);
+        position.y = cameraPosition.y + (player.entitySize / 2f);
 
         // Ensure the edges of the screen will not scroll into view
         position.x = Math.max(minCameraX, Math.min(maxCameraX, position.x));
@@ -161,10 +165,8 @@ public class World implements Disposable {
     }
 
     /** Turns a vector with screen coordinates into one with corresponding world coordinates.
-     * @param v The vector to transform.
-     * @return The transformed vector given as an argument. */
-    public Vector2 screenToWorldCoordinates(Vector2 v) {
+     * @param v The vector to transform. */
+    public void screenToWorldCoordinates(Vector2 v) {
         stage.screenToStageCoordinates(v);
-        return v;
     }
 }
