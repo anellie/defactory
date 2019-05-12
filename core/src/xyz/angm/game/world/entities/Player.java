@@ -19,7 +19,7 @@ public class Player extends Entity {
 
     /** Constructs a Player. Requires AssetManager in Game to be ready. */
     public Player() {
-        super(2);
+        super(1);
         health = PLAYER_HEALTH;
         actorTexture = "textures/player.png";
         getPosition().set((WORLD_SIZE_MULTIPLICATOR / 2f) * WORLD_VIEWPORT_WIDTH, (WORLD_SIZE_MULTIPLICATOR / 2f) * WORLD_VIEWPORT_HEIGHT);
