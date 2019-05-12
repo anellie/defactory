@@ -17,7 +17,9 @@ import static xyz.angm.game.world.TerrainGenerator.WORLD_SIZE_MULTIPLICATOR;
 /** Represents the game world and contains all entities and the world map. */
 public class World implements Disposable {
 
+    /** The width of the world viewport. Should be in meters due to the physics system. */
     public static final float WORLD_VIEWPORT_WIDTH = 120f;
+    /** The height of the world viewport. Should be in meters due to the physics system. */
     public static final float WORLD_VIEWPORT_HEIGHT = 67.5f;
 
     /** Seed used for generating terrain. See {@link TerrainGenerator}. */
@@ -40,7 +42,6 @@ public class World implements Disposable {
         this.seed = seed;
         map = new WorldMap(new TerrainGenerator(seed));
 
-        stage.addActor(map);
         stage.addActor(blockGroup);
         player.registerToStage(stage);
         stage.addActor(selector);
@@ -60,14 +61,20 @@ public class World implements Disposable {
     public void act(float delta) {
         physics.act(delta);
         player.act(delta);
+        stage.act(delta);
     }
 
-    /** Should be called every frame when the world should render itself and all components.
-     * @param delta Time since last call to this method in seconds. */
-    public void render(float delta) {
+    /** Should be called every frame when the world should render itself and all components. */
+    public void render() {
         updateCamera();
-        stage.draw();
+
+        // Draw map first for lighting effects
+        stage.getBatch().begin();
+        map.draw(stage.getBatch(), 1f);
+        stage.getBatch().end();
+
         physics.render((OrthographicCamera) stage.getCamera());
+        stage.draw();
     }
 
     /** Causes the camera to be independent on the player's position. Call on client. */
@@ -158,6 +165,7 @@ public class World implements Disposable {
      * @param width The new viewport width*/
     public void resizeViewport(int width, int height) {
         stage.getViewport().update(width, height, true);
+        physics.resizeViewport(stage.getViewport());
     }
 
     @Override

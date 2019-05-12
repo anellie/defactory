@@ -9,6 +9,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import xyz.angm.game.world.entities.Player;
 
 import java.util.HashMap;
@@ -130,6 +131,12 @@ class PhysicsEngine {
         }
     }
 
+    /** Call when viewport size changed. Needs to be independent since RayHandler changes the viewport on its own otherwise.
+     * @param viewport The viewport post-change */
+    void resizeViewport(Viewport viewport) {
+        rayHandler.useCustomViewport(viewport.getScreenX(), viewport.getScreenY(), viewport.getScreenWidth(), viewport.getScreenHeight());
+    }
+
     /** Listens for contacts between entities and handles all contact-based interactions. */
     private class WorldContactListener implements ContactListener {
 
@@ -139,6 +146,7 @@ class PhysicsEngine {
         private final Vector2 tmpV = new Vector2();
 
         private void step() {
+            // noinspection LibGDXUnsafeIterator Iterator is not reentered; inspection does not matter
             for (Contact contact : contacts) {
                 Body b1 = contact.getFixtureA().getBody();
                 Body b2 = contact.getFixtureB().getBody();

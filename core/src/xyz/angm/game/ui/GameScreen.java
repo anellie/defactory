@@ -72,7 +72,7 @@ public class GameScreen extends Screen {
 
         if (world != null) {        // Waiting for server connect; or display 'no server found' message
             world.act(delta);       // Update world
-            world.render(delta);    // Render world. World render is separate to allow for different camera positions
+            world.render();         // Render world. World render is separate to allow for different camera positions
         }
 
         stage.act(delta);

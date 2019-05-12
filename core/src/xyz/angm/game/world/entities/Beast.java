@@ -4,6 +4,7 @@ package xyz.angm.game.world.entities;
  * The goal of beasts is to destroy the player's base, attacking in waves. */
 class Beast extends Entity {
 
+    /** TODO stub. */
     Beast() {
         super(2);
     }

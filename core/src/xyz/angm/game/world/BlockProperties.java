@@ -12,6 +12,7 @@ import java.util.List;
  *
  * These objects should NOT be directly modified. Them being non-final is due to them needing to be modified during deserialization.
  * Using getters for all of these values to prevent modification would be possible; but 100+ lines of boilerplate code isn't that great nor practical. */
+@SuppressWarnings({"CanBeFinal", "WeakerAccess"}) // Can't be final or private due to serializer
 public class BlockProperties {
 
     /** The ID of a block type used to determine equality. Should not be the same on different block properties. */

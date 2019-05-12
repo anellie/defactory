@@ -7,6 +7,9 @@ public class Item extends Entity {
 
     private final ItemType type;
 
+    /** Create a new item entity.
+     * @param type The type of the item.
+     * @param position The position in world coordinates; actual position is not tile-restricted. */
     public Item(TileVector position, ItemType type) {
         super(1);
         this.type = type;
@@ -15,6 +18,7 @@ public class Item extends Entity {
     }
 
     /** All available item types. */
+    @SuppressWarnings("JavaDoc")
     public enum ItemType {
         STONE, IRON, GOLD, DIAMOND
     }
