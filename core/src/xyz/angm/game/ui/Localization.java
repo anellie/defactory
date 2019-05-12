@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.I18NBundle;
 
-import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.Locale;
 
@@ -17,21 +16,20 @@ class Localization {
     private static Language currentLocale;
 
     static {
-        locales.put(Language.ENGLISH, new Locale("en"));
-        locales.put(Language.GERMAN, new Locale("de", "GER", "VAR1"));
-        setLocale(Language.ENGLISH);
+        locales.put(Language.English, new Locale("en"));
+        locales.put(Language.Deutsch, new Locale("de"));
+        setLocale(Language.English);
     }
 
-    /** Cycles to the next locale. */
-    static void cycleLocale() {
-        int nextIndex = Arrays.asList(Language.values()).indexOf(currentLocale) + 1;
-        if (nextIndex == Language.values().length) nextIndex = 0;
-        setLocale(Language.values()[nextIndex]);
-    }
-
-    private static void setLocale(Language lang) {
+    /** Sets the locale.
+     * @param lang The new locale to set. */
+    static void setLocale(Language lang) {
         locale = I18NBundle.createBundle(baseFileHandle, locales.get(lang));
         currentLocale = lang;
+    }
+
+    static Language getCurrentLocale() {
+        return currentLocale;
     }
 
     /** Returns a localized string.
@@ -44,7 +42,7 @@ class Localization {
 
     /** All languages in the game. */
     enum Language {
-        ENGLISH,
-        GERMAN
+        English,
+        Deutsch
     }
 }
