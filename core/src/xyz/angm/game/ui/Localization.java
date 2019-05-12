@@ -10,8 +10,8 @@ import java.util.Locale;
 /** Class for getting a locale-appropriate string. Fully static. */
 class Localization {
 
-    private static FileHandle baseFileHandle = Gdx.files.internal("localization");
-    private static EnumMap<Language, Locale> locales = new EnumMap<>(Language.class);
+    private static final FileHandle localizationFile = Gdx.files.internal("localization");
+    private static final EnumMap<Language, Locale> locales = new EnumMap<>(Language.class);
     private static I18NBundle locale;
     private static Language currentLocale;
 
@@ -24,7 +24,7 @@ class Localization {
     /** Sets the locale.
      * @param lang The new locale to set. */
     static void setLocale(Language lang) {
-        locale = I18NBundle.createBundle(baseFileHandle, locales.get(lang));
+        locale = I18NBundle.createBundle(localizationFile, locales.get(lang));
         currentLocale = lang;
     }
 
@@ -41,6 +41,7 @@ class Localization {
     }
 
     /** All languages in the game. */
+    @SuppressWarnings("JavaDoc")
     enum Language {
         English,
         Deutsch

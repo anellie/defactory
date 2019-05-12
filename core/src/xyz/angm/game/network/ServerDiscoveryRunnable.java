@@ -10,6 +10,7 @@ import java.net.InetAddress;
 /** Waits for a {@link ClientDiscoveryRunnable} to ping it and gives a response for the client to find it. */
 class ServerDiscoveryRunnable implements Runnable {
 
+    @SuppressWarnings("InfiniteLoopStatement") // Intended; runnable should run indefinitely
     @Override
     public void run() {
         try (DatagramSocket socket = new DatagramSocket(Client.PORT, InetAddress.getByName("0.0.0.0"))) {
@@ -30,8 +31,7 @@ class ServerDiscoveryRunnable implements Runnable {
                 }
             }
         } catch (IOException ex) {
-            Gdx.app.error("Server", "Could not initialize discovery thread. Exiting.");
-            // System.exit(-1);
+            Gdx.app.error("Server", "Could not initialize discovery thread. Might already be running.");
         }
     }
 }

@@ -56,6 +56,7 @@ public class Block implements Disposable {
     }
 
     /** The direction a block can be facing. Needed by some blocks; eg conveyor belts. */
+    @SuppressWarnings("JavaDoc")
     public enum Direction {
         UP, DOWN, LEFT, RIGHT
     }
