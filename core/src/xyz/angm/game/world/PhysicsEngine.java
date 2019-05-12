@@ -1,5 +1,9 @@
 package xyz.angm.game.world;
 
+import box2dLight.PointLight;
+import box2dLight.RayHandler;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.*;
@@ -21,8 +25,9 @@ class PhysicsEngine {
     private final WorldContactListener contactListener = new WorldContactListener();
     private final HashMap<TileVector, Body> blocks = new HashMap<>();
     private final Body playerBody;
-    private float timeSinceLastStep = 0f;
+    private final RayHandler rayHandler = new RayHandler(pWorld);
 
+    private float timeSinceLastStep = 0f;
     private final BodyDef blockDef = new BodyDef();
     private final Vector2 tmpV = new Vector2();
 
@@ -50,6 +55,10 @@ class PhysicsEngine {
         pBody.setUserData(player);
         this.playerBody = pBody;
         playerShape.dispose();
+
+        rayHandler.setAmbientLight(0f, 0f, 0f, 0.4f);
+        PointLight playerLight = new PointLight(rayHandler, 128, new Color(1f, 1f, 1f, 0.75f), 10, 0, 0);
+        playerLight.attachToBody(playerBody);
     }
 
     /** Advances the physics engine. Should be called every frame.
@@ -71,6 +80,13 @@ class PhysicsEngine {
 
         // Update player position from physics simulation
         player.getPosition().set(playerBody.getPosition().sub(player.entitySize / 2f, player.entitySize / 2f));
+    }
+
+    /** Renders the lighting parts of the world, using Box2DLights.
+     * @param camera The camera to use for rendering. */
+    void render(OrthographicCamera camera) {
+        rayHandler.setCombinedMatrix(camera);
+        rayHandler.updateAndRender();
     }
 
     /** Call when a block was placed. Will add the block to the physics simulation.
