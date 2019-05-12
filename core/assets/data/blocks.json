@@ -7,7 +7,7 @@
   },
   {
     "id": 1,
-    "name": "Conveyor Belt",
+    "name": "ConveyorBelt",
     "texture": "conveyorBelt",
     "type": "CONVEYOR",
     "isSensor": true

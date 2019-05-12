@@ -18,8 +18,8 @@ public class BlockProperties {
     public int id = -1;
     /** The path to the blocks texture relative to '@/core/assets/textures'. */
     public String texture = "";
-    /** Display name of a block. */
-    public String name = "404";
+    /** Name of a blocks localization string. To get a blocks locale: Localization.get("block" + this.name) */
+    public String name = "Unknown";
     /** Health of a block; eg how much enemy hits it can take. */
     public int health = 1;
     /** The type of the block. See Type enum. */

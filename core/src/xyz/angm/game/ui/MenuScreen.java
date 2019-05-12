@@ -17,8 +17,8 @@ class MenuScreen extends Screen {
 
         table.add(new VisLabel(Localization.get("gameName"))).padBottom(BUTTON_HEIGHT).row();
 
-        VisTextButton startGameButton = new VisTextButton(Localization.get("mM1"));
-        VisTextButton joinGameButton = new VisTextButton(Localization.get("mM2"));
+        VisTextButton startGameButton = new VisTextButton(Localization.get("mainMenuStart"));
+        VisTextButton joinGameButton = new VisTextButton(Localization.get("mainMenuJoin"));
         VisTextButton changeGameLanguage = new VisTextButton(Localization.get("changeLang"));
         VisTextButton exitGameButton = new VisTextButton(Localization.get("exitButton"));
 
@@ -38,6 +38,7 @@ class MenuScreen extends Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 Localization.cycleLocale();
+                game.setScreen(new MenuScreen(game));
             }
         });
         exitGameButton.addListener(new ClickListener() {

@@ -19,13 +19,12 @@ class PausePanel extends VisTable {
     PausePanel(GameScreen screen) {
         super(true);
 
-
-        setPosition(300, 540);
+        setFillParent(true);
         setBackground(VisUI.getSkin().getDrawable("black-transparent"));
 
-        add(new VisLabel(Localization.get("pML"))).padBottom(BUTTON_HEIGHT).row();
+        add(new VisLabel(Localization.get("pauseMenuTitle"))).padBottom(BUTTON_HEIGHT).row();
 
-        VisTextButton resumeGameButton = new VisTextButton(Localization.get("pM1"));
+        VisTextButton resumeGameButton = new VisTextButton(Localization.get("pauseMenuResume"));
         VisTextButton gameMainMenu = new VisTextButton(Localization.get("backToMain"));
         VisTextButton changeGameLanguage = new VisTextButton(Localization.get("changeLang"));
         VisTextButton exitGameButton = new VisTextButton(Localization.get("exitButton"));
@@ -46,6 +45,7 @@ class PausePanel extends VisTable {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 Localization.cycleLocale();
+                screen.localeChanged();
             }
         });
         exitGameButton.addListener(new ClickListener() {

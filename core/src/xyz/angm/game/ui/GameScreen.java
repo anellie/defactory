@@ -141,6 +141,14 @@ public class GameScreen extends Screen {
         game.setScreen(new MenuScreen(game));
     }
 
+    /** Call when the locale changed. Reloads all UI. */
+    void localeChanged() {
+        stage.clear();
+        playerHud.reload();
+        if (pauseMenuActive) stage.addActor(new PausePanel(this));
+        else stage.addActor(playerHud);
+    }
+
     @Override
     public void resize(int width, int height) {
         super.resize(width, height);
