@@ -1,8 +1,10 @@
 package xyz.angm.game.world.entities;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import xyz.angm.game.Game;
 
 import java.io.Serializable;
 
@@ -20,7 +22,9 @@ public abstract class Entity implements Serializable {
     /** The size of the actor. */
     public final int entitySize;
     /** Actor for displaying on the screen. */
-    transient Image actor;
+    private transient Image actor;
+    /** Location of the actor's texture. */
+    transient String actorTexture;
 
     /** Create a new entity.
      * @param entitySize The size of the entity in meters. (eg 1 block = 1 meter) */
@@ -49,6 +53,7 @@ public abstract class Entity implements Serializable {
     /** Adds itself to the given stage.
      * @param stage Stage to be added to */
     public void registerToStage(Stage stage) {
+        if (actor == null) actor = new Image(Game.assets.get(actorTexture, Texture.class));
         stage.addActor(actor);
         actor.setPosition(position.x, position.y);
         actor.setSize(entitySize, entitySize);
