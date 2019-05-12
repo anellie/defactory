@@ -19,26 +19,35 @@ class PausePanel extends VisTable {
     PausePanel(GameScreen screen) {
         super(true);
 
-        setFillParent(true);
+
+        setPosition(300, 540);
         setBackground(VisUI.getSkin().getDrawable("black-transparent"));
 
-        add(new VisLabel("Pause Menu")).padBottom(BUTTON_HEIGHT).row();
+        add(new VisLabel(localization.locals.format("pML"))).padBottom(BUTTON_HEIGHT).row();
 
-        VisTextButton resumeGameButton = new VisTextButton("Resume Game");
-        VisTextButton gameMainMenu = new VisTextButton("MainMenu");
-        VisTextButton exitGameButton = new VisTextButton("Exit Game");
+        VisTextButton resumeGameButton = new VisTextButton(localization.locals.format("pM1"));
+        VisTextButton gameMainMenu = new VisTextButton(localization.locals.format("backToMain"));
+        VisTextButton changeGameLanguage = new VisTextButton(localization.locals.format("changeLang"));
+        VisTextButton exitGameButton = new VisTextButton(localization.locals.format("exitButton"));
 
         resumeGameButton.addListener(new ClickListener() {
             @Override
-            public void clicked(InputEvent event, float x, float y) {
-                screen.togglePausePanel();
+            public void clicked(InputEvent event, float x, float y) { screen.togglePausePanel();
             }
         });
         gameMainMenu.addListener(new ClickListener() {
             @Override
-            public  void clicked(InputEvent event, float x, float y) {
-                screen.returnToMainMenu();
+            public  void clicked(InputEvent event, float x, float y) { screen.returnToMainMenu();
             }
+        });
+        changeGameLanguage.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                localization.langInt++;
+                if (localization.langInt>2) {
+                    localization.langInt = 1;
+                }
+                localization.setLocalization(localization.langInt); }
         });
         exitGameButton.addListener(new ClickListener() {
             @Override
@@ -49,6 +58,7 @@ class PausePanel extends VisTable {
 
         add(resumeGameButton).size(BUTTON_WIDTH, BUTTON_HEIGHT).row();
         add(gameMainMenu).size(BUTTON_WIDTH, BUTTON_HEIGHT).row();
+        add(changeGameLanguage).size(BUTTON_WIDTH, BUTTON_HEIGHT).row();
         add(exitGameButton).size(BUTTON_WIDTH, BUTTON_HEIGHT).row();
     }
 }

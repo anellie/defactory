@@ -15,11 +15,12 @@ class MenuScreen extends Screen {
     MenuScreen(Game game) {
         super(game);
 
-        table.add(new VisLabel("Hello World!")).padBottom(BUTTON_HEIGHT).row();
+        table.add(new VisLabel(localization.locals.format("gameName"))).padBottom(BUTTON_HEIGHT).row();
 
-        VisTextButton startGameButton = new VisTextButton("Start Game");
-        VisTextButton joinGameButton = new VisTextButton("Join Game");
-        VisTextButton exitGameButton = new VisTextButton("Exit Game");
+        VisTextButton startGameButton = new VisTextButton(localization.locals.format("mM1"));
+        VisTextButton joinGameButton = new VisTextButton(localization.locals.format("mM2"));
+        VisTextButton changeGameLanguage = new VisTextButton(localization.locals.format("changeLang"));
+        VisTextButton exitGameButton = new VisTextButton(localization.locals.format("exitButton"));
 
         startGameButton.addListener(new ClickListener() {
             @Override
@@ -33,6 +34,15 @@ class MenuScreen extends Screen {
                 game.joinGame();
             }
         });
+        changeGameLanguage.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                localization.langInt++;
+                if (localization.langInt>2) {
+                    localization.langInt = 1;
+                }
+                localization.setLocalization(localization.langInt); }
+        });
         exitGameButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -42,6 +52,7 @@ class MenuScreen extends Screen {
 
         table.add(startGameButton).size(BUTTON_WIDTH, BUTTON_HEIGHT).row();
         table.add(joinGameButton).size(BUTTON_WIDTH, BUTTON_HEIGHT).row();
+        table.add(changeGameLanguage).size(BUTTON_WIDTH, BUTTON_HEIGHT).row();
         table.add(exitGameButton).size(BUTTON_WIDTH, BUTTON_HEIGHT).row();
     }
 }
