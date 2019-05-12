@@ -34,16 +34,22 @@ class PlayerHud extends Group {
     PlayerHud(GameScreen screen) {
         super();
         this.screen = screen;
+        reload();
+    }
+
+    /** Rebuilds the player HUD. Call after a locale change. */
+    void reload() {
+        clear();
 
         // Window containing health + stamina bar
-        VisWindow barWindow = new VisWindow("Status");
+        VisWindow barWindow = new VisWindow(Localization.get("hudStatus"));
         barWindow.add(healthBar).size(BAR_WIDTH, BAR_HEIGHT).row();
         barWindow.add(staminaBar).size(BAR_WIDTH, BAR_HEIGHT);
         barWindow.pack();
         addActor(barWindow);
 
         // Window containing a selection of blocks the player can build
-        VisWindow buildWindow = new VisWindow("Build");
+        VisWindow buildWindow = new VisWindow(Localization.get("hudBuild"));
         GridGroup buildSelectionContainer = new GridGroup(32, 4);
         ButtonGroup<VisImageButton> buildSelectionButtons = new ButtonGroup<>();
         buildSelectionButtons.setMinCheckCount(1);
@@ -51,7 +57,7 @@ class PlayerHud extends Group {
 
         for (BlockProperties properties : BlockProperties.getAllBlocks()) {
             VisImageButton button = new VisImageButton(new TextureRegionDrawable(Game.assets.get(properties.getFullTexturePath(), Texture.class)),
-                    properties.name);
+                    Localization.get("block" + properties.name));
             buildSelectionButtons.add(button);
             buildSelectionContainer.addActor(button);
             button.addListener(new ChangeListener() {
