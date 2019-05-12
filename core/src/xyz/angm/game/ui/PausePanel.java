@@ -23,31 +23,30 @@ class PausePanel extends VisTable {
         setPosition(300, 540);
         setBackground(VisUI.getSkin().getDrawable("black-transparent"));
 
-        add(new VisLabel(localization.locals.format("pML"))).padBottom(BUTTON_HEIGHT).row();
+        add(new VisLabel(Localization.get("pML"))).padBottom(BUTTON_HEIGHT).row();
 
-        VisTextButton resumeGameButton = new VisTextButton(localization.locals.format("pM1"));
-        VisTextButton gameMainMenu = new VisTextButton(localization.locals.format("backToMain"));
-        VisTextButton changeGameLanguage = new VisTextButton(localization.locals.format("changeLang"));
-        VisTextButton exitGameButton = new VisTextButton(localization.locals.format("exitButton"));
+        VisTextButton resumeGameButton = new VisTextButton(Localization.get("pM1"));
+        VisTextButton gameMainMenu = new VisTextButton(Localization.get("backToMain"));
+        VisTextButton changeGameLanguage = new VisTextButton(Localization.get("changeLang"));
+        VisTextButton exitGameButton = new VisTextButton(Localization.get("exitButton"));
 
         resumeGameButton.addListener(new ClickListener() {
             @Override
-            public void clicked(InputEvent event, float x, float y) { screen.togglePausePanel();
+            public void clicked(InputEvent event, float x, float y) {
+                screen.togglePausePanel();
             }
         });
         gameMainMenu.addListener(new ClickListener() {
             @Override
-            public  void clicked(InputEvent event, float x, float y) { screen.returnToMainMenu();
+            public  void clicked(InputEvent event, float x, float y) {
+                screen.returnToMainMenu();
             }
         });
         changeGameLanguage.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                localization.langInt++;
-                if (localization.langInt>2) {
-                    localization.langInt = 1;
-                }
-                localization.setLocalization(localization.langInt); }
+                Localization.cycleLocale();
+            }
         });
         exitGameButton.addListener(new ClickListener() {
             @Override

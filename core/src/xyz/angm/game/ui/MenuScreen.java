@@ -15,12 +15,12 @@ class MenuScreen extends Screen {
     MenuScreen(Game game) {
         super(game);
 
-        table.add(new VisLabel(localization.locals.format("gameName"))).padBottom(BUTTON_HEIGHT).row();
+        table.add(new VisLabel(Localization.get("gameName"))).padBottom(BUTTON_HEIGHT).row();
 
-        VisTextButton startGameButton = new VisTextButton(localization.locals.format("mM1"));
-        VisTextButton joinGameButton = new VisTextButton(localization.locals.format("mM2"));
-        VisTextButton changeGameLanguage = new VisTextButton(localization.locals.format("changeLang"));
-        VisTextButton exitGameButton = new VisTextButton(localization.locals.format("exitButton"));
+        VisTextButton startGameButton = new VisTextButton(Localization.get("mM1"));
+        VisTextButton joinGameButton = new VisTextButton(Localization.get("mM2"));
+        VisTextButton changeGameLanguage = new VisTextButton(Localization.get("changeLang"));
+        VisTextButton exitGameButton = new VisTextButton(Localization.get("exitButton"));
 
         startGameButton.addListener(new ClickListener() {
             @Override
@@ -37,11 +37,8 @@ class MenuScreen extends Screen {
         changeGameLanguage.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                localization.langInt++;
-                if (localization.langInt>2) {
-                    localization.langInt = 1;
-                }
-                localization.setLocalization(localization.langInt); }
+                Localization.cycleLocale();
+            }
         });
         exitGameButton.addListener(new ClickListener() {
             @Override

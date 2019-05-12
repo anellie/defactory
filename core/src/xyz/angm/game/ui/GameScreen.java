@@ -42,8 +42,8 @@ public class GameScreen extends Screen {
 
         boolean connected = client.start();
         if (!connected) {
-            table.add(new VisLabel(localization.locals.format("noServer"))).row();
-            VisTextButton backButton = new VisTextButton(localization.locals.format("backToMain"));
+            table.add(new VisLabel(Localization.get("noServer"))).row();
+            VisTextButton backButton = new VisTextButton(Localization.get("backToMain"));
             backButton.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
