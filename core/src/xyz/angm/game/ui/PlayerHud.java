@@ -21,8 +21,10 @@ import static xyz.angm.game.world.entities.Player.PLAYER_STAMINA;
 /** The player HUD containing all GUI elements of the player, like health bar or inventory. */
 class PlayerHud extends Group {
 
-    private static final int BAR_WIDTH = 400;
-    private static final int BAR_HEIGHT = 15;
+    /** Width of status bars. */
+    static final int BAR_WIDTH = 400;
+    /** Height of status bars. */
+    static final int BAR_HEIGHT = 15;
 
     private final GameScreen screen;
     private final VisProgressBar healthBar = new VisProgressBar(0, PLAYER_HEALTH, 1, false, "health-bar");

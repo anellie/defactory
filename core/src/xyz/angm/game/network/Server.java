@@ -61,7 +61,7 @@ public class Server extends NetworkInterface {
             @Override
             public void connected(Connection connection) {
                 // Sync world seed to client
-                send(((GameScreen) game.getScreen()).getWorld().seed);
+                connection.sendTCP(((GameScreen) game.getScreen()).getWorld().seed);
             }
 
             @Override

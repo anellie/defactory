@@ -20,7 +20,7 @@ public class GameScreen extends Screen {
 
     private boolean pauseMenuActive = false ;
     private World world;
-    private final PlayerHud playerHud = new PlayerHud(this);
+    private PlayerHud hud;
     private final InputMultiplexer inputMultiplexer = new InputMultiplexer();
     private final Vector2 tmpV = new Vector2();
 
@@ -29,7 +29,9 @@ public class GameScreen extends Screen {
     public GameScreen(Game game) {
         super(game);
         world = new World(System.currentTimeMillis());
-        stage.addActor(playerHud);
+        hud = new PlayerHud(this);
+
+        stage.addActor(hud);
         initInput(new PlayerInputProcessor(this));
     }
 
@@ -70,7 +72,7 @@ public class GameScreen extends Screen {
         Gdx.gl.glClearColor(0.05f, 0.05f, 0.05f, 1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        if (world != null) {        // Waiting for server connect; or display 'no server found' message
+        if (world != null) {        // Might be waiting for server connect; or displaying 'no server found' message
             world.act(delta);       // Update world
             world.render();         // Render world. World render is separate to allow for different camera positions
         }
@@ -85,6 +87,7 @@ public class GameScreen extends Screen {
             Gdx.app.postRunnable(() -> {
                 world = new World((Long) packet);
                 world.freeCamera();
+                hud = new SpectatorHud(this);
                 initInput(new SpectatorInputProcessor(this));
             });
         }
@@ -129,7 +132,7 @@ public class GameScreen extends Screen {
             stage.addActor(new PausePanel(this));
             Gdx.input.setInputProcessor(stage);
         } else { // Closes the pause menu
-            stage.addActor(playerHud);
+            stage.addActor(hud);
             Gdx.input.setInputProcessor(inputMultiplexer);
         }
         pauseMenuActive = !pauseMenuActive;
@@ -144,9 +147,9 @@ public class GameScreen extends Screen {
     /** Call when the locale changed. Reloads all UI. */
     void localeChanged() {
         stage.clear();
-        playerHud.reload();
+        hud.reload();
         if (pauseMenuActive) stage.addActor(new PausePanel(this));
-        else stage.addActor(playerHud);
+        else stage.addActor(hud);
     }
 
     @Override

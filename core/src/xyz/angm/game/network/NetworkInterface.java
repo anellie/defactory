@@ -17,6 +17,7 @@ public abstract class NetworkInterface {
     void registerClasses(Kryo kryo) {
         kryo.register(Player.class);
         kryo.register(Block.class);
+        kryo.register(Block.Direction.class);
         kryo.register(TileVector.class);
 
         kryo.register(Vector2.class);
