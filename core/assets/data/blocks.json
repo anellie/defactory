@@ -7,8 +7,8 @@
   },
   {
     "id": 1,
-    "name": "ConveyorBelt",
-    "texture": "conveyorBelt",
+    "name": "ConveyorBeltTier1",
+    "texture": "conveyorBeltTier1",
     "type": "CONVEYOR",
     "isSensor": true
   },
@@ -17,6 +17,27 @@
     "name": "Torch",
     "texture": "torch",
     "type": "TORCH",
+    "isSensor": true
+  },
+  {
+    "id": 3,
+    "name": "ConveyorBeltTier2",
+    "texture": "conveyorBeltTier2",
+    "type": "CONVEYOR",
+    "isSensor": true
+  },
+  {
+    "id": 4,
+    "name": "ConveyorBeltTier3",
+    "texture": "conveyorBeltTier3",
+    "type": "CONVEYOR",
+    "isSensor": true
+  },
+  {
+    "id": 5,
+    "name": "ConveyorBeltTier4",
+    "texture": "conveyorBeltTier4",
+    "type": "CONVEYOR",
     "isSensor": true
   }
 ]
