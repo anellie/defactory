@@ -45,7 +45,7 @@ class PausePanel extends VisTable {
         });
         gameMainMenu.addListener(new ClickListener() {
             @Override
-            public  void clicked(InputEvent event, float x, float y) {
+            public void clicked(InputEvent event, float x, float y) {
                 screen.returnToMainMenu();
             }
         });

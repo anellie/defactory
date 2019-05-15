@@ -82,7 +82,7 @@ public class Player extends Entity {
     @SuppressWarnings("JavaDoc") // Self-explanatory for the most part
     public class Inventory {
 
-        private EnumMap<Material, Integer> materials = new EnumMap<>(Material.class);
+        private final EnumMap<Material, Integer> materials = new EnumMap<>(Material.class);
 
         private Inventory() {
             for (Material material : Material.values()) {

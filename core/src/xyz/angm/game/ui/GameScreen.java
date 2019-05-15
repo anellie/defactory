@@ -18,7 +18,7 @@ import xyz.angm.game.world.entities.Player;
 /** The screen active while the game is running. */
 public class GameScreen extends Screen {
 
-    private boolean pauseMenuActive = false ;
+    private boolean pauseMenuActive = false;
     private World world;
     private PlayerHud hud;
     private final InputMultiplexer inputMultiplexer = new InputMultiplexer();

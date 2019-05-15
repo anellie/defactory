@@ -82,10 +82,11 @@ public class BlockProperties {
         try {
             ObjectMapper mapper = new ObjectMapper();
             allBlockTypes = Collections.unmodifiableList(
-                mapper.readValue(
-                    Gdx.files.internal("data/blocks.json").readString(),
-                    new TypeReference<List<BlockProperties>>() {}
-                )
+                    mapper.readValue(
+                            Gdx.files.internal("data/blocks.json").readString(),
+                            new TypeReference<List<BlockProperties>>() {
+                            }
+                    )
             );
         } catch (Exception e) {
             Gdx.app.error("World", "Fatal error while loading blocks. Exiting.", e);

@@ -20,7 +20,7 @@ import java.util.HashMap;
 class PhysicsEngine {
 
     /** The step size of every Box2D engine step. */
-    private static final float TIME_STEP = 1/60f;
+    private static final float TIME_STEP = 1 / 60f;
     /** Scaling for the player hitbox. 2f is 1:1, hitbox needs to be slightly smaller however.*/
     private static final float PLAYER_SCALE = 2.08f;
     /** Color of the light source of BlockType.TORCH blocks. */
@@ -194,7 +194,7 @@ class PhysicsEngine {
 
             // TODO change this contact type detection logic
             if (((b1.getUserData() instanceof Block) && ((Block) b1.getUserData()).getProperties().type == BlockType.CONVEYOR) || // im so sorry
-                    ((b2.getUserData() instanceof Block) && ((Block) b2.getUserData()).getProperties().type == BlockType.CONVEYOR) ) {
+                    ((b2.getUserData() instanceof Block) && ((Block) b2.getUserData()).getProperties().type == BlockType.CONVEYOR)) {
                 Body onConveyor = (b1.getUserData() instanceof Block) ? b2 : b1;
                 Body conveyorBody = (b1.getUserData() instanceof Block) ? b1 : b2;
                 Block conveyor = (Block) ((b1.getUserData() instanceof Block) ? b1.getUserData() : b2.getUserData());

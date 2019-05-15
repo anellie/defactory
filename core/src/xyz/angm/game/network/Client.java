@@ -59,6 +59,7 @@ public class Client extends NetworkInterface {
             public void received(Connection connection, Object object) {
                 listener.accept(object);
             }
+
             @Override
             public void disconnected(Connection connection) {
                 listener.accept(Status.DISCONNECTED);

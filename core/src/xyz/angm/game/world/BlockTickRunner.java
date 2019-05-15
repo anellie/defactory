@@ -19,15 +19,15 @@ class BlockTickRunner implements Runnable {
 
     private void tickBlock(Block block) {
         if (block.getProperties().materialProduced != null) { // Block produces material
-            // Could NOT come up with an elegant way to check all surrunding blocks... TODO maybe?
-            Block tmpB = world.map.getBlock(tmpTV.set(block.getPosition()).add(1, 0));
-            if (!isConveyor(tmpB)) tmpB = world.map.getBlock(tmpTV.set(block.getPosition()).add(-1, 0));
-            if (!isConveyor(tmpB)) tmpB = world.map.getBlock(tmpTV.set(block.getPosition()).add(0, 1));
-            if (!isConveyor(tmpB)) tmpB = world.map.getBlock(tmpTV.set(block.getPosition()).add(0, -1));
+            // Search a conveyor next to this block
+            Block blockNextTo = world.map.getBlock(tmpTV.set(block.getPosition()).add(1, 0));
+            if (isNotConveyor(blockNextTo)) blockNextTo = world.map.getBlock(tmpTV.set(block.getPosition()).add(-1, 0));
+            if (isNotConveyor(blockNextTo)) blockNextTo = world.map.getBlock(tmpTV.set(block.getPosition()).add(0, 1));
+            if (isNotConveyor(blockNextTo)) blockNextTo = world.map.getBlock(tmpTV.set(block.getPosition()).add(0, -1));
 
             // No conveyor around, put it into the player inventory
-            if (!isConveyor(tmpB)) world.getPlayer().inventory.add(block.getProperties().materialProduced, 1);
-            // Conveyor around, put it onto the conveyor
+            if (isNotConveyor(blockNextTo)) world.getPlayer().inventory.add(block.getProperties().materialProduced, 1);
+                // Conveyor around, put it onto the conveyor
             else world.spawnItem(tmpTV, block.getProperties().materialProduced);
         }
 
@@ -44,7 +44,7 @@ class BlockTickRunner implements Runnable {
         }
     }
 
-    private static boolean isConveyor(Block block) {
-        return block != null && block.getProperties().type == BlockType.CONVEYOR;
+    private static boolean isNotConveyor(Block block) {
+        return block == null || block.getProperties().type != BlockType.CONVEYOR;
     }
 }

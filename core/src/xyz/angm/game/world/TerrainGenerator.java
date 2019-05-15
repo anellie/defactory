@@ -66,8 +66,8 @@ public class TerrainGenerator {
         private static final double SCALE = 0.001;
 
         private final int[][] grad3 = {{1, 1, 0}, {-1, 1, 0}, {1, -1, 0}, {-1, -1, 0}, {1, 0, 1},
-                                {-1, 0, 1}, {1, 0, -1}, {-1, 0, -1}, {0, 1, 1}, {0, -1, 1},
-                                {0, 1, -1}, {0, -1, -1}};
+                {-1, 0, 1}, {1, 0, -1}, {-1, 0, -1}, {0, 1, 1}, {0, -1, 1},
+                {0, 1, -1}, {0, -1, -1}};
         private final int[] perm = new int[512];
 
         SimplexNoiseGenerator(long seed) {
