@@ -15,7 +15,7 @@ import xyz.angm.game.world.entities.Player;
 
 import java.util.HashMap;
 
-/** A simple physics 'engine' wrapping the Box2D physics library.
+/** A 'simple' physics 'engine' wrapping the Box2D physics library.
  * See the LibGDX wiki for explanations of the different parts of Box2D: https://github.com/libgdx/libgdx/wiki/box2d */
 class PhysicsEngine {
 
@@ -192,35 +192,45 @@ class PhysicsEngine {
             Body b1 = contact.getFixtureA().getBody();
             Body b2 = contact.getFixtureB().getBody();
 
-            // TODO change this contact type detection logic
-            if (((b1.getUserData() instanceof Block) && ((Block) b1.getUserData()).getProperties().type == BlockType.CONVEYOR) || // im so sorry
-                    ((b2.getUserData() instanceof Block) && ((Block) b2.getUserData()).getProperties().type == BlockType.CONVEYOR)) {
-                Body onConveyor = (b1.getUserData() instanceof Block) ? b2 : b1;
-                Body conveyorBody = (b1.getUserData() instanceof Block) ? b1 : b2;
-                Block conveyor = (Block) ((b1.getUserData() instanceof Block) ? b1.getUserData() : b2.getUserData());
+            if (b1.getUserData() instanceof Block || b2.getUserData() instanceof Block) {
+                Block block = (Block) ((b1.getUserData() instanceof Block) ? b1.getUserData() : b2.getUserData());
+                Body blockBody = (b1.getUserData() instanceof Block) ? b1 : b2;
+                Body otherBody = (blockBody == b1) ? b2 : b1;
 
-                switch (conveyor.getDirection()) {
-                    case DOWN:
-                        tmpV.set(0, -CONVEYOR_BELT_IMPULSE);
-                        break;
-                    case UP:
-                        tmpV.set(0, CONVEYOR_BELT_IMPULSE);
-                        break;
-                    case LEFT:
-                        tmpV.set(-CONVEYOR_BELT_IMPULSE, 0);
-                        break;
-                    case RIGHT:
-                        tmpV.set(CONVEYOR_BELT_IMPULSE, 0);
-                        break;
-                }
-
-                // The body is pulled to the center of the conveyor first. This prevents the body from flying off the side
-                // when conveyors change direction. (Also creates a nice looking push animation)
-                onConveyor.applyLinearImpulse(
-                        conveyorBody.getPosition().sub(onConveyor.getPosition()).scl(CONVEYOR_BELT_PULL),
-                        onConveyor.getPosition(), true);
-                onConveyor.applyLinearImpulse(tmpV, onConveyor.getPosition(), true);
+                processBlock(block, blockBody, otherBody);
             }
+        }
+
+        // Process contact between a block and another body
+        private void processBlock(Block block, Body blockBody, Body otherBody) {
+            if (block.getProperties().type == BlockType.CONVEYOR) {
+                processConveyor(block, blockBody, otherBody);
+            }
+        }
+
+        // Process contact between a conveyor and another body
+        private void processConveyor(Block conveyor, Body conveyorBody, Body otherBody) {
+            switch (conveyor.getDirection()) {
+                case DOWN:
+                    tmpV.set(0, -CONVEYOR_BELT_IMPULSE);
+                    break;
+                case UP:
+                    tmpV.set(0, CONVEYOR_BELT_IMPULSE);
+                    break;
+                case LEFT:
+                    tmpV.set(-CONVEYOR_BELT_IMPULSE, 0);
+                    break;
+                case RIGHT:
+                    tmpV.set(CONVEYOR_BELT_IMPULSE, 0);
+                    break;
+            }
+
+            // The body is pulled to the center of the conveyor first. This prevents the body from flying off the side
+            // when conveyors change direction. (Also creates a nice looking push animation)
+            otherBody.applyLinearImpulse(
+                    conveyorBody.getPosition().sub(otherBody.getPosition()).scl(CONVEYOR_BELT_PULL),
+                    otherBody.getPosition(), true);
+            otherBody.applyLinearImpulse(tmpV, otherBody.getPosition(), true);
         }
 
         @Override
