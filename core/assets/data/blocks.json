@@ -1,8 +1,8 @@
 [
   {
     "id": 0,
-    "name": "Turret",
-    "texture": "turret",
+    "name": "TurretTier1",
+    "texture": "turretTier1",
     "type": "TURRET"
   },
 
