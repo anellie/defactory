@@ -3,6 +3,7 @@ package xyz.angm.game.world;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Disposable;
 import xyz.angm.game.Game;
 
@@ -47,7 +48,9 @@ public class Block implements Disposable {
         if (actor == null) actor = new Image(Game.assets.get(getProperties().getFullTexturePath(), Texture.class));
         group.addActor(actor);
         actor.setSize(1, 1);
+        actor.setOrigin(Align.center);
         actor.setPosition(position.getX(), position.getY());
+        actor.setRotation(Block.directionToDegrees(direction));
     }
 
     @Override
@@ -58,6 +61,16 @@ public class Block implements Disposable {
     /** The direction a block can be facing. Needed by some blocks; eg conveyor belts. */
     @SuppressWarnings("JavaDoc")
     public enum Direction {
-        UP, DOWN, LEFT, RIGHT
+        UP, RIGHT, DOWN, LEFT
+    }
+
+    /** Convert directions to degrees.
+     * @param d The direction to convert
+     * @return The direction in degrees; right = 0deg; counter-clockwise. */
+    static int directionToDegrees(Direction d) {
+        if (d == Direction.UP) return 90;
+        else if (d == Direction.RIGHT) return 0;
+        else if (d == Direction.DOWN) return 270;
+        else return 180;
     }
 }

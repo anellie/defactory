@@ -1,5 +1,9 @@
 package xyz.angm.game.world.entities;
 
+import xyz.angm.game.world.Block;
+
+import java.util.Arrays;
+
 import static xyz.angm.game.world.TerrainGenerator.WORLD_SIZE_MULTIPLICATOR;
 import static xyz.angm.game.world.World.WORLD_VIEWPORT_HEIGHT;
 import static xyz.angm.game.world.World.WORLD_VIEWPORT_WIDTH;
@@ -16,6 +20,7 @@ public class Player extends Entity {
     private float stamina = PLAYER_STAMINA;
     private boolean isSprinting = false;
     private int blockSelected = 0;
+    private Block.Direction blockDirection = Block.Direction.UP;
 
     /** Constructs a Player. Requires AssetManager in Game to be ready. */
     public Player() {
@@ -56,5 +61,16 @@ public class Player extends Entity {
 
     public void setBlockSelected(int blockSelected) {
         this.blockSelected = blockSelected;
+    }
+
+    public Block.Direction getBlockDirection() {
+        return blockDirection;
+    }
+
+    /** Cycles to the next block direction. */
+    public void cycleDirection() {
+        int newIndex = Arrays.asList(Block.Direction.values()).indexOf(blockDirection) + 1;
+        if (newIndex == Block.Direction.values().length) newIndex = 0;
+        blockDirection = Block.Direction.values()[newIndex];
     }
 }

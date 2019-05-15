@@ -1,5 +1,6 @@
 package xyz.angm.game.ui;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 
 /** An input processor for handling inputs by the player. Does not handle UI. */
@@ -32,6 +33,10 @@ class PlayerInputProcessor extends InputProcessor {
                 break;
             case Input.Keys.SHIFT_LEFT: // Sprint
                 screen.getWorld().getPlayer().sprint(true);
+                break;
+            case Input.Keys.R:
+                screen.getWorld().getPlayer().cycleDirection();
+                screen.getWorld().updateSelector(Gdx.input.getX(), Gdx.input.getY());
                 break;
             default:
                 break;

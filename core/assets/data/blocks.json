@@ -5,18 +5,19 @@
     "texture": "turret",
     "type": "TURRET"
   },
+
   {
     "id": 1,
-    "name": "ConveyorBeltTier1",
-    "texture": "conveyorBeltTier1",
-    "type": "CONVEYOR",
+    "name": "Torch",
+    "texture": "torch",
+    "type": "TORCH",
     "isSensor": true
   },
   {
     "id": 2,
-    "name": "Torch",
-    "texture": "torch",
-    "type": "TORCH",
+    "name": "ConveyorBeltTier1",
+    "texture": "conveyorBeltTier1",
+    "type": "CONVEYOR",
     "isSensor": true
   },
   {
