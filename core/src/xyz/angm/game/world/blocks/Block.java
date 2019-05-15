@@ -1,4 +1,4 @@
-package xyz.angm.game.world;
+package xyz.angm.game.world.blocks;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Group;
@@ -6,6 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Disposable;
 import xyz.angm.game.Game;
+import xyz.angm.game.world.TileVector;
 
 /** A block can be placed by the player, onto a tile in the world map.
  * Different block types have different function. */
@@ -23,28 +24,28 @@ public class Block implements Disposable {
      * @param position The position of the block. Actor position is also set with this.
      * @param type The type of this block.
      * @param direction The direction the block is facing. */
-    Block(TileVector position, int type, Direction direction) {
+    public Block(TileVector position, int type, Direction direction) {
         this();
         this.position.set(position);
         this.type = type;
         this.direction = direction;
     }
 
-    TileVector getPosition() {
+    public TileVector getPosition() {
         return position;
     }
 
-    Direction getDirection() {
+    public Direction getDirection() {
         return direction;
     }
 
-    BlockProperties getProperties() {
+    public BlockProperties getProperties() {
         return BlockProperties.getProperties(type);
     }
 
     /** Adds itself to the given group.
      * @param group Group to be added to */
-    void registerToGroup(Group group) {
+    public void registerToGroup(Group group) {
         if (actor == null) actor = new Image(Game.assets.get(getProperties().getFullTexturePath(), Texture.class));
         group.addActor(actor);
         actor.setSize(1, 1);
@@ -65,7 +66,7 @@ public class Block implements Disposable {
 
         /** Convert this direction to degrees.
          * @return The direction in degrees; right = 0deg; counter-clockwise. */
-        int toDegrees() {
+        public int toDegrees() {
             if (this == Direction.UP) return 90;
             else if (this == Direction.RIGHT) return 0;
             else if (this == Direction.DOWN) return 270;

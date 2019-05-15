@@ -1,10 +1,11 @@
-package xyz.angm.game.ui;
+package xyz.angm.game.ui.input;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
+import xyz.angm.game.ui.screens.GameScreen;
 
 /** An input processor for handling inputs by both player and spectator. Does not handle UI. */
-class InputProcessor extends InputAdapter {
+public class InputProcessor extends InputAdapter {
 
     private static final float SCROLL_SCALING = 0.01f;
 

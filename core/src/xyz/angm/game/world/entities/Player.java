@@ -1,7 +1,7 @@
 package xyz.angm.game.world.entities;
 
-import xyz.angm.game.world.Block;
-import xyz.angm.game.world.Material;
+import xyz.angm.game.world.blocks.Block;
+import xyz.angm.game.world.blocks.Material;
 
 import java.util.Arrays;
 import java.util.EnumMap;

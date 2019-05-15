@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import xyz.angm.game.world.blocks.Block;
 
 import java.util.HashMap;
 import java.util.function.Consumer;
@@ -17,7 +18,7 @@ import static xyz.angm.game.world.World.WORLD_VIEWPORT_WIDTH;
  * - Tile data for getting the terrain type (TODO)
  * - All blocks placed on the terrain.
  */
-class WorldMap extends Image {
+public class WorldMap extends Image {
 
     private final HashMap<TileVector, Block> blocks = new HashMap<>();
 
@@ -37,7 +38,7 @@ class WorldMap extends Image {
     /** Get a block on the map.
      * @param position The position of the block to get.
      * @return The block at the position or null if there is none. */
-    Block getBlock(TileVector position) {
+    public Block getBlock(TileVector position) {
         return blocks.get(position);
     }
 
@@ -60,7 +61,7 @@ class WorldMap extends Image {
 
     /** Calls the given method on all blocks in the map.
      * @param toRun The consumer to run. Will be run for all blocks. */
-    void iterateBlocks(Consumer<Block> toRun) {
+    public void iterateBlocks(Consumer<Block> toRun) {
         for (Block block : blocks.values()) toRun.accept(block);
     }
 }

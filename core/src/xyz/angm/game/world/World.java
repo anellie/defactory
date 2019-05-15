@@ -14,6 +14,10 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import xyz.angm.game.Game;
+import xyz.angm.game.world.blocks.Block;
+import xyz.angm.game.world.blocks.BlockProperties;
+import xyz.angm.game.world.blocks.BlockTickRunner;
+import xyz.angm.game.world.blocks.Material;
 import xyz.angm.game.world.entities.Item;
 import xyz.angm.game.world.entities.Player;
 
@@ -35,7 +39,7 @@ public class World implements Disposable {
     /** Seed used for generating terrain. See {@link TerrainGenerator}. */
     public final long seed;
     /** Map containing the map. (Thanks, Sherlock.) */
-    final WorldMap map;
+    public final WorldMap map;
     private final Player player = new Player();
     private final Array<Item> items = new Array<>(false, 16);
     private final PhysicsEngine physics = new PhysicsEngine(player);
@@ -201,7 +205,7 @@ public class World implements Disposable {
     /** Creates a new item.
      * @param position The position of the item. Will be centered automatically.
      * @param material The type/material of the item to be spawned. */
-    void spawnItem(TileVector position, Material material) {
+    public void spawnItem(TileVector position, Material material) {
         Item item = new Item(new TileVector().set(position), material);
         item.registerToStage(stage);
         physics.itemAdded(item);

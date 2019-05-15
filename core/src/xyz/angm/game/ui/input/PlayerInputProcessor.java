@@ -1,16 +1,17 @@
-package xyz.angm.game.ui;
+package xyz.angm.game.ui.input;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import xyz.angm.game.ui.screens.GameScreen;
 
 /** An input processor for handling inputs by the player. Does not handle UI. */
-class PlayerInputProcessor extends InputProcessor {
+public class PlayerInputProcessor extends InputProcessor {
 
     private final GameScreen screen;
 
     /** Create an input processor.
      * @param screen The screen to bind to */
-    PlayerInputProcessor(GameScreen screen) {
+    public PlayerInputProcessor(GameScreen screen) {
         super(screen);
         this.screen = screen;
     }

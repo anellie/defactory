@@ -1,4 +1,4 @@
-package xyz.angm.game.ui;
+package xyz.angm.game.ui.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
@@ -16,9 +16,9 @@ public abstract class Screen extends ScreenAdapter {
     /** Height to be used for all viewports. */
     public static final int VIEWPORT_WIDTH = 1920;
     /** Height to be used for VisTextButton. */
-    static final float BUTTON_HEIGHT = 48f;
+    public static final float BUTTON_HEIGHT = 48f;
     /** Width to be used for VisTextButton. */
-    static final float BUTTON_WIDTH = 400f;
+    public static final float BUTTON_WIDTH = 400f;
 
     /** The game the screen is running under. */
     final Game game;

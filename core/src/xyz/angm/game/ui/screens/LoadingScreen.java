@@ -1,4 +1,4 @@
-package xyz.angm.game.ui;
+package xyz.angm.game.ui.screens;
 
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisProgressBar;

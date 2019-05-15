@@ -1,4 +1,4 @@
-package xyz.angm.game.ui;
+package xyz.angm.game.ui.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -10,6 +10,7 @@ import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisSelectBox;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import xyz.angm.game.Game;
+import xyz.angm.game.ui.Localization;
 
 /** The menu screen. */
 class MenuScreen extends Screen {

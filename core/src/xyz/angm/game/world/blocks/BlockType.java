@@ -1,4 +1,4 @@
-package xyz.angm.game.world;
+package xyz.angm.game.world.blocks;
 
 /** The type of a block determines its capabilities and behavior. */
 public enum BlockType {

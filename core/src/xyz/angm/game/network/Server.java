@@ -5,7 +5,7 @@ import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.FrameworkMessage;
 import com.esotericsoftware.kryonet.Listener;
 import xyz.angm.game.Game;
-import xyz.angm.game.ui.GameScreen;
+import xyz.angm.game.ui.screens.GameScreen;
 
 import java.io.IOException;
 import java.util.concurrent.Executors;

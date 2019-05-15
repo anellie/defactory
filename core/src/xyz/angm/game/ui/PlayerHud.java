@@ -11,19 +11,20 @@ import com.badlogic.gdx.utils.Align;
 import com.kotcrab.vis.ui.layout.GridGroup;
 import com.kotcrab.vis.ui.widget.*;
 import xyz.angm.game.Game;
-import xyz.angm.game.world.BlockProperties;
-import xyz.angm.game.world.Material;
+import xyz.angm.game.ui.screens.GameScreen;
+import xyz.angm.game.world.blocks.BlockProperties;
+import xyz.angm.game.world.blocks.Material;
 
 import java.util.EnumMap;
 import java.util.Map;
 
-import static xyz.angm.game.ui.Screen.VIEWPORT_HEIGHT;
-import static xyz.angm.game.ui.Screen.VIEWPORT_WIDTH;
+import static xyz.angm.game.ui.screens.Screen.VIEWPORT_HEIGHT;
+import static xyz.angm.game.ui.screens.Screen.VIEWPORT_WIDTH;
 import static xyz.angm.game.world.entities.Player.PLAYER_HEALTH;
 import static xyz.angm.game.world.entities.Player.PLAYER_STAMINA;
 
 /** The player HUD containing all GUI elements of the player, like health bar or inventory. */
-class PlayerHud extends Group {
+public class PlayerHud extends Group {
 
     /** Width of status bars. */
     static final int BAR_WIDTH = 400;
@@ -38,14 +39,14 @@ class PlayerHud extends Group {
 
     /** Construct a new HUD.
      * @param screen The screen the HUD will be a part of */
-    PlayerHud(GameScreen screen) {
+    public PlayerHud(GameScreen screen) {
         super();
         this.screen = screen;
         reload();
     }
 
     /** Rebuilds the player HUD. Call after a locale change. */
-    void reload() {
+    public void reload() {
         clear();
 
         // Window containing health + stamina bar

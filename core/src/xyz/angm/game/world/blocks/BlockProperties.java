@@ -1,4 +1,4 @@
-package xyz.angm.game.world;
+package xyz.angm.game.world.blocks;
 
 import com.badlogic.gdx.Gdx;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -73,7 +73,7 @@ public class BlockProperties {
     /** Returns block properties.
      * @param id The ID of the properties
      * @return The properties with matching ID */
-    static BlockProperties getProperties(int id) {
+    public static BlockProperties getProperties(int id) {
         if (allBlockTypes == null) loadBlocks();
         return allBlockTypes.stream().filter(properties -> properties.id == id).findFirst().orElse(null);
     }

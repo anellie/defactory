@@ -1,4 +1,4 @@
-package xyz.angm.game.world;
+package xyz.angm.game.world.blocks;
 
 import com.badlogic.gdx.graphics.Texture;
 import xyz.angm.game.Game;

@@ -1,7 +1,7 @@
 package xyz.angm.game.world.entities;
 
-import xyz.angm.game.world.Material;
 import xyz.angm.game.world.TileVector;
+import xyz.angm.game.world.blocks.Material;
 
 /** An item entity. Created when a machine creating materials is connected with conveyor belts. */
 public class Item extends Entity {

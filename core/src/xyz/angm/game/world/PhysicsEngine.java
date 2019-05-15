@@ -10,6 +10,8 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import xyz.angm.game.world.blocks.Block;
+import xyz.angm.game.world.blocks.BlockType;
 import xyz.angm.game.world.entities.Item;
 import xyz.angm.game.world.entities.Player;
 

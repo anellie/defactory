@@ -1,9 +1,10 @@
-package xyz.angm.game.ui;
+package xyz.angm.game.ui.input;
 
 import com.badlogic.gdx.math.Vector2;
+import xyz.angm.game.ui.screens.GameScreen;
 
 /** An input processor containing listeners specific to spectators/NPCs. */
-class SpectatorInputProcessor extends InputProcessor {
+public class SpectatorInputProcessor extends InputProcessor {
 
     private final GameScreen screen;
     private final Vector2 mousePosition = new Vector2();
@@ -11,7 +12,7 @@ class SpectatorInputProcessor extends InputProcessor {
 
     /** Create an input processor.
      * @param screen The screen to bind to */
-    SpectatorInputProcessor(GameScreen screen) {
+    public SpectatorInputProcessor(GameScreen screen) {
         super(screen);
         this.screen = screen;
     }

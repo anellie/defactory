@@ -1,4 +1,4 @@
-package xyz.angm.game.ui;
+package xyz.angm.game.ui.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
@@ -10,9 +10,16 @@ import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import xyz.angm.game.Game;
 import xyz.angm.game.network.Client;
-import xyz.angm.game.world.Block;
+import xyz.angm.game.ui.Localization;
+import xyz.angm.game.ui.PausePanel;
+import xyz.angm.game.ui.PlayerHud;
+import xyz.angm.game.ui.SpectatorHud;
+import xyz.angm.game.ui.input.InputProcessor;
+import xyz.angm.game.ui.input.PlayerInputProcessor;
+import xyz.angm.game.ui.input.SpectatorInputProcessor;
 import xyz.angm.game.world.TileVector;
 import xyz.angm.game.world.World;
+import xyz.angm.game.world.blocks.Block;
 import xyz.angm.game.world.entities.Player;
 
 /** The screen active while the game is running. */
@@ -114,8 +121,8 @@ public class GameScreen extends Screen {
      * @see World
      * @param x The x position of the click in screen coordinates.
      * @param y The y position of the click in screen coordinates.
-     * @param rightClick If the click was a right click. Left click assumed if false. */
-    void mapClicked(int x, int y, boolean rightClick) {
+     * @param rightClick If the click was a right click. Left click assumed if false.    */
+    public void mapClicked(int x, int y, boolean rightClick) {
         tmpV.set(x, y);
         world.screenToWorldCoordinates(tmpV);
         TileVector position = new TileVector().set(tmpV);
@@ -126,7 +133,7 @@ public class GameScreen extends Screen {
     }
 
     /** Toggles the pause menu. */
-    void togglePausePanel() {
+    public void togglePausePanel() {
         stage.clear();
         if (!pauseMenuActive) { // Open the pause menu
             stage.addActor(new PausePanel(this));
@@ -139,13 +146,13 @@ public class GameScreen extends Screen {
     }
 
     /** Goes back to the main menu. */
-    void returnToMainMenu() {
+    public void returnToMainMenu() {
         dispose();
         game.setScreen(new MenuScreen(game));
     }
 
     /** Call when the locale changed. Reloads all UI. */
-    void localeChanged() {
+    public void localeChanged() {
         stage.clear();
         hud.reload();
         if (pauseMenuActive) stage.addActor(new PausePanel(this));

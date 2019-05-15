@@ -1,14 +1,17 @@
-package xyz.angm.game.world;
+package xyz.angm.game.world.blocks;
+
+import xyz.angm.game.world.TileVector;
+import xyz.angm.game.world.World;
 
 /** A runnable used to allow all blocks to update themselves. Run from World. */
-class BlockTickRunner implements Runnable {
+public class BlockTickRunner implements Runnable {
 
     private final World world;
     private final TileVector tmpTV = new TileVector();
 
     /** Create a new runnable.
      * @param world The world. */
-    BlockTickRunner(World world) {
+    public BlockTickRunner(World world) {
         this.world = world;
     }
 

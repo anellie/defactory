@@ -2,8 +2,8 @@ package xyz.angm.game.network;
 
 import com.badlogic.gdx.math.Vector2;
 import com.esotericsoftware.kryo.Kryo;
-import xyz.angm.game.world.Block;
 import xyz.angm.game.world.TileVector;
+import xyz.angm.game.world.blocks.Block;
 import xyz.angm.game.world.entities.Player;
 
 /** A simple network interface for sending and receiving packets. */

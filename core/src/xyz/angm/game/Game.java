@@ -11,10 +11,10 @@ import com.kotcrab.vis.ui.VisUI;
 import xyz.angm.game.network.Client;
 import xyz.angm.game.network.NetworkInterface;
 import xyz.angm.game.network.Server;
-import xyz.angm.game.ui.GameScreen;
-import xyz.angm.game.ui.LoadingScreen;
-import xyz.angm.game.world.BlockProperties;
-import xyz.angm.game.world.Material;
+import xyz.angm.game.ui.screens.GameScreen;
+import xyz.angm.game.ui.screens.LoadingScreen;
+import xyz.angm.game.world.blocks.BlockProperties;
+import xyz.angm.game.world.blocks.Material;
 
 import java.util.HashMap;
 import java.util.Map;

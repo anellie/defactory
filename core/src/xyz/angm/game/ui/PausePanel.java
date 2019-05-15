@@ -11,16 +11,17 @@ import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisSelectBox;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
+import xyz.angm.game.ui.screens.GameScreen;
 
-import static xyz.angm.game.ui.Screen.BUTTON_HEIGHT;
-import static xyz.angm.game.ui.Screen.BUTTON_WIDTH;
+import static xyz.angm.game.ui.screens.Screen.BUTTON_HEIGHT;
+import static xyz.angm.game.ui.screens.Screen.BUTTON_WIDTH;
 
 /** A pause panel displayed when pressing escape. */
-class PausePanel extends VisTable {
+public class PausePanel extends VisTable {
 
     /** Construct a new panel.
      * @param screen Screen the panel will be displayed in */
-    PausePanel(GameScreen screen) {
+    public PausePanel(GameScreen screen) {
         super(true);
 
         setFillParent(true);

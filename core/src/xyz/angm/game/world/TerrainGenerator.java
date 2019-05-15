@@ -7,8 +7,8 @@ import xyz.angm.game.Game;
 
 import java.util.Random;
 
-import static xyz.angm.game.ui.Screen.VIEWPORT_HEIGHT;
-import static xyz.angm.game.ui.Screen.VIEWPORT_WIDTH;
+import static xyz.angm.game.ui.screens.Screen.VIEWPORT_HEIGHT;
+import static xyz.angm.game.ui.screens.Screen.VIEWPORT_WIDTH;
 
 /** Generates random terrain using a noise function. */
 public class TerrainGenerator {
