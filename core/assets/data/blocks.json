@@ -5,7 +5,6 @@
     "texture": "turretTier1",
     "type": "TURRET"
   },
-
   {
     "id": 1,
     "name": "Torch",
@@ -40,5 +39,11 @@
     "texture": "conveyorBeltTier4",
     "type": "CONVEYOR",
     "isSensor": true
+  },
+  {
+    "id": 6,
+    "name": "MinerWood",
+    "texture": "minerWood",
+    "materialProduced": "WOOD"
   }
 ]

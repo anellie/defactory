@@ -28,9 +28,9 @@ public class BlockProperties {
     /** Set the block to be a physics sensor (meaning it cannot collide with other entities). */
     public boolean isSensor = false;
 
-    /** The material this block produces. */
+    /** The material this block produces. Will be output to conveyor belts or put in the players inventory if none present. */
     public Material materialProduced = null;
-    /** The material this block requires to work/do its task. */
+    /** The material this block requires to work/do its task. TODO */
     public Material materialRequired = null;
 
     /** TURRET specific: The interval in which the turret fires. */

@@ -6,6 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
 import java.util.HashMap;
+import java.util.function.Consumer;
 
 import static xyz.angm.game.world.TerrainGenerator.WORLD_SIZE_MULTIPLICATOR;
 import static xyz.angm.game.world.World.WORLD_VIEWPORT_HEIGHT;
@@ -33,6 +34,13 @@ class WorldMap extends Image {
         });
     }
 
+    /** Get a block on the map.
+     * @param position The position of the block to get.
+     * @return The block at the position or null if there is none. */
+    Block getBlock(TileVector position) {
+        return blocks.get(position);
+    }
+
     /** Adds the block given to the list of blocks.
      * @param block Block to add
      * @return false when block already exists; true if placing it was successful */
@@ -48,5 +56,11 @@ class WorldMap extends Image {
         Block block = blocks.get(position);
         if (block != null) block.dispose();
         blocks.remove(position);
+    }
+
+    /** Calls the given method on all blocks in the map.
+     * @param toRun The consumer to run. Will be run for all blocks. */
+    void iterateBlocks(Consumer<Block> toRun) {
+        for (Block block : blocks.values()) toRun.accept(block);
     }
 }

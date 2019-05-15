@@ -10,10 +10,15 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import xyz.angm.game.Game;
+import xyz.angm.game.world.entities.Item;
 import xyz.angm.game.world.entities.Player;
+
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import static xyz.angm.game.world.TerrainGenerator.WORLD_SIZE_MULTIPLICATOR;
 
@@ -24,11 +29,15 @@ public class World implements Disposable {
     public static final float WORLD_VIEWPORT_WIDTH = 120f;
     /** The height of the world viewport. Should be in meters due to the physics system. */
     public static final float WORLD_VIEWPORT_HEIGHT = 67.5f;
+    /** The frequency at which blocks update; ie they execute their action. Unit is milliseconds. */
+    private static final long BLOCK_TICK_FREQ = 1000;
 
     /** Seed used for generating terrain. See {@link TerrainGenerator}. */
     public final long seed;
-    private final WorldMap map;
+    /** Map containing the map. (Thanks, Sherlock.) */
+    final WorldMap map;
     private final Player player = new Player();
+    private final Array<Item> items = new Array<>(false, 16);
     private final PhysicsEngine physics = new PhysicsEngine(player);
 
     private final Stage stage = new Stage(new FitViewport(WORLD_VIEWPORT_WIDTH, WORLD_VIEWPORT_HEIGHT));
@@ -44,6 +53,8 @@ public class World implements Disposable {
     public World(long seed) {
         this.seed = seed;
         map = new WorldMap(new TerrainGenerator(seed));
+        Executors.newSingleThreadScheduledExecutor()
+                .scheduleAtFixedRate(new BlockTickRunner(this), BLOCK_TICK_FREQ, BLOCK_TICK_FREQ, TimeUnit.MILLISECONDS);
 
         stage.addActor(blockGroup);
         player.registerToStage(stage);
@@ -67,6 +78,7 @@ public class World implements Disposable {
         physics.act(delta);
         player.act(delta);
         stage.act(delta);
+        items.forEach(item -> item.act(delta));
     }
 
     /** Should be called every frame when the world should render itself and all components. */
@@ -184,5 +196,15 @@ public class World implements Disposable {
      * @param v The vector to transform. */
     public void screenToWorldCoordinates(Vector2 v) {
         stage.screenToStageCoordinates(v);
+    }
+
+    /** Creates a new item.
+     * @param position The position of the item. Will be centered automatically.
+     * @param material The type/material of the item to be spawned. */
+    void spawnItem(TileVector position, Material material) {
+        Item item = new Item(new TileVector().set(position), material);
+        item.registerToStage(stage);
+        physics.itemAdded(item);
+        items.add(item);
     }
 }

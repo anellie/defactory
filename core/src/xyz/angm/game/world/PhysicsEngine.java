@@ -10,6 +10,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import xyz.angm.game.world.entities.Item;
 import xyz.angm.game.world.entities.Player;
 
 import java.util.HashMap;
@@ -24,16 +25,22 @@ class PhysicsEngine {
     private static final float PLAYER_SCALE = 2.08f;
     /** Color of the light source of BlockType.TORCH blocks. */
     private static final Color TORCH_LIGHT_COLOR = new Color(0xFF8D0099);
+    /** Half the size of items. */
+    private static final float ITEM_SIZE = 0.25f;
+    /** Size of sensor blocks. Smaller to improve interactions between conveyors and items. */
+    private static final float SENSOR_BODY_SIZE = 0.25f;
 
     private final World pWorld = new World(new Vector2(0, 0), true);
     private final WorldContactListener contactListener = new WorldContactListener();
     private final HashMap<TileVector, Body> blocks = new HashMap<>();
+    private final Array<Body> items = new Array<>();
     private final Body playerBody;
     private final RayHandler rayHandler = new RayHandler(pWorld);
     private final HashMap<Body, Light> blockLights = new HashMap<>();
 
     private float timeSinceLastStep = 0f;
     private final BodyDef blockDef = new BodyDef();
+    private final BodyDef itemDef = new BodyDef();
     private final Vector2 tmpV = new Vector2();
 
     /** Construct a new engine.
@@ -83,8 +90,12 @@ class PhysicsEngine {
             timeSinceLastStep -= TIME_STEP;
         }
 
-        // Update player position from physics simulation
+        // Update player and item position from physics simulation; also set item velocity to 0 to prevent buildup
         player.getPosition().set(playerBody.getPosition().sub(player.entitySize / 2f, player.entitySize / 2f));
+        items.forEach(item -> {
+            ((Item) item.getUserData()).getPosition().set(item.getPosition().sub(ITEM_SIZE, ITEM_SIZE));
+            item.setLinearVelocity(0, 0);
+        });
     }
 
     /** Renders the lighting parts of the world, using Box2DLights.
@@ -102,9 +113,11 @@ class PhysicsEngine {
         Body blockBody = pWorld.createBody(blockDef);
 
         PolygonShape blockShape = new PolygonShape();
-        blockShape.setAsBox(0.5f, 0.5f);
+        if (block.getProperties().isSensor) blockShape.setAsBox(SENSOR_BODY_SIZE, SENSOR_BODY_SIZE);
+        else blockShape.setAsBox(0.5f, 0.5f);
+
         FixtureDef fixDef = new FixtureDef();
-        fixDef.shape= blockShape;
+        fixDef.shape = blockShape;
         fixDef.density = 0f;
         fixDef.isSensor = block.getProperties().isSensor;
 
@@ -131,6 +144,30 @@ class PhysicsEngine {
         }
     }
 
+    /** Call when an item has been added to the world.
+     * @param item The item to add. */
+    void itemAdded(Item item) {
+        itemDef.position.set(item.getPosition()).add(ITEM_SIZE * 2, ITEM_SIZE * 2);
+        itemDef.type = BodyDef.BodyType.DynamicBody;
+        Body itemBody = pWorld.createBody(itemDef);
+
+        PolygonShape itemShape = new PolygonShape();
+        itemShape.setAsBox(ITEM_SIZE, ITEM_SIZE);
+        FixtureDef fixDef = new FixtureDef();
+        fixDef.shape = itemShape;
+        fixDef.density = 1f;
+        fixDef.friction = 0.8f;
+        fixDef.restitution = 0f;
+        fixDef.isSensor = false;
+
+        itemBody.createFixture(fixDef);
+        itemBody.setUserData(item);
+        itemBody.setFixedRotation(true);
+        itemShape.dispose();
+
+        items.add(itemBody);
+    }
+
     /** Call when viewport size changed. Needs to be independent since RayHandler changes the viewport on its own otherwise.
      * @param viewport The viewport post-change */
     void resizeViewport(Viewport viewport) {
@@ -140,50 +177,60 @@ class PhysicsEngine {
     /** Listens for contacts between entities and handles all contact-based interactions. */
     private class WorldContactListener implements ContactListener {
 
-        private static final float CONVEYOR_BELT_IMPULSE = 3f;
+        private static final float CONVEYOR_BELT_IMPULSE = 1f;
+        private static final float CONVEYOR_BELT_PULL = 2f;
 
-        private final Array<Contact> contacts = new Array<>(false, 5);
         private final Vector2 tmpV = new Vector2();
 
         private void step() {
-            // noinspection LibGDXUnsafeIterator Iterator is not reentered; inspection does not matter
-            for (Contact contact : contacts) {
-                Body b1 = contact.getFixtureA().getBody();
-                Body b2 = contact.getFixtureB().getBody();
+            pWorld.getContactList().forEach(this::processContact);
+        }
 
-                if (((b1.getUserData() instanceof Block) && ((Block) b1.getUserData()).getProperties().type == BlockType.CONVEYOR) || // im so sorry
-                        ((b2.getUserData() instanceof Block) && ((Block) b2.getUserData()).getProperties().type == BlockType.CONVEYOR) ) {
-                    Body onConveyor = (b1.getUserData() instanceof Block) ? b2 : b1;
-                    Block conveyor = (Block) ((b1.getUserData() instanceof Block) ? b1.getUserData() : b2.getUserData());
+        private void processContact(Contact contact) {
+            if (!contact.isTouching()) return; // Filter out AABB phase contacts
 
-                    switch (conveyor.getDirection()) {
-                        case DOWN:
-                            tmpV.set(0, -CONVEYOR_BELT_IMPULSE);
-                            break;
-                        case UP:
-                            tmpV.set(0, CONVEYOR_BELT_IMPULSE);
-                            break;
-                        case LEFT:
-                            tmpV.set(-CONVEYOR_BELT_IMPULSE, 0);
-                            break;
-                        case RIGHT:
-                            tmpV.set(CONVEYOR_BELT_IMPULSE, 0);
-                            break;
-                    }
+            Body b1 = contact.getFixtureA().getBody();
+            Body b2 = contact.getFixtureB().getBody();
 
-                    onConveyor.applyLinearImpulse(tmpV, onConveyor.getPosition(), true);
+            // TODO change this contact type detection logic
+            if (((b1.getUserData() instanceof Block) && ((Block) b1.getUserData()).getProperties().type == BlockType.CONVEYOR) || // im so sorry
+                    ((b2.getUserData() instanceof Block) && ((Block) b2.getUserData()).getProperties().type == BlockType.CONVEYOR) ) {
+                Body onConveyor = (b1.getUserData() instanceof Block) ? b2 : b1;
+                Body conveyorBody = (b1.getUserData() instanceof Block) ? b1 : b2;
+                Block conveyor = (Block) ((b1.getUserData() instanceof Block) ? b1.getUserData() : b2.getUserData());
+
+                switch (conveyor.getDirection()) {
+                    case DOWN:
+                        tmpV.set(0, -CONVEYOR_BELT_IMPULSE);
+                        break;
+                    case UP:
+                        tmpV.set(0, CONVEYOR_BELT_IMPULSE);
+                        break;
+                    case LEFT:
+                        tmpV.set(-CONVEYOR_BELT_IMPULSE, 0);
+                        break;
+                    case RIGHT:
+                        tmpV.set(CONVEYOR_BELT_IMPULSE, 0);
+                        break;
                 }
+
+                // The body is pulled to the center of the conveyor first. This prevents the body from flying off the side
+                // when conveyors change direction. (Also creates a nice looking push animation)
+                onConveyor.applyLinearImpulse(
+                        conveyorBody.getPosition().sub(onConveyor.getPosition()).scl(CONVEYOR_BELT_PULL),
+                        onConveyor.getPosition(), true);
+                onConveyor.applyLinearImpulse(tmpV, onConveyor.getPosition(), true);
             }
         }
 
         @Override
         public void beginContact(Contact contact) {
-            contacts.add(contact);
+            processContact(contact);
         }
 
         @Override
         public void endContact(Contact contact) {
-            contacts.removeValue(contact, true);
+            // Not needed; interface requires it to be implemented
         }
 
         @Override

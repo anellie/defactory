@@ -42,6 +42,14 @@ public class TileVector {
         return set(v.x, v.y);
     }
 
+    /** Adds the values to itself.
+     * @param x Added to the X axis.
+     * @param y Added to the Y axis.
+     * @return Itself. */
+    public TileVector add(int x, int y) {
+        return set(this.getX() + x, this.getY() + y);
+    }
+
     /** Returns true if both axes match. */
     @Override
     public boolean equals(Object o) {

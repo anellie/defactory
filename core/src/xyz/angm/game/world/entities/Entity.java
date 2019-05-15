@@ -20,7 +20,7 @@ public abstract class Entity implements Serializable {
     /** The entities health. 0 will cause the entity to be disposed. */
     int health;
     /** The size of the actor. */
-    public final int entitySize;
+    public final float entitySize;
     /** Actor for displaying on the screen. */
     private transient Image actor;
     /** Location of the actor's texture. */
@@ -28,7 +28,7 @@ public abstract class Entity implements Serializable {
 
     /** Create a new entity.
      * @param entitySize The size of the entity in meters. (eg 1 block = 1 meter) */
-    Entity(int entitySize) {
+    Entity(float entitySize) {
         this.entitySize = entitySize;
     }
 
@@ -46,7 +46,7 @@ public abstract class Entity implements Serializable {
 
     /** Should be called every frame on the server so the entity can update.
      * @param delta Time since last call to this method in seconds. */
-    void act(float delta) {
+    public void act(float delta) {
         actor.setPosition(position.x, position.y);
     }
 
