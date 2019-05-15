@@ -67,7 +67,7 @@ public class World implements Disposable {
         selector.setSize(1, 1);
         selector.setColor(1, 1, 1, 0.5f);
         selector.setOrigin(Align.center);
-        ((OrthographicCamera) stage.getCamera()).zoom = 0.5f;
+        ((OrthographicCamera) stage.getCamera()).zoom = 0.2f;
     }
 
     /** Returns the player entity.

@@ -79,6 +79,16 @@ public class PlayerInputProcessor extends InputProcessor {
     }
 
     @Override
+    public boolean touchDragged(int screenX, int screenY, int pointer) {
+        screen.getWorld().updateSelector(screenX, screenY);
+        if (Gdx.input.isButtonPressed(Input.Buttons.LEFT) || Gdx.input.isButtonPressed(Input.Buttons.RIGHT)) {
+            screen.mapClicked(screenX, screenY, Gdx.input.isButtonPressed(Input.Buttons.RIGHT));
+            return true;
+        }
+        return false;
+    }
+
+    @Override
     public boolean mouseMoved(int screenX, int screenY) {
         screen.getWorld().updateSelector(screenX, screenY);
         return true;
