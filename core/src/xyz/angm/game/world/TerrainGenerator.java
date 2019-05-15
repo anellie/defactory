@@ -15,34 +15,47 @@ public class TerrainGenerator {
 
     private static final double STONE_CHANCE = 0.25f;
     private static final double WATER_CHANCE = 0.15f;
+    private static final int LINES_PER_STEP = 15;
 
     /** Multiplicator for the world map. Takes the viewport size as base. */
     public static final int WORLD_SIZE_MULTIPLICATOR = 3;
 
+    final long seed;
     private final SimplexNoiseGenerator noiseGenerator;
+    private final Pixmap grass;
+    private final Pixmap stone;
+    private final Pixmap water;
+    private final Pixmap map = new Pixmap(
+            WORLD_SIZE_MULTIPLICATOR * VIEWPORT_WIDTH, WORLD_SIZE_MULTIPLICATOR * VIEWPORT_HEIGHT, Pixmap.Format.RGB888);
+    private int index = 0;
 
     /** Create a terrain generator. Seed is used for randomness; same seed = same world
      * @param seed Seed to be used */
-    TerrainGenerator(long seed) {
+    public TerrainGenerator(long seed) {
+        this.seed = seed;
         noiseGenerator = new SimplexNoiseGenerator(seed);
-    }
-
-    /** Creates a Texture displaying the ground, using the proper terrain.
-     * @return A Texture constructed using a Pixmap.*/
-    Texture createWorldMapTexture() {
         TextureData grassTD = Game.assets.get("textures/map/grass.png", Texture.class).getTextureData();
         TextureData stoneTD = Game.assets.get("textures/map/stone.png", Texture.class).getTextureData();
         TextureData waterTD = Game.assets.get("textures/map/water.png", Texture.class).getTextureData();
         grassTD.prepare();
         stoneTD.prepare();
         waterTD.prepare();
-        Pixmap grass = grassTD.consumePixmap();
-        Pixmap stone = stoneTD.consumePixmap();
-        Pixmap water = waterTD.consumePixmap();
+        grass = grassTD.consumePixmap();
+        stone = stoneTD.consumePixmap();
+        water = waterTD.consumePixmap();
+    }
 
-        Pixmap map = new Pixmap(WORLD_SIZE_MULTIPLICATOR * VIEWPORT_WIDTH, WORLD_SIZE_MULTIPLICATOR * VIEWPORT_HEIGHT, Pixmap.Format.RGB888);
+    /** Creates a Texture displaying the ground, using the proper terrain.
+     * @return A Texture constructed using the created pixmap. */
+    Texture getTexture() {
+        return new Texture(map);
+    }
+
+    /** Continue loading. Call every frame.
+     * @return Loading progress.*/
+    public float continueLoading() {
         for (int x = 0; x < map.getWidth(); x++) {
-            for (int y = 0; y < map.getHeight(); y++) {
+            for (int y = index; y < (index + LINES_PER_STEP); y++) {
                 double noise = noiseGenerator.generateDot(x, y);
 
                 Pixmap copyFrom;
@@ -54,8 +67,8 @@ public class TerrainGenerator {
                 map.drawPixel(x, y);
             }
         }
-
-        return new Texture(map);
+        index += LINES_PER_STEP;
+        return (float) index / map.getHeight();
     }
 
     private class SimplexNoiseGenerator {

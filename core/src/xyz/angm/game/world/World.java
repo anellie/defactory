@@ -53,10 +53,10 @@ public class World implements Disposable {
     private final Vector2 tmpV = new Vector2();
 
     /** Constructs a new world along with it's map.
-     * @param seed The seed for world generation. */
-    public World(long seed) {
-        this.seed = seed;
-        map = new WorldMap(new TerrainGenerator(seed));
+     * @param generator The generator which is done loading. */
+    public World(TerrainGenerator generator) {
+        this.seed = generator.seed;
+        map = new WorldMap(generator);
         Executors.newSingleThreadScheduledExecutor()
                 .scheduleAtFixedRate(new BlockTickRunner(this), BLOCK_TICK_FREQ, BLOCK_TICK_FREQ, TimeUnit.MILLISECONDS);
 

@@ -3,17 +3,18 @@ package xyz.angm.game.ui.screens;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisProgressBar;
 import xyz.angm.game.Game;
+import xyz.angm.game.ui.Localization;
 
 /** The first screen to be displayed; load all assets. */
-public class LoadingScreen extends Screen {
+public class AssetLoadingScreen extends Screen {
 
     private final VisProgressBar progressBar = new VisProgressBar(0f, 100f, 0.1f, false);
 
     /** Constructs the screen to start loading assets from the game's asset manager.
      * @param game The game the screen is running under. */
-    public LoadingScreen(Game game) {
+    public AssetLoadingScreen(Game game) {
         super(game);
-        table.add(new VisLabel("Loading assets!")).row();
+        table.add(new VisLabel(Localization.get("loadingAssets"))).row();
         table.add(progressBar).size(500f, 10f);
     }
 

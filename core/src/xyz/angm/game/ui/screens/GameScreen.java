@@ -4,13 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.kotcrab.vis.ui.widget.VisLabel;
-import com.kotcrab.vis.ui.widget.VisTextButton;
 import xyz.angm.game.Game;
 import xyz.angm.game.network.Client;
-import xyz.angm.game.ui.Localization;
 import xyz.angm.game.ui.PausePanel;
 import xyz.angm.game.ui.PlayerHud;
 import xyz.angm.game.ui.SpectatorHud;
@@ -31,36 +26,27 @@ public class GameScreen extends Screen {
     private final InputMultiplexer inputMultiplexer = new InputMultiplexer();
     private final Vector2 tmpV = new Vector2();
 
-    /** Constructs the screen and generates a new world. Run only when server is active.
-     * @param game The game the screen is running under. */
-    public GameScreen(Game game) {
+    /** Constructs the screen.
+     * @param game The game the screen is running under.
+     * @param world The world to use. */
+    public GameScreen(Game game, World world) {
         super(game);
-        world = new World(System.currentTimeMillis());
-        hud = new PlayerHud(this);
-
+        this.world = world;
+        if (game.isServer()) initServer();
+        else initClient();
         stage.addActor(hud);
+    }
+
+    private void initServer() {
+        hud = new PlayerHud(this);
         initInput(new PlayerInputProcessor(this));
     }
 
-    /** Constructs the screen and waits for the world from the server.
-     * @param game The game the screen is running under.
-     * @param client The client to wait for events with. Client should not have connected yet! */
-    public GameScreen(Game game, Client client) {
-        super(game);
-        client.addListener(this::serverPacketReceived);
-
-        boolean connected = client.start();
-        if (!connected) {
-            table.add(new VisLabel(Localization.get("noServer"))).row();
-            VisTextButton backButton = new VisTextButton(Localization.get("backToMain"));
-            backButton.addListener(new ClickListener() {
-                @Override
-                public void clicked(InputEvent event, float x, float y) {
-                    returnToMainMenu();
-                }
-            });
-            table.add(backButton).size(BUTTON_WIDTH, BUTTON_HEIGHT);
-        }
+    private void initClient() {
+        game.getClient().addListener(this::serverPacketReceived);
+        world.freeCamera();
+        hud = new SpectatorHud(this);
+        initInput(new SpectatorInputProcessor(this));
     }
 
     // Create a multiplexer for handling input for both UI and in-world (https://github.com/libgdx/libgdx/wiki/Event-handling#inputmultiplexer)
@@ -79,10 +65,8 @@ public class GameScreen extends Screen {
         Gdx.gl.glClearColor(0.05f, 0.05f, 0.05f, 1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        if (world != null) {        // Might be waiting for server connect; or displaying 'no server found' message
-            world.act(delta);       // Update world
-            world.render();         // Render world. World render is separate to allow for different camera positions
-        }
+        world.act(delta);       // Update world
+        world.render();         // Render world. World render is separate to allow for different camera positions
 
         stage.act(delta);
         stage.draw();
@@ -90,18 +74,7 @@ public class GameScreen extends Screen {
 
     // Packet/Object received from server. Only call on client instances.
     private void serverPacketReceived(Object packet) {
-        if (packet instanceof Long) { // Long is the seed; world needs to init now
-            Gdx.app.postRunnable(() -> {
-                world = new World((Long) packet);
-                world.freeCamera();
-                hud = new SpectatorHud(this);
-                initInput(new SpectatorInputProcessor(this));
-            });
-        }
-        else if (world == null) {
-            // The client is not ready to receive packets yet. All packets are ignored until the seed is sent.
-        }
-        else if (packet instanceof Player) {  // Player should be synced
+        if (packet instanceof Player) {  // Player should be synced
             Player serverPlayer = (Player) packet;
             Player localPlayer = world.getPlayer();
             localPlayer.getPosition().set(serverPlayer.getPosition());

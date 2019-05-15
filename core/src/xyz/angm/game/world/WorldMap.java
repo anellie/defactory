@@ -29,7 +29,7 @@ public class WorldMap extends Image {
 
         // Rendering needs to happen in OpenGL context/thread; else crash
         Gdx.app.postRunnable(() -> {
-            setDrawable(new TextureRegionDrawable(new TextureRegion((generator.createWorldMapTexture()))));
+            setDrawable(new TextureRegionDrawable(new TextureRegion((generator.getTexture()))));
             setSize(WORLD_VIEWPORT_WIDTH * WORLD_SIZE_MULTIPLICATOR, WORLD_VIEWPORT_HEIGHT * WORLD_SIZE_MULTIPLICATOR);
             setPosition(0f, 0f);
         });

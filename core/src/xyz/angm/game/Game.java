@@ -1,5 +1,6 @@
 package xyz.angm.game;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -11,8 +12,9 @@ import com.kotcrab.vis.ui.VisUI;
 import xyz.angm.game.network.Client;
 import xyz.angm.game.network.NetworkInterface;
 import xyz.angm.game.network.Server;
-import xyz.angm.game.ui.screens.GameScreen;
-import xyz.angm.game.ui.screens.LoadingScreen;
+import xyz.angm.game.ui.screens.AssetLoadingScreen;
+import xyz.angm.game.ui.screens.MapLoadingScreen;
+import xyz.angm.game.ui.screens.MessageScreen;
 import xyz.angm.game.world.blocks.BlockProperties;
 import xyz.angm.game.world.blocks.Material;
 
@@ -34,7 +36,7 @@ public class Game extends com.badlogic.gdx.Game {
         Box2D.init(); // Box2D is a 2D physics engine
         registerAllAssets();
         createSkin();
-        setScreen(new LoadingScreen(this));
+        setScreen(new AssetLoadingScreen(this));
     }
 
     @Override
@@ -47,13 +49,20 @@ public class Game extends com.badlogic.gdx.Game {
     public void startGame() {
         netIface = new Server(this);
         netIface.start();
-        setScreen(new GameScreen(this));
+        setScreen(new MapLoadingScreen(this, System.currentTimeMillis()));
     }
 
     /** Joins a server. Allows the player to play as a beast trying to destroy the base. */
     public void joinGame() {
-        netIface = new Client();
-        setScreen(new GameScreen(this, (Client) netIface));
+        Client client = new Client();
+        netIface = client;
+
+        client.addListener(packet -> {
+            if (packet instanceof Long)
+                Gdx.app.postRunnable(() -> this.setScreen(new MapLoadingScreen(this, (Long) packet)));
+        });
+        boolean connected = client.start();
+        if (!connected) setScreen(new MessageScreen(this, "failedToConnect"));
     }
 
     /** Only callable on the server.
@@ -61,6 +70,19 @@ public class Game extends com.badlogic.gdx.Game {
      * @throws ClassCastException when called on client. */
     public Server getServer() {
         return (Server) netIface;
+    }
+
+    /** Only callable on the client.
+     * @return The client if one exists.
+     * @throws ClassCastException when called on server. */
+    public Client getClient() {
+        return (Client) netIface;
+    }
+
+    /** Is this a server?
+     * @return If this game is a server/player. */
+    public boolean isServer() {
+        return netIface instanceof Server;
     }
 
     /** Removes and properly disposes of the network interface. Should be called when exiting gameplay (returning to menu). */
