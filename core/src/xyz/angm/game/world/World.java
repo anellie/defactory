@@ -103,7 +103,7 @@ public class World implements Disposable {
         selectorPosition.set(tmpV);
         selector.setPosition(selectorPosition.getX(), selectorPosition.getY());
         selector.setDrawable(new TextureRegionDrawable(new TextureRegion(Game.assets.get(BlockProperties.getProperties(getPlayer().getBlockSelected()).getFullTexturePath(), Texture.class))));
-        selector.setRotation(Block.directionToDegrees(player.getBlockDirection()));
+        selector.setRotation(player.getBlockDirection().toDegrees());
     }
 
     /** Zooms the world map; scaling it bigger or smaller.

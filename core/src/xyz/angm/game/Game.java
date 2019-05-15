@@ -14,6 +14,7 @@ import xyz.angm.game.network.Server;
 import xyz.angm.game.ui.GameScreen;
 import xyz.angm.game.ui.LoadingScreen;
 import xyz.angm.game.world.BlockProperties;
+import xyz.angm.game.world.Material;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -75,7 +76,7 @@ public class Game extends com.badlogic.gdx.Game {
         assets.load("textures/map/grass.png", Texture.class);
         assets.load("textures/map/stone.png", Texture.class);
         assets.load("textures/map/water.png", Texture.class);
-
+        Material.loadTextures();
 
         for (BlockProperties properties : BlockProperties.getAllBlocks()) {
             assets.load(properties.getFullTexturePath(), Texture.class);

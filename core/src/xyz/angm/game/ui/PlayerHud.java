@@ -4,16 +4,20 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.ButtonGroup;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.kotcrab.vis.ui.layout.GridGroup;
-import com.kotcrab.vis.ui.widget.VisImageButton;
-import com.kotcrab.vis.ui.widget.VisProgressBar;
-import com.kotcrab.vis.ui.widget.VisWindow;
+import com.kotcrab.vis.ui.widget.*;
 import xyz.angm.game.Game;
 import xyz.angm.game.world.BlockProperties;
+import xyz.angm.game.world.Material;
 
+import java.util.EnumMap;
+import java.util.Map;
+
+import static xyz.angm.game.ui.Screen.VIEWPORT_HEIGHT;
 import static xyz.angm.game.ui.Screen.VIEWPORT_WIDTH;
 import static xyz.angm.game.world.entities.Player.PLAYER_HEALTH;
 import static xyz.angm.game.world.entities.Player.PLAYER_STAMINA;
@@ -30,6 +34,7 @@ class PlayerHud extends Group {
     private final VisProgressBar healthBar = new VisProgressBar(0, PLAYER_HEALTH, 1, false, "health-bar");
     private final VisProgressBar staminaBar =
             new VisProgressBar(0, PLAYER_STAMINA, PLAYER_STAMINA / BAR_WIDTH, false, "stamina-bar");
+    private EnumMap<Material, Label> materialLabels = new EnumMap<>(Material.class);
 
     /** Construct a new HUD.
      * @param screen The screen the HUD will be a part of */
@@ -75,6 +80,18 @@ class PlayerHud extends Group {
         buildWindow.pack();
         buildWindow.setPosition(VIEWPORT_WIDTH, 0, Align.bottomRight);
         addActor(buildWindow);
+
+        // Window containing the players inventory
+        VisWindow inventoryWindow = new VisWindow(Localization.get("hudInventory"));
+        for (Material material : Material.values()) {
+            inventoryWindow.add(new VisImage(material.getTexture())).size(32).align(Align.left).padRight(20);
+            Label label = new VisLabel();
+            materialLabels.put(material, label);
+            inventoryWindow.add(label).size(32).align(Align.right).padBottom(5).row();
+        }
+        inventoryWindow.pack();
+        inventoryWindow.setPosition(0, VIEWPORT_HEIGHT, Align.topLeft);
+        addActor(inventoryWindow);
     }
 
     @Override
@@ -82,5 +99,9 @@ class PlayerHud extends Group {
         super.act(delta);
         healthBar.setValue(screen.getWorld().getPlayer().getHealth());
         staminaBar.setValue(screen.getWorld().getPlayer().getStamina());
+
+        for (Map.Entry<Material, Label> material : materialLabels.entrySet()) {
+            material.getValue().setText(screen.getWorld().getPlayer().inventory.get(material.getKey()));
+        }
     }
 }

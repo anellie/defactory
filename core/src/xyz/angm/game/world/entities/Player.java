@@ -1,8 +1,10 @@
 package xyz.angm.game.world.entities;
 
 import xyz.angm.game.world.Block;
+import xyz.angm.game.world.Material;
 
 import java.util.Arrays;
+import java.util.EnumMap;
 
 import static xyz.angm.game.world.TerrainGenerator.WORLD_SIZE_MULTIPLICATOR;
 import static xyz.angm.game.world.World.WORLD_VIEWPORT_HEIGHT;
@@ -21,6 +23,8 @@ public class Player extends Entity {
     private boolean isSprinting = false;
     private int blockSelected = 0;
     private Block.Direction blockDirection = Block.Direction.UP;
+    /** The players inventory. */
+    public final Inventory inventory = new Inventory();
 
     /** Constructs a Player. Requires AssetManager in Game to be ready. */
     public Player() {
@@ -72,5 +76,43 @@ public class Player extends Entity {
         int newIndex = Arrays.asList(Block.Direction.values()).indexOf(blockDirection) + 1;
         if (newIndex == Block.Direction.values().length) newIndex = 0;
         blockDirection = Block.Direction.values()[newIndex];
+    }
+
+    /** The players inventory containing all material the player has. */
+    @SuppressWarnings("JavaDoc") // Self-explanatory for the most part
+    public class Inventory {
+
+        private EnumMap<Material, Integer> materials = new EnumMap<>(Material.class);
+
+        private Inventory() {
+            for (Material material : Material.values()) {
+                materials.put(material, 0);
+            }
+        }
+
+        /** Get the amount of the material left. */
+        public int get(Material material) {
+            return materials.get(material);
+        }
+
+        private void set(Material material, int amount) {
+            materials.put(material, amount);
+        }
+
+        /** Add the amount to the material. */
+        public void add(Material material, int amount) {
+            set(material, get(material) + amount);
+        }
+
+        /** Remove the amount from the material. */
+        public void remove(Material material, int amount) {
+            set(material, get(material) - amount);
+            if (get(material) < 0) set(material, 0);
+        }
+
+        /** Returns if the player has enough of the item left. */
+        public boolean isLeft(Material material, int amount) {
+            return get(material) >= amount;
+        }
     }
 }

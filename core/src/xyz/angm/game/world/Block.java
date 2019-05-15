@@ -50,7 +50,7 @@ public class Block implements Disposable {
         actor.setSize(1, 1);
         actor.setOrigin(Align.center);
         actor.setPosition(position.getX(), position.getY());
-        actor.setRotation(Block.directionToDegrees(direction));
+        actor.setRotation(direction.toDegrees());
     }
 
     @Override
@@ -61,16 +61,15 @@ public class Block implements Disposable {
     /** The direction a block can be facing. Needed by some blocks; eg conveyor belts. */
     @SuppressWarnings("JavaDoc")
     public enum Direction {
-        UP, RIGHT, DOWN, LEFT
-    }
+        UP, RIGHT, DOWN, LEFT;
 
-    /** Convert directions to degrees.
-     * @param d The direction to convert
-     * @return The direction in degrees; right = 0deg; counter-clockwise. */
-    static int directionToDegrees(Direction d) {
-        if (d == Direction.UP) return 90;
-        else if (d == Direction.RIGHT) return 0;
-        else if (d == Direction.DOWN) return 270;
-        else return 180;
+        /** Convert this direction to degrees.
+         * @return The direction in degrees; right = 0deg; counter-clockwise. */
+        int toDegrees() {
+            if (this == Direction.UP) return 90;
+            else if (this == Direction.RIGHT) return 0;
+            else if (this == Direction.DOWN) return 270;
+            else return 180;
+        }
     }
 }
