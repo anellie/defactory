@@ -113,6 +113,7 @@ public class Game extends com.badlogic.gdx.Game {
         Map<String, Color> colors = new HashMap<>();
         colors.put("red", Color.RED);
         colors.put("green", Color.GREEN);
+        colors.put("black-transparent", new Color(0x00000088));
         for (Map.Entry<String, Color> color : colors.entrySet()) {
             Pixmap pm = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
             pm.setColor(color.getValue());

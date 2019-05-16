@@ -8,6 +8,7 @@ public class BlockTickRunner implements Runnable {
 
     private final World world;
     private final TileVector tmpTV = new TileVector();
+    private final Block[] tmpBlockArray = new Block[4];
 
     /** Create a new runnable.
      * @param world The world. */
@@ -24,16 +25,22 @@ public class BlockTickRunner implements Runnable {
         if (!block.canWork()) return;
 
         if (block.getProperties().materialProduced != null) { // Block produces material
-            // Search a conveyor next to this block
-            Block blockNextTo = world.map.getBlock(tmpTV.set(block.getPosition()).add(1, 0));
-            if (isNotConveyor(blockNextTo)) blockNextTo = world.map.getBlock(tmpTV.set(block.getPosition()).add(-1, 0));
-            if (isNotConveyor(blockNextTo)) blockNextTo = world.map.getBlock(tmpTV.set(block.getPosition()).add(0, 1));
-            if (isNotConveyor(blockNextTo)) blockNextTo = world.map.getBlock(tmpTV.set(block.getPosition()).add(0, -1));
+            boolean conveyorFound = false;
+            tmpBlockArray[0] = world.map.getBlock(tmpTV.set(block.getPosition()).add(0, -1));
+            tmpBlockArray[1] = world.map.getBlock(tmpTV.set(block.getPosition()).add(-1, 0));
+            tmpBlockArray[2] = world.map.getBlock(tmpTV.set(block.getPosition()).add(0, 1));
+            tmpBlockArray[3] = world.map.getBlock(tmpTV.set(block.getPosition()).add(1, 0));
+
+            for (int i = 0; i < tmpBlockArray.length; i++) {
+                if (isConveyor(tmpBlockArray[i], Block.Direction.values()[i])) {
+                    world.spawnItem(tmpBlockArray[i].getPosition(), block.getProperties().materialProduced);
+                    conveyorFound = true;
+                    break;
+                }
+            }
 
             // No conveyor around, put it into the player inventory
-            if (isNotConveyor(blockNextTo)) world.getPlayer().inventory.add(block.getProperties().materialProduced, 1);
-            // Conveyor around, put it onto the conveyor
-            else world.spawnItem(tmpTV, block.getProperties().materialProduced);
+            if (!conveyorFound) world.getPlayer().inventory.add(block.getProperties().materialProduced, 1);
         }
 
         // Run type-specific actions
@@ -51,8 +58,8 @@ public class BlockTickRunner implements Runnable {
         block.decrementMaterial();
     }
 
-    /** Is the block NOT a conveyor? */
-    private static boolean isNotConveyor(Block block) {
-        return block == null || block.getProperties().type != BlockType.CONVEYOR;
+    /** Is the block NOT a conveyor able to receive items? */
+    private static boolean isConveyor(Block block, Block.Direction direction) {
+        return block != null && block.getProperties().type == BlockType.CONVEYOR && block.getDirection() != direction;
     }
 }
