@@ -3,7 +3,8 @@
     "id": 0,
     "name": "TurretTier1",
     "texture": "turretTier1",
-    "type": "TURRET"
+    "type": "TURRET",
+    "category": "Artillery"
   },
   {
     "id": 1,
@@ -44,27 +45,31 @@
     "id": 6,
     "name": "MinerWood",
     "texture": "minerWood",
-    "materialProduced": "WOOD"
+    "materialProduced": "WOOD",
+    "category": "Producing"
   },
   {
     "id": 7,
     "name": "MinerStone",
     "texture": "minerWood",
     "materialProduced": "STONE",
-    "materialRequired": "WOOD"
+    "materialRequired": "WOOD",
+    "category": "Producing"
   },
   {
     "id": 8,
     "name": "MinerIron",
     "texture": "minerWood",
     "materialProduced": "IRON",
-    "materialRequired": "STONE"
+    "materialRequired": "STONE",
+    "category": "Producing"
   },
   {
     "id": 9,
     "name": "MinerDiamond",
     "texture": "minerWood",
     "materialProduced": "DIAMOND",
-    "materialRequired": "IRON"
+    "materialRequired": "IRON",
+    "category": "Producing"
   }
 ]

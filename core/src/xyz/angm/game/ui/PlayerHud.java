@@ -16,6 +16,7 @@ import xyz.angm.game.world.blocks.BlockProperties;
 import xyz.angm.game.world.blocks.Material;
 
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.Map;
 
 import static xyz.angm.game.ui.screens.Screen.VIEWPORT_HEIGHT;
@@ -58,26 +59,35 @@ public class PlayerHud extends Group {
 
         // Window containing a selection of blocks the player can build
         VisWindow buildWindow = new VisWindow(Localization.get("hudBuild"));
-        GridGroup buildSelectionContainer = new GridGroup(32, 4);
+        HashMap<String, GridGroup> buildSelectionCategories = new HashMap<>();
         ButtonGroup<VisImageButton> buildSelectionButtons = new ButtonGroup<>();
         buildSelectionButtons.setMinCheckCount(1);
         buildSelectionButtons.setMaxCheckCount(1);
 
         for (BlockProperties properties : BlockProperties.getAllBlocks()) {
-            VisImageButton button = new VisImageButton(new TextureRegionDrawable(Game.assets.get(properties.getFullTexturePath(), Texture.class)),
+            VisImageButton button = new VisImageButton(
+                    new TextureRegionDrawable(Game.assets.get(properties.getFullTexturePath(), Texture.class)),
                     Localization.get("block" + properties.name));
             buildSelectionButtons.add(button);
-            buildSelectionContainer.addActor(button);
             button.addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
                     screen.getWorld().getPlayer().setBlockSelected(properties.id);
                 }
             });
+
+            GridGroup category = buildSelectionCategories.get(properties.category);
+            if (category != null) category.addActor(button);
+            else {
+                GridGroup newCategory = new GridGroup(32, 4);
+                newCategory.addActor(button);
+                buildWindow.add(new VisLabel(Localization.get("category" + properties.category))).width(300).row();
+                buildWindow.add(newCategory).width(300).row();
+                buildSelectionCategories.put(properties.category, newCategory);
+            }
         }
 
         buildSelectionButtons.getButtons().get(0).setChecked(true);
-        buildWindow.add(buildSelectionContainer).size(300, 150);
         buildWindow.pack();
         buildWindow.setPosition(VIEWPORT_WIDTH, 0, Align.bottomRight);
         addActor(buildWindow);

@@ -17,10 +17,6 @@ public class BlockProperties {
 
     /** The ID of a block type used to determine equality. Should not be the same on different block properties. */
     public int id = -1;
-    /** The path to the blocks texture relative to '@/core/assets/textures'. */
-    public String texture = "";
-    /** Name of a blocks localization string. To get a blocks locale: Localization.get("block" + this.name) */
-    public String name = "Unknown";
     /** Health of a block; eg how much enemy hits it can take. */
     public int health = 1;
     /** The type of the block. See Type enum. */
@@ -28,9 +24,16 @@ public class BlockProperties {
     /** Set the block to be a physics sensor (meaning it cannot collide with other entities). */
     public boolean isSensor = false;
 
+    /** The path to the blocks texture relative to '@/core/assets/textures'. */
+    public String texture = "";
+    /** Name of a blocks localization string. To get a blocks locale: Localization.get("block" + this.name) */
+    public String name = "Unknown";
+    /** The category the block will be placed in */
+    public String category = "General";
+
     /** The material this block produces. Will be output to conveyor belts or put in the players inventory if none present. */
     public Material materialProduced = null;
-    /** The material this block requires to work/do its task. TODO */
+    /** The material this block requires to work/do its task. */
     public Material materialRequired = null;
 
     /** TURRET specific: The interval in which the turret fires. */
