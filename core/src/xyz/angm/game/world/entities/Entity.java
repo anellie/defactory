@@ -13,9 +13,9 @@ public abstract class Entity implements Disposable {
     /** The position of the entity. */
     private final Vector2 position = new Vector2();
     /** The speed the entity is travelling at. */
-    private final Vector2 velocity = new Vector2();
+    private final transient Vector2 velocity = new Vector2();
     /** The multiplier used to apply velocity. */
-    float movementMultiplier = 5f;
+    transient float movementMultiplier = 5f;
     /** The entities health. 0 will cause the entity to be disposed. */
     int health;
     /** The size of the actor. */

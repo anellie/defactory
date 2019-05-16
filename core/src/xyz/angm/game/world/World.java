@@ -42,7 +42,7 @@ public class World implements Disposable {
     public final WorldMap map;
     private final Player player = new Player();
     private final Array<Item> items = new Array<>(false, 16);
-    private final PhysicsEngine physics = new PhysicsEngine(player);
+    private final PhysicsEngine physics;
 
     private final Stage stage = new Stage(new FitViewport(WORLD_VIEWPORT_WIDTH, WORLD_VIEWPORT_HEIGHT));
     private Vector2 cameraPosition = player.getPosition();
@@ -53,12 +53,16 @@ public class World implements Disposable {
     private final Vector2 tmpV = new Vector2();
 
     /** Constructs a new world along with it's map.
-     * @param generator The generator which is done loading. */
-    public World(TerrainGenerator generator) {
+     * @param generator The generator which is done loading.
+     * @param active If false, background activity is heavily restricted. Used on the client. */
+    public World(TerrainGenerator generator, boolean active) {
         this.seed = generator.seed;
         map = new WorldMap(generator);
-        Executors.newSingleThreadScheduledExecutor()
-                .scheduleAtFixedRate(new BlockTickRunner(this), BLOCK_TICK_FREQ, BLOCK_TICK_FREQ, TimeUnit.MILLISECONDS);
+        physics = new PhysicsEngine(player, active);
+
+        if (active)
+            Executors.newSingleThreadScheduledExecutor()
+                    .scheduleAtFixedRate(new BlockTickRunner(this), BLOCK_TICK_FREQ, BLOCK_TICK_FREQ, TimeUnit.MILLISECONDS);
 
         stage.addActor(blockGroup);
         player.registerToStage(stage);

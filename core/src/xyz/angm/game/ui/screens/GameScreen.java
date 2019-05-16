@@ -80,7 +80,7 @@ public class GameScreen extends Screen {
             localPlayer.getPosition().set(serverPlayer.getPosition());
         }
         else if (packet == Client.Status.DISCONNECTED) { // Disconnect from server
-            Gdx.app.postRunnable(this::returnToMainMenu); // Disposing game screen requires render context
+            Gdx.app.postRunnable(this::onServerDisconnect); // Disposing game screen requires render context
         }
         else if (packet instanceof Block) { // Block should be placed
             world.addBlock((Block) packet);
@@ -123,6 +123,12 @@ public class GameScreen extends Screen {
     public void returnToMainMenu() {
         dispose();
         game.setScreen(new MenuScreen(game));
+    }
+
+    // Called on client when server disconnects
+    private void onServerDisconnect() {
+        dispose();
+        game.setScreen(new MessageScreen(game, "Server disconnected."));
     }
 
     /** Called when the locale changed. Reloads all UI. */

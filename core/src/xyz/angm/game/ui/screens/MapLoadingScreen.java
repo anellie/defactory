@@ -30,6 +30,6 @@ public class MapLoadingScreen extends Screen {
         float progress = generator.continueLoading();
         progressBar.setValue(progress * 100f);
 
-        if (progress == 1f) game.setScreen(new GameScreen(game, new World(generator)));
+        if (progress == 1f) game.setScreen(new GameScreen(game, new World(generator, game.isServer())));
     }
 }

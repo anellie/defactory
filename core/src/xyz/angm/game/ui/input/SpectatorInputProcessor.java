@@ -20,7 +20,7 @@ public class SpectatorInputProcessor extends InputProcessor {
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
         // Set tmpV to the mouse position difference since the last mouse event
-        tmpV.set(mousePosition).sub(screenX, screenY);
+        tmpV.set(mousePosition).sub(screenX, screenY).scl(0.035f);
         tmpV.y = -tmpV.y; // Y axis has to be inverted since origins are different
         screen.getWorld().moveCamera(tmpV);
         mousePosition.set(screenX, screenY);

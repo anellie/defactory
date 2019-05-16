@@ -74,6 +74,6 @@ public class Server extends NetworkInterface {
 
     // Update entities on all clients connected to this server
     private void updateClientsEntities() {
-        send(((GameScreen) game.getScreen()).getWorld().getPlayer());
+        if (game.getScreen() instanceof GameScreen) send(((GameScreen) game.getScreen()).getWorld().getPlayer());
     }
 }

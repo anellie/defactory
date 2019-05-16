@@ -20,12 +20,12 @@ public class Player extends Entity {
     /** The movement multiplier when sprinting, in (percent / 100). */
     private static final float SPRINT_MULTIPLIER = 1.5f;
 
-    private float stamina = PLAYER_STAMINA;
-    private boolean isSprinting = false;
-    private int blockSelected = 0;
-    private Block.Direction blockDirection = Block.Direction.UP;
+    private transient float stamina = PLAYER_STAMINA;
+    private transient boolean isSprinting = false;
+    private transient int blockSelected = 0;
+    private transient Block.Direction blockDirection = Block.Direction.UP;
     /** The players inventory. */
-    public final Inventory inventory = new Inventory();
+    public final transient Inventory inventory = new Inventory();
 
     /** Constructs a Player. Requires AssetManager in Game to be ready. */
     public Player() {

@@ -39,6 +39,7 @@ class PhysicsEngine {
     private final Body playerBody;
     private final RayHandler rayHandler = new RayHandler(pWorld);
     private final HashMap<Body, Light> blockLights = new HashMap<>();
+    private final boolean authority;
 
     private float timeSinceLastStep = 0f;
     private final BodyDef blockDef = new BodyDef();
@@ -46,8 +47,12 @@ class PhysicsEngine {
     private final Vector2 tmpV = new Vector2();
 
     /** Construct a new engine.
-     * @param player The player the system should act on. */
-    PhysicsEngine(Player player) {
+     * @param player The player the system should act on.
+     * @param authority Whether or not the system is the source of truth.
+     *                  If false, positions will be forced from the entities and the engine
+     *                  will act purely as a lighting engine. */
+    PhysicsEngine(Player player, boolean authority) {
+        this.authority = authority;
         pWorld.setContactListener(contactListener);
 
         BodyDef playerDef = new BodyDef();
@@ -75,9 +80,24 @@ class PhysicsEngine {
         playerLight.attachToBody(playerBody);
     }
 
-    /** Advances the physics engine. Should be called every frame.
+    /** Updates the physics engine. Should be called every frame.
      * @param deltaTime Time since last call */
     void act(float deltaTime) {
+        if (authority) stepEngine(deltaTime);
+        else {
+            playerBody.setTransform(((Player) playerBody.getUserData()).getPosition(), 0);
+        }
+    }
+
+    /** Renders the lighting parts of the world, using Box2DLights.
+     * @param camera The camera to use for rendering. */
+    void render(OrthographicCamera camera) {
+        rayHandler.setCombinedMatrix(camera);
+        rayHandler.updateAndRender();
+    }
+
+    /** Step the engine. Only called when engine is authority. */
+    private void stepEngine(float deltaTime) {
         Player player = (Player) playerBody.getUserData();
 
         // Update player velocity from player input
@@ -103,13 +123,6 @@ class PhysicsEngine {
                 item.setLinearVelocity(0, 0);
             }
         });
-    }
-
-    /** Renders the lighting parts of the world, using Box2DLights.
-     * @param camera The camera to use for rendering. */
-    void render(OrthographicCamera camera) {
-        rayHandler.setCombinedMatrix(camera);
-        rayHandler.updateAndRender();
     }
 
     /** Call when a block was placed. Will add the block to the physics simulation.
