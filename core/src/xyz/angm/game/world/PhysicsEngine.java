@@ -175,6 +175,14 @@ class PhysicsEngine {
         items.add(itemBody);
     }
 
+    /** Call when an item is to be removed.
+     * @param item The item to remove.
+     * @param body The body of the item to be marked for deletion. */
+    private void itemRemoved(Item item, Body body) {
+        body.setUserData("DESTROY");
+        item.dispose();
+    }
+
     /** Call when viewport size changed. Needs to be independent since RayHandler changes the viewport on its own otherwise.
      * @param viewport The viewport post-change */
     void resizeViewport(Viewport viewport) {
@@ -216,6 +224,8 @@ class PhysicsEngine {
         private void processBlock(Block block, Body blockBody, Body otherBody) {
             if (block.getProperties().type == BlockType.CONVEYOR) {
                 processConveyor(block, blockBody, otherBody);
+            } else if (otherBody.getUserData() instanceof Item) {
+                processBlockAndItem((Item) otherBody.getUserData(), otherBody, block);
             }
         }
 
@@ -253,8 +263,14 @@ class PhysicsEngine {
 
         private void processPlayerAndItem(Item item, Body itemBody, Player player) {
             player.inventory.add(item.material, 1);
-            itemBody.setUserData("DESTROY");
-            item.dispose();
+            itemRemoved(item, itemBody);
+        }
+
+        private void processBlockAndItem(Item item, Body itemBody, Block block) {
+            if (block.getProperties().materialRequired == item.material) {
+                block.incrementMaterial();
+                itemRemoved(item, itemBody);
+            }
         }
 
         @Override

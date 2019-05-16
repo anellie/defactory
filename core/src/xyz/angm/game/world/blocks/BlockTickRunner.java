@@ -21,6 +21,8 @@ public class BlockTickRunner implements Runnable {
     }
 
     private void tickBlock(Block block) {
+        if (!block.canWork()) return;
+
         if (block.getProperties().materialProduced != null) { // Block produces material
             // Search a conveyor next to this block
             Block blockNextTo = world.map.getBlock(tmpTV.set(block.getPosition()).add(1, 0));
@@ -45,6 +47,8 @@ public class BlockTickRunner implements Runnable {
             default:
                 break;
         }
+
+        block.decrementMaterial();
     }
 
     private static boolean isNotConveyor(Block block) {

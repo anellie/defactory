@@ -15,6 +15,7 @@ public class Block implements Disposable {
     private int type;
     private final TileVector position = new TileVector();
     private Direction direction;
+    private int materialRequiredAmount = 0;
     private transient Image actor;
 
     /** Required for kryo deserialization. */
@@ -52,6 +53,22 @@ public class Block implements Disposable {
         actor.setOrigin(Align.center);
         actor.setPosition(position.getX(), position.getY());
         actor.setRotation(direction.toDegrees());
+    }
+
+    /** Can this block do work? Work is anything done by BlockTickRunner.
+     * @return If the block can work. */
+    boolean canWork() {
+        return getProperties().materialRequired == null || materialRequiredAmount > 0;
+    }
+
+    /** Call when the amount of material in the bloc should be incremented. */
+    public void incrementMaterial() {
+        materialRequiredAmount++;
+    }
+
+    /** Call when the amount of material in the bloc should be decremented. Usually when the block does work. */
+    void decrementMaterial() {
+        materialRequiredAmount--;
     }
 
     @Override

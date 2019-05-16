@@ -45,5 +45,26 @@
     "name": "MinerWood",
     "texture": "minerWood",
     "materialProduced": "WOOD"
+  },
+  {
+    "id": 7,
+    "name": "MinerStone",
+    "texture": "minerWood",
+    "materialProduced": "STONE",
+    "materialRequired": "WOOD"
+  },
+  {
+    "id": 8,
+    "name": "MinerIron",
+    "texture": "minerWood",
+    "materialProduced": "IRON",
+    "materialRequired": "STONE"
+  },
+  {
+    "id": 9,
+    "name": "MinerDiamond",
+    "texture": "minerWood",
+    "materialProduced": "DIAMOND",
+    "materialRequired": "IRON"
   }
 ]
