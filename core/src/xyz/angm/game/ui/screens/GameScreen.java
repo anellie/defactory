@@ -149,7 +149,7 @@ public class GameScreen extends Screen {
     // Called on client when server disconnects
     private void onServerDisconnect() {
         dispose();
-        game.setScreen(new MessageScreen(game, "Server disconnected."));
+        game.setScreen(new MessageScreen(game, "serverDisconnect"));
     }
 
     /** Called when the locale changed. Reloads all UI. */
