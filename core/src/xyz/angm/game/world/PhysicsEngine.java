@@ -12,6 +12,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import xyz.angm.game.world.blocks.Block;
 import xyz.angm.game.world.blocks.BlockType;
+import xyz.angm.game.world.entities.Beast;
 import xyz.angm.game.world.entities.Item;
 import xyz.angm.game.world.entities.Player;
 
@@ -36,6 +37,7 @@ class PhysicsEngine {
     private final WorldContactListener contactListener = new WorldContactListener();
     private final HashMap<TileVector, Body> blocks = new HashMap<>();
     private final Array<Body> items = new Array<>();
+    private final Array<Body> beasts = new Array<>();
     private final Body playerBody;
     private final RayHandler rayHandler = new RayHandler(pWorld);
     private final HashMap<Body, Light> blockLights = new HashMap<>();
@@ -44,6 +46,7 @@ class PhysicsEngine {
     private float timeSinceLastStep = 0f;
     private final BodyDef blockDef = new BodyDef();
     private final BodyDef itemDef = new BodyDef();
+    private final BodyDef beastDef = new BodyDef();
     private final Vector2 tmpV = new Vector2();
 
     /** Construct a new engine.
@@ -86,6 +89,7 @@ class PhysicsEngine {
         if (authority) stepEngine(deltaTime);
         else {
             playerBody.setTransform(((Player) playerBody.getUserData()).getPosition(), 0);
+            beasts.forEach(beastBody -> beastBody.setTransform(((Beast) beastBody.getUserData()).getPosition(), 0));
         }
     }
 
@@ -112,8 +116,9 @@ class PhysicsEngine {
             timeSinceLastStep -= TIME_STEP;
         }
 
-        // Update player and item position from physics simulation; also set item velocity to 0 to prevent buildup
+        // Update positions from physics simulation; also set item velocity to 0 to prevent buildup
         player.getPosition().set(playerBody.getPosition().sub(player.entitySize / 2f, player.entitySize / 2f));
+        beasts.forEach(beastBody -> ((Beast) beastBody.getUserData()).getPosition().set(beastBody.getPosition().sub(0.5f, 0.5f)));
         items.forEach(item -> {
             if (item.getUserData() == "DESTROY") { // Remove all items marked for deletion
                 pWorld.destroyBody(item);
@@ -194,6 +199,29 @@ class PhysicsEngine {
     private void itemRemoved(Item item, Body body) {
         body.setUserData("DESTROY");
         item.dispose();
+    }
+
+    /** Call when a beast was added to the world.
+     * @param beast The beast to add. */
+    void beastAdded(Beast beast) {
+        beastDef.position.set(beast.getPosition()).add(ITEM_SIZE * 2, ITEM_SIZE * 2);
+        beastDef.type = BodyDef.BodyType.DynamicBody;
+        Body beastBody = pWorld.createBody(beastDef);
+
+        PolygonShape beastShape = new PolygonShape();
+        beastShape.setAsBox(beast.entitySize, beast.entitySize);
+        FixtureDef fixDef = new FixtureDef();
+        fixDef.shape = beastShape;
+        fixDef.density = 0.8f;
+        fixDef.friction = 0.6f;
+        fixDef.restitution = 0.6f;
+
+        beastBody.createFixture(fixDef);
+        beastBody.setUserData(beast);
+        beastBody.setFixedRotation(true);
+        beastShape.dispose();
+
+        beasts.add(beastBody);
     }
 
     /** Call when viewport size changed. Needs to be independent since RayHandler changes the viewport on its own otherwise.

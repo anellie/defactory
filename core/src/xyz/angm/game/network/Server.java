@@ -2,10 +2,10 @@ package xyz.angm.game.network;
 
 import com.badlogic.gdx.Gdx;
 import com.esotericsoftware.kryonet.Connection;
-import com.esotericsoftware.kryonet.FrameworkMessage;
 import com.esotericsoftware.kryonet.Listener;
 import xyz.angm.game.Game;
 import xyz.angm.game.ui.screens.GameScreen;
+import xyz.angm.game.world.TileVector;
 
 import java.io.IOException;
 import java.util.concurrent.Executors;
@@ -64,8 +64,9 @@ public class Server extends NetworkInterface {
 
             @Override
             public void received(Connection connection, Object object) {
-                // Only keepalive packets are allowed right now
-                if (!(object instanceof FrameworkMessage.KeepAlive)) throw new UnsupportedOperationException("Clients should not send packets yet!");
+                if (object instanceof TileVector) {
+                    ((GameScreen) game.getScreen()).spawnBeast((TileVector) object);
+                }
             }
         });
 

@@ -1,5 +1,6 @@
 package xyz.angm.game.ui.input;
 
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
 import xyz.angm.game.ui.screens.GameScreen;
 
@@ -15,6 +16,15 @@ public class SpectatorInputProcessor extends InputProcessor {
     public SpectatorInputProcessor(GameScreen screen) {
         super(screen);
         this.screen = screen;
+    }
+
+    @Override
+    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        if (button == Input.Buttons.LEFT) {
+            screen.requestBeastSpawn(screenX, screenY);
+            return true;
+        }
+        return false;
     }
 
     @Override

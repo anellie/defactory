@@ -4,6 +4,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.esotericsoftware.kryo.Kryo;
 import xyz.angm.game.world.TileVector;
 import xyz.angm.game.world.blocks.Block;
+import xyz.angm.game.world.entities.Beast;
 import xyz.angm.game.world.entities.Player;
 
 /** A simple network interface for sending and receiving packets. */
@@ -16,6 +17,7 @@ public abstract class NetworkInterface {
      * @param kryo The kryo instance to register on */
     void registerClasses(Kryo kryo) {
         kryo.register(Player.class);
+        kryo.register(Beast.class);
         kryo.register(Block.class);
         kryo.register(Block.Direction.class);
         kryo.register(TileVector.class);

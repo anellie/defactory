@@ -15,6 +15,7 @@ import xyz.angm.game.ui.input.SpectatorInputProcessor;
 import xyz.angm.game.world.TileVector;
 import xyz.angm.game.world.World;
 import xyz.angm.game.world.blocks.Block;
+import xyz.angm.game.world.entities.Beast;
 import xyz.angm.game.world.entities.Player;
 
 /** The screen active while the game is running. */
@@ -88,6 +89,9 @@ public class GameScreen extends Screen {
         else if (packet instanceof TileVector) { // Block should removed
             world.removeBlock((TileVector) packet);
         }
+        else if (packet instanceof Beast) {
+            world.addBeast((Beast) packet);
+        }
     }
 
     /** Should be called when the player clicked the screen. Will place or break a block at the clicked position and sync to clients.
@@ -104,6 +108,23 @@ public class GameScreen extends Screen {
         // Sync with clients
         if (block == null) game.getServer().send(position);
         else game.getServer().send(block);
+    }
+
+    /** Should be called when a spectator clicked the screen. Will tell the server to spawn a beast at the clicked position.
+     * @param x The x position of the click in screen coordinates.
+     * @param y The y position of the click in screen coordinates. */
+    public void requestBeastSpawn(int x, int y) {
+        tmpV.set(x, y);
+        world.screenToWorldCoordinates(tmpV);
+        TileVector position = new TileVector().set(tmpV);
+        game.getClient().send(position);
+    }
+
+    /** Spawn a beast and sent it to all clients.
+     * @param position The position of the beast. */
+    public void spawnBeast(TileVector position) {
+        Beast beast = world.spawnBeast(position);
+        game.getServer().send(beast);
     }
 
     /** Toggles the pause menu. */

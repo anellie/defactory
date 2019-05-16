@@ -18,6 +18,7 @@ import xyz.angm.game.world.blocks.Block;
 import xyz.angm.game.world.blocks.BlockProperties;
 import xyz.angm.game.world.blocks.BlockTickRunner;
 import xyz.angm.game.world.blocks.Material;
+import xyz.angm.game.world.entities.Beast;
 import xyz.angm.game.world.entities.Item;
 import xyz.angm.game.world.entities.Player;
 
@@ -42,6 +43,8 @@ public class World implements Disposable {
     public final WorldMap map;
     private final Player player = new Player();
     private final Array<Item> items = new Array<>(false, 16);
+    private final Array<Beast> beasts = new Array<>(true, 16);
+    private final Array<Vector2> beastPositions = new Array<>(true, 16);
     private final PhysicsEngine physics;
 
     private final Stage stage = new Stage(new FitViewport(WORLD_VIEWPORT_WIDTH, WORLD_VIEWPORT_HEIGHT));
@@ -214,5 +217,23 @@ public class World implements Disposable {
         item.registerToStage(stage);
         physics.itemAdded(item);
         items.add(item);
+    }
+
+    /** Spawn a beast.
+     * @param position The position of the beast.
+     * @return The beast spawned. */
+    public Beast spawnBeast(TileVector position) {
+        Beast beast = new Beast(new TileVector().set(position));
+        addBeast(beast);
+        return beast;
+    }
+
+    /** Add a beast to the world.
+     * @param beast The new guy. */
+    public void addBeast(Beast beast) {
+        beast.registerToStage(stage);
+        physics.beastAdded(beast);
+        beasts.add(beast);
+        beastPositions.add(beast.getPosition());
     }
 }
