@@ -95,8 +95,13 @@ class PhysicsEngine {
         // Update player and item position from physics simulation; also set item velocity to 0 to prevent buildup
         player.getPosition().set(playerBody.getPosition().sub(player.entitySize / 2f, player.entitySize / 2f));
         items.forEach(item -> {
-            ((Item) item.getUserData()).getPosition().set(item.getPosition().sub(ITEM_SIZE, ITEM_SIZE));
-            item.setLinearVelocity(0, 0);
+            if (item.getUserData() == "DESTROY") { // Remove all items marked for deletion
+                pWorld.destroyBody(item);
+                items.removeValue(item, true);
+            } else {
+                ((Item) item.getUserData()).getPosition().set(item.getPosition().sub(ITEM_SIZE, ITEM_SIZE));
+                item.setLinearVelocity(0, 0);
+            }
         });
     }
 
@@ -160,7 +165,7 @@ class PhysicsEngine {
         fixDef.density = 1f;
         fixDef.friction = 0.8f;
         fixDef.restitution = 0f;
-        fixDef.isSensor = false;
+        fixDef.isSensor = true;
 
         itemBody.createFixture(fixDef);
         itemBody.setUserData(item);
@@ -198,8 +203,12 @@ class PhysicsEngine {
                 Block block = (Block) ((b1.getUserData() instanceof Block) ? b1.getUserData() : b2.getUserData());
                 Body blockBody = (b1.getUserData() instanceof Block) ? b1 : b2;
                 Body otherBody = (blockBody == b1) ? b2 : b1;
-
                 processBlock(block, blockBody, otherBody);
+            } else if (b1.getUserData() instanceof Item || b2.getUserData() instanceof Item) {
+                Item item = (Item) ((b1.getUserData() instanceof Item) ? b1.getUserData() : b2.getUserData());
+                Body blockBody = (b1.getUserData() instanceof Item) ? b1 : b2;
+                Body otherBody = (blockBody == b1) ? b2 : b1;
+                processItem(item, blockBody, otherBody);
             }
         }
 
@@ -233,6 +242,19 @@ class PhysicsEngine {
                     conveyorBody.getPosition().sub(otherBody.getPosition()).scl(CONVEYOR_BELT_PULL),
                     otherBody.getPosition(), true);
             otherBody.applyLinearImpulse(tmpV, otherBody.getPosition(), true);
+        }
+
+        // Process contact between an item and another body
+        private void processItem(Item item, Body itemBody, Body otherBody) {
+            if (otherBody.getUserData() instanceof Player) {
+                processPlayerAndItem(item, itemBody, (Player) otherBody.getUserData());
+            }
+        }
+
+        private void processPlayerAndItem(Item item, Body itemBody, Player player) {
+            player.inventory.add(item.material, 1);
+            itemBody.setUserData("DESTROY");
+            item.dispose();
         }
 
         @Override

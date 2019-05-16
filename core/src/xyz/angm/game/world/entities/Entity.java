@@ -4,12 +4,11 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.utils.Disposable;
 import xyz.angm.game.Game;
 
-import java.io.Serializable;
-
 /** An entity is a component capable of changing its position and interacting with the world. */
-public abstract class Entity implements Serializable {
+public abstract class Entity implements Disposable {
 
     /** The position of the entity. */
     private final Vector2 position = new Vector2();
@@ -61,5 +60,10 @@ public abstract class Entity implements Serializable {
 
     public int getHealth() {
         return health;
+    }
+
+    @Override
+    public void dispose() {
+        if (actor != null) actor.remove();
     }
 }

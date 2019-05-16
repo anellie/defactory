@@ -6,7 +6,8 @@ import xyz.angm.game.world.blocks.Material;
 /** An item entity. Created when a machine creating materials is connected with conveyor belts. */
 public class Item extends Entity {
 
-    private final Material material;
+    /** The material of this item. */
+    public final Material material;
 
     /** Create a new item entity.
      * @param material The material of the item.
