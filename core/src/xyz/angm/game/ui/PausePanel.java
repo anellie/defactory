@@ -16,7 +16,7 @@ import xyz.angm.game.ui.screens.GameScreen;
 import static xyz.angm.game.ui.screens.Screen.BUTTON_HEIGHT;
 import static xyz.angm.game.ui.screens.Screen.BUTTON_WIDTH;
 
-/** A pause panel displayed when pressing escape. */
+/** A pause panel displayed when pressing escape during gameplay. */
 public class PausePanel extends VisTable {
 
     /** Construct a new panel.

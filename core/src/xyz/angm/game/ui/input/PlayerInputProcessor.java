@@ -35,7 +35,7 @@ public class PlayerInputProcessor extends InputProcessor {
             case Input.Keys.SHIFT_LEFT: // Sprint
                 screen.getWorld().getPlayer().sprint(true);
                 break;
-            case Input.Keys.R:
+            case Input.Keys.R: // Cycle direction of the block the player is placing
                 screen.getWorld().getPlayer().cycleDirection();
                 screen.getWorld().updateSelector(Gdx.input.getX(), Gdx.input.getY());
                 break;

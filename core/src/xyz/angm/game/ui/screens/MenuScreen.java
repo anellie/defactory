@@ -12,7 +12,7 @@ import com.kotcrab.vis.ui.widget.VisTextButton;
 import xyz.angm.game.Game;
 import xyz.angm.game.ui.Localization;
 
-/** The menu screen. */
+/** The main menu screen. */
 class MenuScreen extends Screen {
 
     /** Constructs the screen with the main menu active.

@@ -23,14 +23,12 @@ class ClientDiscoveryRunnable implements Runnable {
     public void run() {
         try (DatagramSocket socket = new DatagramSocket()) {
             socket.setBroadcast(true);
-
             byte[] sendData = "DISCOVER_GAME_REQUEST".getBytes();
 
-            // Try /24 subnet first
             DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, InetAddress.getByName("255.255.255.255"), Client.PORT);
             socket.send(sendPacket);
 
-            // Broadcast the message over all the network interfaces
+            // Broadcast the message over all network interfaces
             Enumeration<java.net.NetworkInterface> interfaces = java.net.NetworkInterface.getNetworkInterfaces();
             while (interfaces.hasMoreElements()) {
                 java.net.NetworkInterface networkInterface = interfaces.nextElement();

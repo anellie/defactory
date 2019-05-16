@@ -3,7 +3,7 @@ package xyz.angm.game.world.blocks;
 import xyz.angm.game.world.TileVector;
 import xyz.angm.game.world.World;
 
-/** A runnable used to allow all blocks to update themselves. Run from World. */
+/** A runnable used to allow all blocks to update themselves. Is run from World. */
 public class BlockTickRunner implements Runnable {
 
     private final World world;
@@ -32,7 +32,7 @@ public class BlockTickRunner implements Runnable {
 
             // No conveyor around, put it into the player inventory
             if (isNotConveyor(blockNextTo)) world.getPlayer().inventory.add(block.getProperties().materialProduced, 1);
-                // Conveyor around, put it onto the conveyor
+            // Conveyor around, put it onto the conveyor
             else world.spawnItem(tmpTV, block.getProperties().materialProduced);
         }
 
@@ -51,6 +51,7 @@ public class BlockTickRunner implements Runnable {
         block.decrementMaterial();
     }
 
+    /** Is the block NOT a conveyor? */
     private static boolean isNotConveyor(Block block) {
         return block == null || block.getProperties().type != BlockType.CONVEYOR;
     }

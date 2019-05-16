@@ -7,11 +7,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Collections;
 import java.util.List;
 
-/** A class holding all (static) properties of a block. All block types (and their properties) are loaded from a JSON document on boot.
+/** A class holding all (static) properties of a block.
+ * All block types (and their properties) are loaded from a JSON document on boot.
  * All properties are initialised to their defaults; this saves disk space since they do not need to be in the JSON document.
  *
  * These objects should NOT be directly modified. Them being non-final is due to them needing to be modified during deserialization.
- * Using getters for all of these values to prevent modification would be possible; but 100+ lines of boilerplate code isn't that great nor practical. */
+ * Using getters for all of these values to prevent modification would be possible;
+ * but 100+ lines of boilerplate code isn't that great or practical, so the security risk of mutable fields is preferred. */
 @SuppressWarnings({"CanBeFinal", "WeakerAccess"}) // Can't be final or private due to serializer
 public class BlockProperties {
 
@@ -19,16 +21,16 @@ public class BlockProperties {
     public int id = -1;
     /** Health of a block; eg how much enemy hits it can take. */
     public int health = 1;
-    /** The type of the block. See Type enum. */
+    /** The type of the block. See BlockType enum. */
     public BlockType type = BlockType.DEFAULT;
     /** Set the block to be a physics sensor (meaning it cannot collide with other entities). */
     public boolean isSensor = false;
 
-    /** The path to the blocks texture relative to '@/core/assets/textures'. */
+    /** The path to the blocks texture relative to '@/core/assets/textures'. Does not include '.png' suffix. */
     public String texture = "";
-    /** Name of a blocks localization string. To get a blocks locale: Localization.get("block" + this.name) */
+    /** Name of a blocks localization string. To get a blocks localized string: Localization.get("block" + name) */
     public String name = "Unknown";
-    /** The category the block will be placed in */
+    /** The category the block will be placed in. */
     public String category = "General";
 
     /** The material this block produces. Will be output to conveyor belts or put in the players inventory if none present. */
@@ -81,6 +83,7 @@ public class BlockProperties {
         return allBlockTypes.stream().filter(properties -> properties.id == id).findFirst().orElse(null);
     }
 
+    // Load all blocks. Automatically done on first access to getProperties.
     private static void loadBlocks() {
         try {
             ObjectMapper mapper = new ObjectMapper();

@@ -5,7 +5,7 @@ import com.kotcrab.vis.ui.widget.VisProgressBar;
 import xyz.angm.game.Game;
 import xyz.angm.game.ui.Localization;
 
-/** The first screen to be displayed; load all assets. */
+/** The first screen to be displayed; loads all assets. Will switch to {@link MenuScreen} on completion. */
 public class AssetLoadingScreen extends Screen {
 
     private final VisProgressBar progressBar = new VisProgressBar(0f, 100f, 0.1f, false);

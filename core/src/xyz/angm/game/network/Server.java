@@ -29,13 +29,11 @@ public class Server extends NetworkInterface {
 
     @Override
     public boolean start() {
-        Thread discoveryThread = new Thread(new ServerDiscoveryRunnable());
-        discoveryThread.start();
-
-        kryoServer.start();
-        registerClasses(kryoServer.getKryo());
+        new Thread(new ServerDiscoveryRunnable()).start();
 
         try {
+            kryoServer.start();
+            registerClasses(kryoServer.getKryo());
             kryoServer.bind(PORT);
             setupListeners();
         } catch (IOException e) {
@@ -66,6 +64,7 @@ public class Server extends NetworkInterface {
 
             @Override
             public void received(Connection connection, Object object) {
+                // Only keepalive packets are allowed right now
                 if (!(object instanceof FrameworkMessage.KeepAlive)) throw new UnsupportedOperationException("Clients should not send packets yet!");
             }
         });

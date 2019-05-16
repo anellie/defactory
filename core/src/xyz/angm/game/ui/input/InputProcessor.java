@@ -7,6 +7,7 @@ import xyz.angm.game.ui.screens.GameScreen;
 /** An input processor for handling inputs by both player and spectator. Does not handle UI. */
 public class InputProcessor extends InputAdapter {
 
+    /** Scaling of map zoom caused by the mouse wheel. */
     private static final float SCROLL_SCALING = 0.01f;
 
     private final GameScreen screen;

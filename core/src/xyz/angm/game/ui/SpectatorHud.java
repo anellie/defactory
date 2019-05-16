@@ -6,7 +6,8 @@ import xyz.angm.game.ui.screens.GameScreen;
 
 import static xyz.angm.game.world.entities.Player.PLAYER_HEALTH;
 
-/** The spectator HUD containing all GUI elements of a spectator. */
+/** The spectator HUD containing all GUI elements of a spectator.
+ * Extends player hud; overrides reload to set own elements instead. */
 public class SpectatorHud extends PlayerHud {
 
     private final GameScreen screen;
@@ -24,7 +25,7 @@ public class SpectatorHud extends PlayerHud {
     public void reload() {
         clear();
 
-        // Window containing health + stamina bar
+        // Window containing health bar of the player
         VisWindow barWindow = new VisWindow(Localization.get("hudStatus"));
         barWindow.add(healthBar).size(BAR_WIDTH, BAR_HEIGHT).row();
         barWindow.pack();

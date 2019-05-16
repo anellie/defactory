@@ -12,7 +12,7 @@ public abstract class NetworkInterface {
     /** The port all network communication takes place on. */
     static final int PORT = 35953;
 
-    /** Registers all required classes for network communication.
+    /** Registers all required classes for network communication to a kryo serializer.
      * @param kryo The kryo instance to register on */
     void registerClasses(Kryo kryo) {
         kryo.register(Player.class);
@@ -28,7 +28,7 @@ public abstract class NetworkInterface {
     public abstract boolean start();
 
     /** Sends an object to either the server, or all clients.
-     * @param toSend The object to be sent over network */
+     * @param toSend The object to be sent over network. */
     public abstract void send(Object toSend);
 
     /** Should be called when the interface should disconnect/close and free all resources. */

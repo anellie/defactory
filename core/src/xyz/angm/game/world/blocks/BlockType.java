@@ -8,7 +8,7 @@ public enum BlockType {
     CONVEYOR,
     /** A block emitting light. */
     TORCH,
-    /** A block capable of damaging enemies over a given range. */
+    /** A block capable of damaging enemies over a given range by shooting bullets. */
     TURRET,
     /** A block capable of healing other blocks in a given range. */
     HEALER,

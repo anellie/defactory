@@ -13,13 +13,16 @@ import static xyz.angm.game.ui.screens.Screen.VIEWPORT_WIDTH;
 /** Generates random terrain using a noise function. */
 public class TerrainGenerator {
 
+    /** Chance for stone to generate. */
     private static final double STONE_CHANCE = 0.25f;
+    /** Chance for water to generate. */
     private static final double WATER_CHANCE = 0.15f;
+    /** How many lines should be rendered per continueLoading call? */
     private static final int LINES_PER_STEP = 15;
-
     /** Multiplicator for the world map. Takes the viewport size as base. */
     public static final int WORLD_SIZE_MULTIPLICATOR = 3;
 
+    /** Seed used for generation. */
     final long seed;
     private final SimplexNoiseGenerator noiseGenerator;
     private final Pixmap grass;
@@ -52,7 +55,7 @@ public class TerrainGenerator {
     }
 
     /** Continue loading. Call every frame.
-     * @return Loading progress.*/
+     * @return Loading progress. */
     public float continueLoading() {
         for (int x = 0; x < map.getWidth(); x++) {
             for (int y = index; y < (index + LINES_PER_STEP); y++) {

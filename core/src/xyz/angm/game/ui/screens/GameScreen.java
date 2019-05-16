@@ -26,10 +26,10 @@ public class GameScreen extends Screen {
     private final InputMultiplexer inputMultiplexer = new InputMultiplexer();
     private final Vector2 tmpV = new Vector2();
 
-    /** Constructs the screen.
+    /** Constructs the screen. Automatically determines if player or spectator.
      * @param game The game the screen is running under.
      * @param world The world to use. */
-    public GameScreen(Game game, World world) {
+    GameScreen(Game game, World world) {
         super(game);
         this.world = world;
         if (game.isServer()) initServer();
@@ -65,14 +65,14 @@ public class GameScreen extends Screen {
         Gdx.gl.glClearColor(0.05f, 0.05f, 0.05f, 1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        world.act(delta);       // Update world
-        world.render();         // Render world. World render is separate to allow for different camera positions
+        world.act(delta);
+        world.render();     // World render is separate to allow for different camera positions.
 
         stage.act(delta);
         stage.draw();
     }
 
-    // Packet/Object received from server. Only call on client instances.
+    // Called when a packet/object was received from the server. Only call on client instances.
     private void serverPacketReceived(Object packet) {
         if (packet instanceof Player) {  // Player should be synced
             Player serverPlayer = (Player) packet;
@@ -94,13 +94,14 @@ public class GameScreen extends Screen {
      * @see World
      * @param x The x position of the click in screen coordinates.
      * @param y The y position of the click in screen coordinates.
-     * @param rightClick If the click was a right click. Left click assumed if false.    */
+     * @param rightClick If the click was a right click. Left click assumed if false. */
     public void mapClicked(int x, int y, boolean rightClick) {
         tmpV.set(x, y);
         world.screenToWorldCoordinates(tmpV);
         TileVector position = new TileVector().set(tmpV);
         Block block = world.mapClicked(position, rightClick);
 
+        // Sync with clients
         if (block == null) game.getServer().send(position);
         else game.getServer().send(block);
     }
@@ -111,20 +112,20 @@ public class GameScreen extends Screen {
         if (!pauseMenuActive) { // Open the pause menu
             stage.addActor(new PausePanel(this));
             Gdx.input.setInputProcessor(stage);
-        } else { // Closes the pause menu
+        } else { // Close the pause menu
             stage.addActor(hud);
             Gdx.input.setInputProcessor(inputMultiplexer);
         }
         pauseMenuActive = !pauseMenuActive;
     }
 
-    /** Goes back to the main menu. */
+    /** Go back to the main menu. */
     public void returnToMainMenu() {
         dispose();
         game.setScreen(new MenuScreen(game));
     }
 
-    /** Call when the locale changed. Reloads all UI. */
+    /** Called when the locale changed. Reloads all UI. */
     public void localeChanged() {
         stage.clear();
         hud.reload();

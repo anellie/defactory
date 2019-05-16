@@ -10,9 +10,10 @@ import java.util.function.Consumer;
 
 /** A client for receiving network communications from a server.
  * Uses {@link ClientDiscoveryRunnable} to find a server.
- * In the context of the game, the server is run by the player, and the clients are beasts controlled by other players. */
+ * In the context of the game, the server is run by the player, and the clients are beasts controlled by spectators. */
 public class Client extends NetworkInterface {
 
+    /** The amount of time the client will wait for a server to respond to a discovery call, in ms. */
     private static final int SERVER_WAIT_TIME = 1000;
 
     private final com.esotericsoftware.kryonet.Client kryoClient = new com.esotericsoftware.kryonet.Client();
@@ -25,10 +26,9 @@ public class Client extends NetworkInterface {
             return false;
         }
 
-        kryoClient.start();
-        registerClasses(kryoClient.getKryo());
-
         try {
+            kryoClient.start();
+            registerClasses(kryoClient.getKryo());
             kryoClient.connect(3000, address, PORT);
         } catch (IOException e) {
             Gdx.app.error("Client", "Couldn't connect to server at address " + address.getHostName() + "!");
@@ -51,7 +51,7 @@ public class Client extends NetworkInterface {
     }
 
     /** Add a listener to be called when an object is received from the server.
-     * Will also be called on disconnect; the object will be a DisconnectNotifier.
+     * Will also be called on disconnect; the object will be a Status.DISCONNECTED.
      * @param listener The consumer to be called. */
     public void addListener(Consumer<Object> listener) {
         kryoClient.addListener(new Listener() {

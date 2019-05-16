@@ -15,10 +15,11 @@ public class Block implements Disposable {
     private int type;
     private final TileVector position = new TileVector();
     private Direction direction;
-    private int materialRequiredAmount = 0;
     private transient Image actor;
+    /** The amount of the material the block currently contains, should it need any material to run. */
+    private int materialRequiredAmount = 0;
 
-    /** Required for kryo deserialization. */
+    /** Required for kryo deserialization; needs a no-arg constructor. */
     private Block() {}
 
     /** Construct a new block at the specified position. Call registerToStage to display it.
@@ -82,7 +83,7 @@ public class Block implements Disposable {
         UP, RIGHT, DOWN, LEFT;
 
         /** Convert this direction to degrees.
-         * @return The direction in degrees; right = 0deg; counter-clockwise. */
+         * @return The direction in degrees; right = 0deg; counter-clockwise (same as LibGDX actor rotation). */
         public int toDegrees() {
             if (this == Direction.UP) return 90;
             else if (this == Direction.RIGHT) return 0;

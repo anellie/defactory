@@ -3,7 +3,7 @@ package xyz.angm.game.ui.input;
 import com.badlogic.gdx.math.Vector2;
 import xyz.angm.game.ui.screens.GameScreen;
 
-/** An input processor containing listeners specific to spectators/NPCs. */
+/** An input processor containing listeners specific to spectators. */
 public class SpectatorInputProcessor extends InputProcessor {
 
     private final GameScreen screen;
@@ -19,6 +19,7 @@ public class SpectatorInputProcessor extends InputProcessor {
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
+        // Set tmpV to the mouse position difference since the last mouse event
         tmpV.set(mousePosition).sub(screenX, screenY);
         tmpV.y = -tmpV.y; // Y axis has to be inverted since origins are different
         screen.getWorld().moveCamera(tmpV);

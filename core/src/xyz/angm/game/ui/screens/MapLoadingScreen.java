@@ -7,7 +7,7 @@ import xyz.angm.game.ui.Localization;
 import xyz.angm.game.world.TerrainGenerator;
 import xyz.angm.game.world.World;
 
-/** The screen displayed while generating the map. */
+/** The screen displayed while generating the map. Switches to {@link GameScreen} when finished. */
 public class MapLoadingScreen extends Screen {
 
     private final VisProgressBar progressBar = new VisProgressBar(0f, 100f, 0.1f, false);
@@ -29,6 +29,7 @@ public class MapLoadingScreen extends Screen {
 
         float progress = generator.continueLoading();
         progressBar.setValue(progress * 100f);
+
         if (progress == 1f) game.setScreen(new GameScreen(game, new World(generator)));
     }
 }

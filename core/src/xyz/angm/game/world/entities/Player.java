@@ -17,6 +17,7 @@ public class Player extends Entity {
     public static final int PLAYER_HEALTH = 20;
     /** The maximum stamina. Sprinting depletes stamina; not sprinting refills */
     public static final float PLAYER_STAMINA = 7.5f;
+    /** The movement multiplier when sprinting, in (percent / 100). */
     private static final float SPRINT_MULTIPLIER = 1.5f;
 
     private float stamina = PLAYER_STAMINA;

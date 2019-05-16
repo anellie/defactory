@@ -13,7 +13,7 @@ public abstract class Screen extends ScreenAdapter {
 
     /** Height to be used for all viewports. */
     public static final int VIEWPORT_HEIGHT = 1080;
-    /** Height to be used for all viewports. */
+    /** Width to be used for all viewports. */
     public static final int VIEWPORT_WIDTH = 1920;
     /** Height to be used for VisTextButton. */
     public static final float BUTTON_HEIGHT = 48f;
@@ -24,7 +24,7 @@ public abstract class Screen extends ScreenAdapter {
     final Game game;
     /** The stage containing all 2D actors. */
     final Stage stage = new Stage(new FitViewport(VIEWPORT_WIDTH, VIEWPORT_HEIGHT));
-    /** A table for GUI elements. Is empty by default. */
+    /** A table for GUI elements. Is empty by default, and part of the stage. */
     final VisTable table = new VisTable(true);
 
     /** Constructs an empty screen.

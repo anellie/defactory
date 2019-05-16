@@ -7,7 +7,7 @@ import com.kotcrab.vis.ui.widget.VisTextButton;
 import xyz.angm.game.Game;
 import xyz.angm.game.ui.Localization;
 
-/** A screen displaying a message. Will include a button to return to the main menu. */
+/** A screen displaying a message. Will include a button to return to {@link MenuScreen}. */
 public class MessageScreen extends Screen {
 
     /** Constructs the screen to display the message.

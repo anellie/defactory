@@ -16,18 +16,17 @@ import static xyz.angm.game.world.World.WORLD_VIEWPORT_WIDTH;
 /** A class containing all map data:
  * - Texture data for rendering the map
  * - Tile data for getting the terrain type (TODO)
- * - All blocks placed on the terrain.
- */
+ * - All blocks placed on the terrain. */
 public class WorldMap extends Image {
 
     private final HashMap<TileVector, Block> blocks = new HashMap<>();
 
-    /** Constructs a map; generating its content during construction.
+    /** Constructs a map.
      * @param generator The world generator to obtain data from. */
     WorldMap(TerrainGenerator generator) {
         super();
 
-        // Rendering needs to happen in OpenGL context/thread; else crash
+        // Creating a texture region needs to happen in OpenGL context/thread; else crash
         Gdx.app.postRunnable(() -> {
             setDrawable(new TextureRegionDrawable(new TextureRegion((generator.getTexture()))));
             setSize(WORLD_VIEWPORT_WIDTH * WORLD_SIZE_MULTIPLICATOR, WORLD_VIEWPORT_HEIGHT * WORLD_SIZE_MULTIPLICATOR);

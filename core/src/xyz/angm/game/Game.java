@@ -24,7 +24,7 @@ import java.util.Map;
 /** The main class of the game. */
 public class Game extends com.badlogic.gdx.Game {
 
-    /** Static since loading texture more than once is pointless. Also prevents passing textures around everywhere. */
+    /** Static since loading texture more than once is pointless. Also prevents having to pass textures around everywhere. */
     @SuppressWarnings("LibGDXStaticResource") // Only applies to Android
     public static final AssetManager assets = new AssetManager();
 
@@ -45,14 +45,14 @@ public class Game extends com.badlogic.gdx.Game {
         if (netIface != null) disposeNetworkInterface();
     }
 
-    /** Starts a game as the player. Will create a server for players playing as beasts to join.*/
+    /** Starts a game as the player. Will create a server for players playing as beasts to join. */
     public void startGame() {
         netIface = new Server(this);
         netIface.start();
         setScreen(new MapLoadingScreen(this, System.currentTimeMillis()));
     }
 
-    /** Joins a server. Allows the player to play as a beast trying to destroy the base. */
+    /** Joins a server. Allows the user to play as a beast trying to destroy the base. */
     public void joinGame() {
         Client client = new Client();
         netIface = client;
@@ -113,7 +113,6 @@ public class Game extends com.badlogic.gdx.Game {
         Map<String, Color> colors = new HashMap<>();
         colors.put("red", Color.RED);
         colors.put("green", Color.GREEN);
-        colors.put("black-transparent", new Color(0x00000088));
         for (Map.Entry<String, Color> color : colors.entrySet()) {
             Pixmap pm = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
             pm.setColor(color.getValue());
