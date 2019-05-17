@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 import xyz.angm.game.Game;
 import xyz.angm.game.network.Client;
 import xyz.angm.game.ui.PausePanel;
@@ -89,8 +90,11 @@ public class GameScreen extends Screen {
         else if (packet instanceof TileVector) { // Block should removed
             world.removeBlock((TileVector) packet);
         }
-        else if (packet instanceof Beast) {
+        else if (packet instanceof Beast) { // Beast was spawned
             world.addBeast((Beast) packet);
+        }
+        else if (packet instanceof Array) { // Beast positions
+            world.updateBeastPositions((Array<Vector2>) packet);
         }
     }
 

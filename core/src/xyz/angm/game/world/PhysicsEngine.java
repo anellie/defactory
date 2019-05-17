@@ -104,8 +104,9 @@ class PhysicsEngine {
     private void stepEngine(float deltaTime) {
         Player player = (Player) playerBody.getUserData();
 
-        // Update player velocity from player input
+        // Update velocities
         playerBody.setLinearVelocity(tmpV.set(player.getVelocity()).scl(player.getMovementMultiplier()));
+        beasts.forEach(beast -> beast.setLinearVelocity(((Beast) beast.getUserData()).getTargetLocation()));
 
         // Step physics engine
         float frameTime = Math.min(deltaTime, 0.25f);
@@ -209,7 +210,7 @@ class PhysicsEngine {
         Body beastBody = pWorld.createBody(beastDef);
 
         PolygonShape beastShape = new PolygonShape();
-        beastShape.setAsBox(beast.entitySize, beast.entitySize);
+        beastShape.setAsBox(beast.entitySize / 2f, beast.entitySize / 2f);
         FixtureDef fixDef = new FixtureDef();
         fixDef.shape = beastShape;
         fixDef.density = 0.8f;

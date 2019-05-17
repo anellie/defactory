@@ -90,6 +90,7 @@ public class World implements Disposable {
         player.act(delta);
         stage.act(delta);
         items.forEach(item -> item.act(delta));
+        beasts.forEach(beast -> beast.act(delta));
     }
 
     /** Should be called every frame when the world should render itself and all components. */
@@ -235,5 +236,17 @@ public class World implements Disposable {
         physics.beastAdded(beast);
         beasts.add(beast);
         beastPositions.add(beast.getPosition());
+    }
+
+    public Array<Vector2> getBeastPositions() {
+        return beastPositions;
+    }
+
+    /** Update beast positions.
+     * @param positions The array to copy positions from. */
+    public void updateBeastPositions(Array<Vector2> positions) {
+        for (int i = 0; i < beastPositions.size; i++) {
+            beastPositions.get(i).set(positions.get(i));
+        }
     }
 }

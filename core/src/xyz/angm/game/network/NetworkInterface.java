@@ -1,6 +1,7 @@
 package xyz.angm.game.network;
 
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 import com.esotericsoftware.kryo.Kryo;
 import xyz.angm.game.world.TileVector;
 import xyz.angm.game.world.blocks.Block;
@@ -23,6 +24,8 @@ public abstract class NetworkInterface {
         kryo.register(TileVector.class);
 
         kryo.register(Vector2.class);
+        kryo.register(Array.class);
+        kryo.register(Object[].class);
     }
 
     /** Will start the interface along with a discovery thread.
