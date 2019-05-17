@@ -52,7 +52,7 @@
   {
     "id": 7,
     "name": "MinerStone",
-    "texture": "minerWood",
+    "texture": "minerStone",
     "materialProduced": "STONE",
     "materialRequired": "WOOD",
     "category": "Production"
@@ -60,7 +60,7 @@
   {
     "id": 8,
     "name": "MinerIron",
-    "texture": "minerWood",
+    "texture": "minerIron",
     "materialProduced": "IRON",
     "materialRequired": "STONE",
     "category": "Production"
@@ -68,7 +68,7 @@
   {
     "id": 9,
     "name": "MinerDiamond",
-    "texture": "minerWood",
+    "texture": "minerDiamond",
     "materialProduced": "DIAMOND",
     "materialRequired": "IRON",
     "category": "Production"
