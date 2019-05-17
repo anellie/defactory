@@ -54,16 +54,19 @@ public class World implements Disposable {
 
     /** Constructs a new world along with it's map.
      * @param generator The generator which is done loading.
-     * @param active If false, background activity is heavily restricted. Used on the client. */
+     * @param active If false, background activity is heavily restricted and the world won't generate a CORE. Used on the client. */
     public World(TerrainGenerator generator, boolean active) {
         this.seed = generator.seed;
         map = new WorldMap(generator);
         physics = new PhysicsEngine(player, active);
 
-        if (active)
+        if (active) {
+            // Schedule the block ticker to run every BLOCK_TICK_FREQ
             Executors.newSingleThreadScheduledExecutor()
                     .scheduleAtFixedRate(new BlockTickRunner(this), BLOCK_TICK_FREQ, BLOCK_TICK_FREQ, TimeUnit.MILLISECONDS);
+        }
 
+        addBlock(player.getCore());
         stage.addActor(blockGroup);
         player.registerToStage(stage);
         stage.addActor(selector);

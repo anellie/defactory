@@ -1,5 +1,6 @@
 package xyz.angm.game.world.entities;
 
+import xyz.angm.game.world.TileVector;
 import xyz.angm.game.world.blocks.Block;
 import xyz.angm.game.world.blocks.Material;
 
@@ -26,6 +27,8 @@ public class Player extends Entity {
     private transient Block.Direction blockDirection = Block.Direction.UP;
     /** The players inventory. */
     public final transient Inventory inventory = new Inventory();
+    /** The CORE. The player loses once this block is destroyed.  */
+    private final Block core;
 
     /** Constructs a Player. Requires AssetManager in Game to be ready. */
     public Player() {
@@ -33,6 +36,7 @@ public class Player extends Entity {
         health = PLAYER_HEALTH;
         actorTexture = "textures/player.png";
         getPosition().set((WORLD_SIZE_MULTIPLICATOR / 2f) * WORLD_VIEWPORT_WIDTH, (WORLD_SIZE_MULTIPLICATOR / 2f) * WORLD_VIEWPORT_HEIGHT);
+        core = new Block(new TileVector().set(getPosition()), 0, Block.Direction.DOWN);
     }
 
     /** Toggles the player sprinting. Sprinting causes the player to move faster.
@@ -64,12 +68,16 @@ public class Player extends Entity {
         return blockSelected;
     }
 
-    public void setBlockSelected(int blockSelected) {
-        this.blockSelected = blockSelected;
+    public Block getCore() {
+        return core;
     }
 
     public Block.Direction getBlockDirection() {
         return blockDirection;
+    }
+
+    public void setBlockSelected(int blockSelected) {
+        this.blockSelected = blockSelected;
     }
 
     /** Cycles to the next block direction. */

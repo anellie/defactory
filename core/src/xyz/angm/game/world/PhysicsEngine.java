@@ -106,7 +106,7 @@ class PhysicsEngine {
 
         // Update velocities
         playerBody.setLinearVelocity(tmpV.set(player.getVelocity()).scl(player.getMovementMultiplier()));
-        beasts.forEach(beast -> beast.setLinearVelocity(((Beast) beast.getUserData()).getTargetLocation()));
+        beasts.forEach(beast -> beast.setLinearVelocity(((Beast) beast.getUserData()).getTargetLocation(player)));
 
         // Step physics engine
         float frameTime = Math.min(deltaTime, 0.25f);

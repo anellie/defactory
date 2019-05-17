@@ -26,9 +26,13 @@ public class Beast extends Entity {
         getPosition().set(position.getX(), position.getY());
     }
 
-    /** Get the location the beast would like to be at. TODO this should be the nearest block.
-     * @return The location the beast wants to move to. */
-    public Vector2 getTargetLocation() {
-        return tmpV.set(1f, 1f);
+    /** Get the location the beast would like to be at.
+     * @param player The player this beast is targeting.
+     * @return The location the beast wants to move to. Usually the CORE. */
+    public Vector2 getTargetLocation(Player player) {
+        tmpV.set(player.getCore().getPosition().getX(), player.getCore().getPosition().getY());
+        tmpV.sub(getPosition());
+        tmpV.limit(1f);
+        return tmpV;
     }
 }
