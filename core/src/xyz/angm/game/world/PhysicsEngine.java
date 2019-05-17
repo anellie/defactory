@@ -164,10 +164,8 @@ class PhysicsEngine {
      * @param position The position of the block removed. */
     void blockRemoved(TileVector position) {
         Body block = blocks.remove(position);
-        if (block != null) {
-            if (((Block) block.getUserData()).getProperties().type == BlockType.TORCH) blockLights.remove(block).remove(true);
-            pWorld.destroyBody(block);
-        }
+        if (((Block) block.getUserData()).getProperties().type == BlockType.TORCH) blockLights.remove(block).remove(true);
+        pWorld.destroyBody(block);
     }
 
     /** Call when an item has been added to the world.

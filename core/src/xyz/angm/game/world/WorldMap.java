@@ -53,9 +53,7 @@ public class WorldMap extends Image {
     /** Removes a block at the given position.
      * @param position The position to remove the block at. */
     void removeBlock(TileVector position) {
-        Block block = blocks.get(position);
-        if (block != null) block.dispose();
-        blocks.remove(position);
+        blocks.remove(position).dispose();
     }
 
     /** Calls the given method on all blocks in the map.

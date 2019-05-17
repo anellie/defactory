@@ -14,10 +14,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import xyz.angm.game.Game;
-import xyz.angm.game.world.blocks.Block;
-import xyz.angm.game.world.blocks.BlockProperties;
-import xyz.angm.game.world.blocks.BlockTickRunner;
-import xyz.angm.game.world.blocks.Material;
+import xyz.angm.game.world.blocks.*;
 import xyz.angm.game.world.entities.Beast;
 import xyz.angm.game.world.entities.Item;
 import xyz.angm.game.world.entities.Player;
@@ -122,6 +119,7 @@ public class World implements Disposable {
      * @param x The X axis of the screen coordinates
      * @param y The Y axis of the screen coordinates */
     public void updateSelector(int x, int y) {
+        if (getPlayer().getBlockSelected() == -1) return;
         tmpV.set(x, y);
         stage.screenToStageCoordinates(tmpV);
         selectorPosition.set(tmpV);
@@ -145,12 +143,12 @@ public class World implements Disposable {
     public Block mapClicked(TileVector position, boolean rightClick) {
         if (rightClick) {
             removeBlock(position);
-            return null;
-        } else {
+        } else if (getPlayer().getBlockSelected() != -1) {
             Block block = new Block(position, getPlayer().getBlockSelected(), getPlayer().getBlockDirection());
             addBlock(block);
             return block;
         }
+        return null;
     }
 
     /** Adds the block to the world.
@@ -165,8 +163,11 @@ public class World implements Disposable {
     /** Removes a block.
      * @param position The position of the block to remove. */
     public void removeBlock(TileVector position) {
-        map.removeBlock(position);
-        physics.blockRemoved(position);
+        Block block = map.getBlock(position);
+        if (block != null && block.getProperties().type != BlockType.CORE) {
+            map.removeBlock(position);
+            physics.blockRemoved(position);
+        }
     }
 
     private void updateCamera() {

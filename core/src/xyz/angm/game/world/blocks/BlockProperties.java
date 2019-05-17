@@ -26,6 +26,8 @@ public class BlockProperties {
     /** Set the block to be a physics sensor (meaning it cannot collide with other entities). */
     public boolean isSensor = false;
 
+    /** Will this block be part of the build menu/can the player place it? */
+    public boolean displayedInBuildMenu = true;
     /** The path to the blocks texture relative to '@/core/assets/textures'. Does not include '.png' suffix. */
     public String texture = "";
     /** Name of a blocks localization string. To get a blocks localized string: Localization.get("block" + name) */

@@ -1,10 +1,11 @@
 [
   {
     "id": 0,
-    "name": "TurretTier1",
-    "texture": "turretTier1",
-    "type": "TURRET",
-    "category": "Artillery"
+    "name": "Core",
+    "texture": "core",
+    "type": "CORE",
+    "displayedInBuildMenu": false,
+    "materialProduced": "WOOD"
   },
   {
     "id": 1,
@@ -71,5 +72,12 @@
     "materialProduced": "DIAMOND",
     "materialRequired": "IRON",
     "category": "Production"
+  },
+  {
+    "id": 10,
+    "name": "TurretTier1",
+    "texture": "turretTier1",
+    "type": "TURRET",
+    "category": "Artillery"
   }
 ]

@@ -65,6 +65,8 @@ public class PlayerHud extends Group {
         buildSelectionButtons.setMaxCheckCount(1);
 
         for (BlockProperties properties : BlockProperties.getAllBlocks()) {
+            if (!properties.displayedInBuildMenu) continue;
+
             VisImageButton button = new VisImageButton(
                     new TextureRegionDrawable(Game.assets.get(properties.getFullTexturePath(), Texture.class)),
                     Localization.get("block" + properties.name));

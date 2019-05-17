@@ -22,7 +22,7 @@ public class Player extends Entity {
 
     private transient float stamina = PLAYER_STAMINA;
     private transient boolean isSprinting = false;
-    private transient int blockSelected = 0;
+    private transient int blockSelected = -1;
     private transient Block.Direction blockDirection = Block.Direction.UP;
     /** The players inventory. */
     public final transient Inventory inventory = new Inventory();
