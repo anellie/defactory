@@ -269,12 +269,12 @@ class PhysicsEngine {
 
         // Process contact between a block and another body
         private void processBlock(Block block, Body blockBody, Body otherBody) {
-            if (block.getProperties().type == BlockType.CONVEYOR) {
+            if (otherBody.getUserData() instanceof Beast) {
+                processBlockAndBeast((Beast) otherBody.getUserData(), otherBody, block);
+            } else if (block.getProperties().type == BlockType.CONVEYOR) {
                 processConveyor(block, blockBody, otherBody);
             } else if (otherBody.getUserData() instanceof Item) {
                 processBlockAndItem((Item) otherBody.getUserData(), otherBody, block);
-            } else if (otherBody.getUserData() instanceof Beast) {
-                processBlockAndBeast((Beast) otherBody.getUserData(), otherBody, block);
             }
         }
 

@@ -120,6 +120,7 @@ public class Block implements Disposable {
 
         @Override
         public void draw(Batch batch, float parentAlpha) {
+            if (health == getProperties().health) return; // Bar is full, don't show
             VisUI.getSkin().getDrawable("black-transparent").draw(batch, getX(), getY(), 1f, 0.1f);
             VisUI.getSkin().getDrawable("green").draw(batch, getX(), getY(), (float) health / getProperties().health, 0.1f);
         }
