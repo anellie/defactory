@@ -20,7 +20,7 @@ public class BlockProperties {
     /** The ID of a block type used to determine equality. Should not be the same on different block properties. */
     public int id = -1;
     /** Health of a block; eg how much enemy hits it can take. */
-    public int health = 1;
+    public int health = 500;
     /** The type of the block. See BlockType enum. */
     public BlockType type = BlockType.DEFAULT;
     /** Set the block to be a physics sensor (meaning it cannot collide with other entities). */

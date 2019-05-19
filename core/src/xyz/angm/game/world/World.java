@@ -58,7 +58,7 @@ public class World implements Disposable {
     public World(TerrainGenerator generator, boolean active) {
         this.seed = generator.seed;
         map = new WorldMap(generator);
-        physics = new PhysicsEngine(player, active);
+        physics = new PhysicsEngine(this, active);
 
         if (active) {
             // Schedule the block ticker to run every BLOCK_TICK_FREQ

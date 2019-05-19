@@ -33,6 +33,7 @@ class PhysicsEngine {
     /** Size of sensor blocks. Smaller to improve interactions between conveyors and items. */
     private static final float SENSOR_BODY_SIZE = 0.25f;
 
+    private final xyz.angm.game.world.World gameWorld;
     private final World pWorld = new World(new Vector2(0, 0), true);
     private final WorldContactListener contactListener = new WorldContactListener();
     private final HashMap<TileVector, Body> blocks = new HashMap<>();
@@ -50,12 +51,15 @@ class PhysicsEngine {
     private final Vector2 tmpV = new Vector2();
 
     /** Construct a new engine.
-     * @param player The player the system should act on.
+     * @param world The game world.
      * @param authority Whether or not the system is the source of truth.
      *                  If false, positions will be forced from the entities and the engine
      *                  will act purely as a lighting engine. */
-    PhysicsEngine(Player player, boolean authority) {
+    PhysicsEngine(xyz.angm.game.world.World world, boolean authority) {
+        this.gameWorld = world;
         this.authority = authority;
+        Player player = world.getPlayer();
+
         pWorld.setContactListener(contactListener);
 
         BodyDef playerDef = new BodyDef();
@@ -236,9 +240,12 @@ class PhysicsEngine {
         private static final float CONVEYOR_BELT_PULL = 2f;
 
         private final Vector2 tmpV = new Vector2();
+        private final Array<Block> deadBlocks = new Array<>(false, 2);
 
         private void step() {
             pWorld.getContactList().forEach(this::processContact);
+            deadBlocks.forEach(block -> gameWorld.removeBlock(block.getPosition()));
+            deadBlocks.clear();
         }
 
         private void processContact(Contact contact) {
@@ -266,6 +273,8 @@ class PhysicsEngine {
                 processConveyor(block, blockBody, otherBody);
             } else if (otherBody.getUserData() instanceof Item) {
                 processBlockAndItem((Item) otherBody.getUserData(), otherBody, block);
+            } else if (otherBody.getUserData() instanceof Beast) {
+                processBlockAndBeast((Beast) otherBody.getUserData(), otherBody, block);
             }
         }
 
@@ -311,6 +320,11 @@ class PhysicsEngine {
                 block.incrementMaterial();
                 itemRemoved(item, itemBody);
             }
+        }
+
+        private void processBlockAndBeast(Beast beast, Body beastBody, Block block) {
+            block.onHit();
+            if (block.getHealth() <= 0) deadBlocks.add(block);
         }
 
         @Override
