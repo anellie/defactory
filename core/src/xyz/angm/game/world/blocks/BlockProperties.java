@@ -40,17 +40,16 @@ public class BlockProperties {
     /** The material this block requires to work/do its task. */
     public Material materialRequired = null;
 
+    /** TURRET & HEALER specific: The range of the block. */
+    public float range = -1;
+
     /** TURRET specific: The interval in which the turret fires. */
     public float turretFireRate = 1f;
-    /** TURRET specific: The range of the turret. */
-    public float turretRange = 1f;
     /** TURRET specific: The damage of the turret per shot. */
     public int turretDamage = 1;
 
     /** HEALER specific: The interval in which the healer heals surrounding blocks. */
     public float healerRate = 1f;
-    /** HEALER specific: The range of the healer. */
-    public float healerRange = 1f;
     /** HEALER specific: The damage recovered per heal cycle per block. */
     public int healerRecovery = 1;
 

@@ -78,6 +78,7 @@
     "name": "TurretTier1",
     "texture": "turretTier1",
     "type": "TURRET",
-    "category": "Artillery"
+    "category": "Artillery",
+    "range": 5
   }
 ]

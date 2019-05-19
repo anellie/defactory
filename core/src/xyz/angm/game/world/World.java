@@ -1,20 +1,18 @@
 package xyz.angm.game.world;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import xyz.angm.game.Game;
-import xyz.angm.game.world.blocks.*;
+import xyz.angm.game.ui.BlockPlacementPreview;
+import xyz.angm.game.world.blocks.Block;
+import xyz.angm.game.world.blocks.BlockTickRunner;
+import xyz.angm.game.world.blocks.BlockType;
+import xyz.angm.game.world.blocks.Material;
 import xyz.angm.game.world.entities.Beast;
 import xyz.angm.game.world.entities.Item;
 import xyz.angm.game.world.entities.Player;
@@ -46,10 +44,8 @@ public class World implements Disposable {
 
     private final Stage stage = new Stage(new FitViewport(WORLD_VIEWPORT_WIDTH, WORLD_VIEWPORT_HEIGHT));
     private Vector2 cameraPosition = player.getPosition();
-    private final Image selector = new Image();
-    private final TileVector selectorPosition = new TileVector();
     private final Group blockGroup = new Group();
-
+    private final BlockPlacementPreview blockPreview = new BlockPlacementPreview();
     private final Vector2 tmpV = new Vector2();
 
     /** Constructs a new world along with it's map.
@@ -69,11 +65,7 @@ public class World implements Disposable {
         addBlock(player.getCore());
         stage.addActor(blockGroup);
         player.registerToStage(stage);
-        stage.addActor(selector);
-
-        selector.setSize(1, 1);
-        selector.setColor(1, 1, 1, 0.5f);
-        selector.setOrigin(Align.center);
+        stage.addActor(blockPreview);
         ((OrthographicCamera) stage.getCamera()).zoom = 0.2f;
     }
 
@@ -125,10 +117,7 @@ public class World implements Disposable {
         if (getPlayer().getBlockSelected() == -1) return;
         tmpV.set(x, y);
         stage.screenToStageCoordinates(tmpV);
-        selectorPosition.set(tmpV);
-        selector.setPosition(selectorPosition.getX(), selectorPosition.getY());
-        selector.setDrawable(new TextureRegionDrawable(new TextureRegion(Game.assets.get(BlockProperties.getProperties(getPlayer().getBlockSelected()).getFullTexturePath(), Texture.class))));
-        selector.setRotation(player.getBlockDirection().toDegrees());
+        blockPreview.update(tmpV, getPlayer().getBlockSelected(), getPlayer().getBlockDirection());
     }
 
     /** Zooms the world map; scaling it bigger or smaller.
