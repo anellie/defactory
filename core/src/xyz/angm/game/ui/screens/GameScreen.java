@@ -67,6 +67,8 @@ public class GameScreen extends Screen {
         Gdx.gl.glClearColor(0.05f, 0.05f, 0.05f, 1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+        if (world.getPlayer().getCore().getHealth() < 0) onGameLoss();
+
         world.act(delta);
         world.render();     // World render is separate to allow for different camera positions.
 
@@ -150,6 +152,11 @@ public class GameScreen extends Screen {
         game.setScreen(new MenuScreen(game));
     }
 
+    // Called when the CORE was destroyed
+    private void onGameLoss() {
+        dispose();
+        game.setScreen(new MessageScreen(game, "gameLost"));
+    }
     // Called on client when server disconnects
     private void onServerDisconnect() {
         dispose();

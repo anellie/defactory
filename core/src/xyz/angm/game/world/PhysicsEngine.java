@@ -140,7 +140,7 @@ class PhysicsEngine {
      * @param block The block added to the world. */
     void blockPlaced(Block block) {
         Body blockBody = createBody(BodyDef.BodyType.StaticBody, block, block.getPosition().setToItself(tmpV),
-                block.getProperties().isSensor ? SENSOR_BODY_SIZE : 0.5f, 0f, 0f, 0f, block.getProperties().isSensor);
+                block.getProperties().isSensor ? SENSOR_BODY_SIZE : 0.5f, 0f, 0.2f, 0f, block.getProperties().isSensor);
         blocks.put(block.getPosition(), blockBody);
 
         if (block.getProperties().type == BlockType.TORCH) {

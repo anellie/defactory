@@ -29,6 +29,8 @@ public class Player extends Entity {
     public final transient Inventory inventory = new Inventory();
     /** The CORE. The player loses once this block is destroyed.  */
     private final Block core;
+    /** The wave of beasts the player has survived. TODO implement waves */
+    private int beastWave;
 
     /** Constructs a Player. Requires AssetManager in Game to be ready. */
     public Player() {
@@ -70,6 +72,10 @@ public class Player extends Entity {
 
     public Block getCore() {
         return core;
+    }
+
+    public int getBeastWave() {
+        return beastWave;
     }
 
     public Block.Direction getBlockDirection() {

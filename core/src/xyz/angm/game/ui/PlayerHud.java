@@ -37,6 +37,7 @@ public class PlayerHud extends Group {
     private final VisProgressBar staminaBar =
             new VisProgressBar(0, PLAYER_STAMINA, PLAYER_STAMINA / BAR_WIDTH, false, "stamina-bar");
     private final EnumMap<Material, Label> materialLabels = new EnumMap<>(Material.class);
+    private final VisWindow waveWindow = new VisWindow(Localization.get("hudWave") + 0);
 
     /** Construct a new HUD.
      * @param screen The screen the HUD will be a part of */
@@ -103,6 +104,11 @@ public class PlayerHud extends Group {
         inventoryWindow.pack();
         inventoryWindow.setPosition(0, VIEWPORT_HEIGHT, Align.topLeft);
         addActor(inventoryWindow);
+
+        // Window containing the current wave of monsters
+        waveWindow.pack();
+        waveWindow.setPosition(VIEWPORT_WIDTH, VIEWPORT_HEIGHT, Align.topRight);
+        addActor(waveWindow);
     }
 
     @Override
@@ -111,6 +117,7 @@ public class PlayerHud extends Group {
 
         healthBar.setValue(screen.getWorld().getPlayer().getHealth());
         staminaBar.setValue(screen.getWorld().getPlayer().getStamina());
+        waveWindow.setName(Localization.get("hudWave") + screen.getWorld().getPlayer().getBeastWave());
 
         for (Map.Entry<Material, Label> material : materialLabels.entrySet()) {
             material.getValue().setText(screen.getWorld().getPlayer().inventory.get(material.getKey()));
