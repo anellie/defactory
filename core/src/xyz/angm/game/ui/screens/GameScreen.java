@@ -22,10 +22,12 @@ import xyz.angm.game.world.entities.Player;
 /** The screen active while the game is running. */
 public class GameScreen extends Screen {
 
-    private boolean pauseMenuActive = false;
     private World world;
     private PlayerHud hud;
     private final InputMultiplexer inputMultiplexer = new InputMultiplexer();
+
+    private boolean pauseMenuActive = false;
+    private int beastsLeft = 0;
     private final Vector2 tmpV = new Vector2();
 
     /** Constructs the screen. Automatically determines if player or spectator.
@@ -60,6 +62,10 @@ public class GameScreen extends Screen {
 
     public World getWorld() {
         return world;
+    }
+
+    public int getBeastsLeft() {
+        return beastsLeft;
     }
 
     @Override
@@ -98,6 +104,12 @@ public class GameScreen extends Screen {
         else if (packet instanceof Array) { // Beast positions
             world.updateBeastPositions((Array<Vector2>) packet);
         }
+        else if (packet instanceof String && packet.equals("WAVE_START")) {
+            beastsLeft = 3;
+        }
+        else if (packet instanceof String && packet.equals("WAVE_END")) {
+            beastsLeft = 0;
+        }
     }
 
     /** Should be called when the player clicked the screen. Will place or break a block at the clicked position and sync to clients.
@@ -120,10 +132,12 @@ public class GameScreen extends Screen {
      * @param x The x position of the click in screen coordinates.
      * @param y The y position of the click in screen coordinates. */
     public void requestBeastSpawn(int x, int y) {
+        if (beastsLeft < 1) return;
         tmpV.set(x, y);
         world.screenToWorldCoordinates(tmpV);
         TileVector position = new TileVector().set(tmpV);
         game.getClient().send(position);
+        beastsLeft--;
     }
 
     /** Spawn a beast and sent it to all clients.
@@ -182,5 +196,10 @@ public class GameScreen extends Screen {
         super.dispose();
         world.dispose();
         game.disposeNetworkInterface();
+    }
+
+    /** Call when a wave of beasts has begun. */
+    public void waveBegun() {
+        world.getPlayer().nextWave();
     }
 }

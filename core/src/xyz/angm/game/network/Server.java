@@ -74,6 +74,8 @@ public class Server extends NetworkInterface {
         });
 
         scheduler.scheduleAtFixedRate(this::updateClientsEntities, 50, 50, TimeUnit.MILLISECONDS);
+        scheduler.scheduleAtFixedRate(this::startWave, 180, 90, TimeUnit.MINUTES);
+        scheduler.scheduleAtFixedRate(this::endWave, 210, 90, TimeUnit.MINUTES);
     }
 
     // Update entities on all clients connected to this server
@@ -82,5 +84,14 @@ public class Server extends NetworkInterface {
             send(((GameScreen) game.getScreen()).getWorld().getPlayer());
             send(((GameScreen) game.getScreen()).getWorld().getBeastPositions());
         }
+    }
+
+    private void startWave() {
+        ((GameScreen) game.getScreen()).waveBegun();
+        send("WAVE_START");
+    }
+
+    private void endWave() {
+        send("WAVE_END");
     }
 }

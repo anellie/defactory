@@ -93,6 +93,11 @@ public class Player extends Entity {
         blockDirection = Block.Direction.values()[newIndex];
     }
 
+    /** Call when the next wave begins. */
+    public void nextWave() {
+        beastWave++;
+    }
+
     /** The players inventory containing all material the player has. */
     @SuppressWarnings("JavaDoc") // Self-explanatory for the most part
     public class Inventory {
