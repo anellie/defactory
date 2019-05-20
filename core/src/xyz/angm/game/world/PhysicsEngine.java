@@ -45,9 +45,7 @@ class PhysicsEngine {
     private final boolean authority;
 
     private float timeSinceLastStep = 0f;
-    private final BodyDef blockDef = new BodyDef();
-    private final BodyDef itemDef = new BodyDef();
-    private final BodyDef beastDef = new BodyDef();
+    private final BodyDef bodyDef = new BodyDef();
     private final Vector2 tmpV = new Vector2();
 
     /** Construct a new engine.
@@ -59,28 +57,10 @@ class PhysicsEngine {
         this.gameWorld = world;
         this.authority = authority;
         Player player = world.getPlayer();
+        this.playerBody = createBody(BodyDef.BodyType.DynamicBody, player, player.getPosition(),
+                player.entitySize / 2f, 1f, 0.4f, 0.6f, false);
 
         pWorld.setContactListener(contactListener);
-
-        BodyDef playerDef = new BodyDef();
-        playerDef.type = BodyDef.BodyType.DynamicBody;
-        playerDef.position.set(player.getPosition()).add(player.entitySize / 2f, player.entitySize / 2f);
-
-        Body pBody = pWorld.createBody(playerDef);
-        PolygonShape playerShape = new PolygonShape();
-        playerShape.setAsBox(player.entitySize / PLAYER_SCALE, player.entitySize / PLAYER_SCALE);
-
-        FixtureDef playerFixDef = new FixtureDef();
-        playerFixDef.shape = playerShape;
-        playerFixDef.density = 1f;
-        playerFixDef.friction = 0.4f;
-        playerFixDef.restitution = 0.6f;
-        pBody.createFixture(playerFixDef);
-        pBody.setFixedRotation(true);
-
-        pBody.setUserData(player);
-        this.playerBody = pBody;
-        playerShape.dispose();
 
         rayHandler.setAmbientLight(0f, 0f, 0f, 0.4f);
         PointLight playerLight = new PointLight(rayHandler, 128, new Color(1f, 1f, 1f, 0.5f), 10, 0, 0);
@@ -135,25 +115,34 @@ class PhysicsEngine {
         });
     }
 
+    private Body createBody(BodyDef.BodyType type, Object userData, Vector2 position, float size,
+                            float density, float friction, float restitution, boolean sensor) {
+        bodyDef.position.set(position).add(size, size);
+        Body body = pWorld.createBody(bodyDef);
+        body.setType(type);
+
+        PolygonShape shape = new PolygonShape();
+        shape.setAsBox(size, size);
+
+        FixtureDef fixDef = new FixtureDef();
+        fixDef.shape = shape;
+        fixDef.density = density;
+        fixDef.friction = friction;
+        fixDef.restitution = restitution;
+        fixDef.isSensor = sensor;
+
+        body.createFixture(fixDef);
+        body.setUserData(userData);
+        shape.dispose();
+        return body;
+    }
+
     /** Call when a block was placed. Will add the block to the physics simulation.
      * Blocks that can be walked through should NOT be part of the simulation; and not added with this method.
      * @param block The block added to the world. */
     void blockPlaced(Block block) {
-        blockDef.position.set(block.getPosition().getX(), block.getPosition().getY()).add(0.5f, 0.5f);
-        Body blockBody = pWorld.createBody(blockDef);
-
-        PolygonShape blockShape = new PolygonShape();
-        if (block.getProperties().isSensor) blockShape.setAsBox(SENSOR_BODY_SIZE, SENSOR_BODY_SIZE);
-        else blockShape.setAsBox(0.5f, 0.5f);
-
-        FixtureDef fixDef = new FixtureDef();
-        fixDef.shape = blockShape;
-        fixDef.density = 0f;
-        fixDef.isSensor = block.getProperties().isSensor;
-
-        blockBody.createFixture(fixDef);
-        blockBody.setUserData(block);
-        blockShape.dispose();
+        Body blockBody = createBody(BodyDef.BodyType.StaticBody, block, block.getPosition().setToItself(tmpV),
+                0.5f, 0f, 0f, 0f, block.getProperties().isSensor);
         blocks.put(block.getPosition(), blockBody);
 
         if (block.getProperties().type == BlockType.TORCH) {
@@ -175,24 +164,7 @@ class PhysicsEngine {
     /** Call when an item has been added to the world.
      * @param item The item to add. */
     void itemAdded(Item item) {
-        itemDef.position.set(item.getPosition()).add(ITEM_SIZE * 2, ITEM_SIZE * 2);
-        itemDef.type = BodyDef.BodyType.DynamicBody;
-        Body itemBody = pWorld.createBody(itemDef);
-
-        PolygonShape itemShape = new PolygonShape();
-        itemShape.setAsBox(ITEM_SIZE, ITEM_SIZE);
-        FixtureDef fixDef = new FixtureDef();
-        fixDef.shape = itemShape;
-        fixDef.density = 1f;
-        fixDef.friction = 0.8f;
-        fixDef.restitution = 0f;
-        fixDef.isSensor = true;
-
-        itemBody.createFixture(fixDef);
-        itemBody.setUserData(item);
-        itemBody.setFixedRotation(true);
-        itemShape.dispose();
-
+        Body itemBody = createBody(BodyDef.BodyType.DynamicBody, item, item.getPosition(), ITEM_SIZE, 1f, 0.8f, 0f, true);
         items.add(itemBody);
     }
 
@@ -207,23 +179,8 @@ class PhysicsEngine {
     /** Call when a beast was added to the world.
      * @param beast The beast to add. */
     void beastAdded(Beast beast) {
-        beastDef.position.set(beast.getPosition()).add(ITEM_SIZE * 2, ITEM_SIZE * 2);
-        beastDef.type = BodyDef.BodyType.DynamicBody;
-        Body beastBody = pWorld.createBody(beastDef);
-
-        PolygonShape beastShape = new PolygonShape();
-        beastShape.setAsBox(beast.entitySize / 2f, beast.entitySize / 2f);
-        FixtureDef fixDef = new FixtureDef();
-        fixDef.shape = beastShape;
-        fixDef.density = 0.8f;
-        fixDef.friction = 0.6f;
-        fixDef.restitution = 0.6f;
-
-        beastBody.createFixture(fixDef);
-        beastBody.setUserData(beast);
-        beastBody.setFixedRotation(true);
-        beastShape.dispose();
-
+        Body beastBody = createBody(BodyDef.BodyType.DynamicBody, beast, beast.getPosition(),
+                beast.entitySize / 2f, 0.8f, 0.6f, 0.6f, false);
         beasts.add(beastBody);
     }
 

@@ -42,6 +42,13 @@ public class TileVector {
         return set(v.x, v.y);
     }
 
+    /** Sets the given vector to itself and returns it.
+     * @param v Applies values to this vector.
+     * @return v. */
+    Vector2 setToItself(Vector2 v) {
+        return v.set(getX(), getY());
+    }
+
     /** Adds the values to itself.
      * @param x Added to the X axis.
      * @param y Added to the Y axis.
