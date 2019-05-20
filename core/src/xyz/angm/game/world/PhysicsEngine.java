@@ -83,7 +83,7 @@ class PhysicsEngine {
         playerShape.dispose();
 
         rayHandler.setAmbientLight(0f, 0f, 0f, 0.4f);
-        PointLight playerLight = new PointLight(rayHandler, 128, new Color(1f, 1f, 1f, 0.75f), 10, 0, 0);
+        PointLight playerLight = new PointLight(rayHandler, 128, new Color(1f, 1f, 1f, 0.5f), 10, 0, 0);
         playerLight.attachToBody(playerBody);
     }
 

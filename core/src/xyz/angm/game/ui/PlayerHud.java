@@ -61,7 +61,6 @@ public class PlayerHud extends Group {
         VisWindow buildWindow = new VisWindow(Localization.get("hudBuild"));
         HashMap<String, GridGroup> buildSelectionCategories = new HashMap<>();
         ButtonGroup<VisImageButton> buildSelectionButtons = new ButtonGroup<>();
-        buildSelectionButtons.setMinCheckCount(1);
         buildSelectionButtons.setMaxCheckCount(1);
 
         for (BlockProperties properties : BlockProperties.getAllBlocks()) {
@@ -89,7 +88,6 @@ public class PlayerHud extends Group {
             }
         }
 
-        buildSelectionButtons.getButtons().get(0).setChecked(true);
         buildWindow.pack();
         buildWindow.setPosition(VIEWPORT_WIDTH, 0, Align.bottomRight);
         addActor(buildWindow);
