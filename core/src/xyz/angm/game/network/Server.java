@@ -5,6 +5,7 @@ import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import xyz.angm.game.Game;
 import xyz.angm.game.ui.screens.GameScreen;
+import xyz.angm.game.ui.screens.MapLoadingScreen;
 import xyz.angm.game.world.TileVector;
 
 import java.io.IOException;
@@ -58,6 +59,8 @@ public class Server extends NetworkInterface {
         kryoServer.addListener(new Listener() {
             @Override
             public void connected(Connection connection) {
+                if (game.getScreen() instanceof MapLoadingScreen) connection.close(); // Not ready yet!
+
                 // Sync world seed to client
                 connection.sendTCP(((GameScreen) game.getScreen()).getWorld().seed);
             }
