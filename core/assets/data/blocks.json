@@ -80,5 +80,29 @@
     "type": "TURRET",
     "category": "Artillery",
     "range": 5
+  },
+  {
+    "id": 11,
+    "name": "TurretTier2",
+    "texture": "turretTier2",
+    "type": "TURRET",
+    "category": "Artillery",
+    "range": 6
+  },
+  {
+    "id": 12,
+    "name": "TurretTier3",
+    "texture": "turretTier3",
+    "type": "TURRET",
+    "category": "Artillery",
+    "range": 8
+  },
+  {
+    "id": 13,
+    "name": "TurretTier4",
+    "texture": "turretTier4",
+    "type": "TURRET",
+    "category": "Artillery",
+    "range": 6
   }
 ]
