@@ -14,10 +14,8 @@ import static xyz.angm.game.ui.screens.Screen.VIEWPORT_WIDTH;
 public class TerrainGenerator {
 
     /** Chance for stone to generate. */
-    private static final double STONE_CHANCE = 0.25f;
-    /** Chance for water to generate. */
-    private static final double WATER_CHANCE = 0.15f;
-    /** How many lines should be rendered per continueLoading call? */
+    private static final double STONE_CHANCE = 0.35f;
+    /** The amount of lines to be rendered per continueLoading call. */
     private static final int LINES_PER_STEP = 15;
     /** Multiplicator for the world map. Takes the viewport size as base. */
     public static final int WORLD_SIZE_MULTIPLICATOR = 3;
@@ -27,7 +25,6 @@ public class TerrainGenerator {
     private final SimplexNoiseGenerator noiseGenerator;
     private final Pixmap grass;
     private final Pixmap stone;
-    private final Pixmap water;
     private final Pixmap map = new Pixmap(
             WORLD_SIZE_MULTIPLICATOR * VIEWPORT_WIDTH, WORLD_SIZE_MULTIPLICATOR * VIEWPORT_HEIGHT, Pixmap.Format.RGB888);
     private int index = 0;
@@ -39,13 +36,10 @@ public class TerrainGenerator {
         noiseGenerator = new SimplexNoiseGenerator(seed);
         TextureData grassTD = Game.assets.get("textures/map/grass.png", Texture.class).getTextureData();
         TextureData stoneTD = Game.assets.get("textures/map/stone.png", Texture.class).getTextureData();
-        TextureData waterTD = Game.assets.get("textures/map/water.png", Texture.class).getTextureData();
         grassTD.prepare();
         stoneTD.prepare();
-        waterTD.prepare();
         grass = grassTD.consumePixmap();
         stone = stoneTD.consumePixmap();
-        water = waterTD.consumePixmap();
     }
 
     /** Creates a Texture displaying the ground, using the proper terrain.
@@ -62,8 +56,7 @@ public class TerrainGenerator {
                 double noise = noiseGenerator.generateDot(x, y);
 
                 Pixmap copyFrom;
-                if (noise < WATER_CHANCE) copyFrom = water;
-                else if (noise > (1 - STONE_CHANCE)) copyFrom = stone;
+                if (noise < STONE_CHANCE) copyFrom = stone;
                 else copyFrom = grass;
 
                 map.setColor(copyFrom.getPixel((x % copyFrom.getWidth()), (y % copyFrom.getWidth())));
