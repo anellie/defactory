@@ -24,6 +24,7 @@ class MenuScreen extends Screen {
 
         VisTextButton startGameButton = new VisTextButton(Localization.get("mainMenuStart"));
         VisTextButton joinGameButton = new VisTextButton(Localization.get("mainMenuJoin"));
+        VisTextButton guideButton = new VisTextButton(Localization.get("mainMenuGuide"));
         VisTextButton exitGameButton = new VisTextButton(Localization.get("exitButton"));
 
         VisSelectBox<Localization.Language> languageDropdown = new VisSelectBox<>();
@@ -44,6 +45,12 @@ class MenuScreen extends Screen {
                 game.joinGame();
             }
         });
+        guideButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                game.setScreen(new MessageScreen(game, "guide"));
+            }
+        });
         languageDropdown.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -60,6 +67,7 @@ class MenuScreen extends Screen {
 
         table.add(startGameButton).size(BUTTON_WIDTH, BUTTON_HEIGHT).row();
         table.add(joinGameButton).size(BUTTON_WIDTH, BUTTON_HEIGHT).row();
+        table.add(guideButton).size(BUTTON_WIDTH, BUTTON_HEIGHT).row();
         table.add(languageDropdown).size(BUTTON_WIDTH, BUTTON_HEIGHT).row();
         table.add(exitGameButton).size(BUTTON_WIDTH, BUTTON_HEIGHT).row();
     }
