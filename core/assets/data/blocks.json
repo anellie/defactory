@@ -104,5 +104,14 @@
     "type": "TURRET",
     "category": "Artillery",
     "range": 6
+  },
+  {
+    "id": 14,
+    "name": "HealerTier1",
+    "texture": "turretTier1",
+    "type": "HEALER",
+    "category": "Defense",
+    "range": 3,
+    "healerRecovery": 100
   }
 ]

@@ -36,7 +36,6 @@ public class SpectatorHud extends PlayerHud {
         addActor(barWindow);
 
         // Window containing the amount of beasts the spectator can spawn
-        beastsLeftWindow.pack();
         beastsLeftWindow.setPosition(VIEWPORT_WIDTH, VIEWPORT_HEIGHT, Align.topRight);
         addActor(beastsLeftWindow);
     }

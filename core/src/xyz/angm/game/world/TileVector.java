@@ -22,7 +22,7 @@ public class TileVector {
      * @param x The first axis.
      * @param y The second axis.
      * @return Itself. */
-    private TileVector set(int x, int y) {
+    public TileVector set(int x, int y) {
         this.x = x;
         this.y = y;
         return this;
@@ -55,6 +55,13 @@ public class TileVector {
      * @return Itself. */
     public TileVector add(int x, int y) {
         return set(this.getX() + x, this.getY() + y);
+    }
+
+    /** Adds the vector to itself.
+     * @param v Adds this vector.
+     * @return Itself. */
+    public TileVector add(TileVector v) {
+        return set(this.getX() + v.x, this.getY() + v.y);
     }
 
     /** Returns true if both axes match. */

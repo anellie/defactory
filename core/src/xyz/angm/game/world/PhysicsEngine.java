@@ -85,6 +85,12 @@ class PhysicsEngine {
     /** Step the engine. Only called when engine is authority. */
     private void stepEngine(float deltaTime) {
         Player player = (Player) playerBody.getUserData();
+        beasts.forEach(beast -> { // Remove all beasts marked for deletion
+            if (beast.getUserData() == "DESTROY") {
+                pWorld.destroyBody(beast);
+                beasts.removeValue(beast, true);
+            }
+        });
 
         // Update velocities
         playerBody.setLinearVelocity(tmpV.set(player.getVelocity()).scl(player.getMovementMultiplier()));
@@ -166,12 +172,15 @@ class PhysicsEngine {
         items.add(itemBody);
     }
 
-    /** Call when an item is to be removed.
-     * @param item The item to remove.
-     * @param body The body of the item to be marked for deletion. */
-    private void itemRemoved(Item item, Body body) {
-        body.setUserData("DESTROY");
-        item.dispose();
+    /** Call when an item was removed from the world.
+     * @param item The item removed. */
+    void itemRemoved(Item item) {
+        for (Body body : items) {
+            if (body.getUserData() == item) {
+                body.setUserData("DESTROY");
+                return;
+            }
+        }
     }
 
     /** Call when a beast was added to the world.
@@ -180,6 +189,17 @@ class PhysicsEngine {
         Body beastBody = createBody(BodyDef.BodyType.DynamicBody, beast, beast.getPosition(),
                 beast.entitySize / 2f, 0.8f, 0.6f, 0.6f, false);
         beasts.add(beastBody);
+    }
+
+    /** Call when a beast was removed from the world.
+     * @param beast The beast removed. */
+    void beastRemoved(Beast beast) {
+        for (Body body : beasts) {
+            if (body.getUserData() == beast) {
+                body.setUserData("DESTROY");
+                return;
+            }
+        }
     }
 
     /** Call when viewport size changed. Needs to be independent since RayHandler changes the viewport on its own otherwise.
@@ -267,13 +287,13 @@ class PhysicsEngine {
 
         private void processPlayerAndItem(Item item, Body itemBody, Player player) {
             player.inventory.add(item.material, 1);
-            itemRemoved(item, itemBody);
+            gameWorld.removeItem(item);
         }
 
         private void processBlockAndItem(Item item, Body itemBody, Block block) {
             if (block.getProperties().materialRequired == item.material) {
                 block.incrementMaterial();
-                itemRemoved(item, itemBody);
+                gameWorld.removeItem(item);
             }
         }
 

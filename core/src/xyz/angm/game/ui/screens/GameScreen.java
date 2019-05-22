@@ -98,16 +98,18 @@ public class GameScreen extends Screen {
         else if (packet instanceof TileVector) { // Block should removed
             world.removeBlock((TileVector) packet);
         }
-        else if (packet instanceof Beast) { // Beast was spawned
-            world.addBeast((Beast) packet);
+        else if (packet instanceof Beast) { // Beast was spawned or killed
+            Beast beast = (Beast) packet;
+            if (beast.getHealth() <= 0) world.removeBeast(beast);
+            else world.addBeast(beast);
         }
         else if (packet instanceof Array) { // Beast positions
             world.updateBeastPositions((Array<Vector2>) packet);
         }
-        else if (packet instanceof String && packet.equals("WAVE_START")) {
+        else if (packet == Client.Status.WAVE_START) {
             beastsLeft = 3;
         }
-        else if (packet instanceof String && packet.equals("WAVE_END")) {
+        else if (packet == Client.Status.WAVE_END) {
             beastsLeft = 0;
         }
     }
@@ -140,7 +142,7 @@ public class GameScreen extends Screen {
         beastsLeft--;
     }
 
-    /** Spawn a beast and sent it to all clients.
+    /** Spawn a beast and send it to all clients.
      * @param position The position of the beast. */
     public void spawnBeast(TileVector position) {
         Beast beast = world.spawnBeast(position);

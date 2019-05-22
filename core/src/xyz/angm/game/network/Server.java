@@ -13,6 +13,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import static xyz.angm.game.network.Client.Status;
+
 /** A server capable of connecting to an unlimited amount of clients.
  * The player trying to defend themselves from beasts is the one hosting the server.
  * Automatically starts a server discovery thread for clients to find. */
@@ -88,10 +90,10 @@ public class Server extends NetworkInterface {
 
     private void startWave() {
         ((GameScreen) game.getScreen()).waveBegun();
-        send("WAVE_START");
+        send(Status.WAVE_START);
     }
 
     private void endWave() {
-        send("WAVE_END");
+        send(Status.WAVE_END);
     }
 }

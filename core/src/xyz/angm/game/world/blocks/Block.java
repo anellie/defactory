@@ -92,6 +92,13 @@ public class Block implements Disposable {
         health--;
     }
 
+    /** Adds to the HP, 'healing' the block.
+     * @param amount The amount to heal. */
+    void addToHealth(int amount) {
+        health += amount;
+        health = Math.min(health, getProperties().health); // Cap it
+    }
+
     @Override
     public void dispose() {
         if (actor != null) {

@@ -80,6 +80,10 @@ public class Client extends NetworkInterface {
     /** Used for giving status messages to listeners. */
     public enum Status {
         /** Used when kryoClient fires an disconnect event. */
-        DISCONNECTED
+        DISCONNECTED,
+        /** Start of a beast wave. */
+        WAVE_START,
+        /** End of a beast wave. */
+        WAVE_END
     }
 }

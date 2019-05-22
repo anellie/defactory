@@ -1,5 +1,6 @@
 package xyz.angm.game.world;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -8,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import xyz.angm.game.Game;
 import xyz.angm.game.ui.BlockPlacementPreview;
 import xyz.angm.game.world.blocks.Block;
 import xyz.angm.game.world.blocks.BlockTickRunner;
@@ -213,6 +215,14 @@ public class World implements Disposable {
         items.add(item);
     }
 
+    /** Call when an item should be removed.
+     * @param item The item to remove. */
+    void removeItem(Item item) {
+        item.dispose();
+        physics.itemRemoved(item);
+        items.removeValue(item, true);
+    }
+
     /** Spawn a beast.
      * @param position The position of the beast.
      * @return The beast spawned. */
@@ -229,6 +239,21 @@ public class World implements Disposable {
         physics.beastAdded(beast);
         beasts.add(beast);
         beastPositions.add(beast.getPosition());
+    }
+
+    /** Remove a beast from the world.
+     * @param beast The beast to get rid of. */
+    public void removeBeast(Beast beast) {
+        beast.removeHealth(999); // Make sure its dead
+        beast.dispose();
+        beasts.removeValue(beast, true);
+        beastPositions.removeValue(beast.getPosition(), true);
+        physics.beastRemoved(beast);
+        ((Game) Gdx.app.getApplicationListener()).getServer().send(beast);
+    }
+
+    public Array<Beast> getBeasts() {
+        return beasts;
     }
 
     public Array<Vector2> getBeastPositions() {
