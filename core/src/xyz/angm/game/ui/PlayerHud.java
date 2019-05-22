@@ -8,16 +8,14 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.OrderedMap;
 import com.kotcrab.vis.ui.layout.GridGroup;
 import com.kotcrab.vis.ui.widget.*;
 import xyz.angm.game.Game;
 import xyz.angm.game.ui.screens.GameScreen;
 import xyz.angm.game.world.blocks.BlockProperties;
 import xyz.angm.game.world.blocks.Material;
-
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.Map;
 
 import static xyz.angm.game.ui.screens.Screen.VIEWPORT_HEIGHT;
 import static xyz.angm.game.ui.screens.Screen.VIEWPORT_WIDTH;
@@ -36,8 +34,8 @@ public class PlayerHud extends Group {
     private final VisProgressBar healthBar = new VisProgressBar(0, PLAYER_HEALTH, 1, false, "health-bar");
     private final VisProgressBar staminaBar =
             new VisProgressBar(0, PLAYER_STAMINA, PLAYER_STAMINA / BAR_WIDTH, false, "stamina-bar");
-    private final EnumMap<Material, Label> materialLabels = new EnumMap<>(Material.class);
-    private final VisWindow waveWindow = new VisWindow(Localization.get("hudWave") + 0);
+    private final ObjectMap<Material, Label> materialLabels = new OrderedMap<>();
+    private final VisWindow waveWindow = new VisWindow(Localization.get("hudWave", 0));
 
     /** Construct a new HUD.
      * @param screen The screen the HUD will be a part of */
@@ -60,12 +58,12 @@ public class PlayerHud extends Group {
 
         // Window containing a selection of blocks the player can build
         VisWindow buildWindow = new VisWindow(Localization.get("hudBuild"));
-        HashMap<String, GridGroup> buildSelectionCategories = new HashMap<>();
+        ObjectMap<String, GridGroup> buildSelectionCategories = new ObjectMap<>();
         ButtonGroup<VisImageButton> buildSelectionButtons = new ButtonGroup<>();
         buildSelectionButtons.setMaxCheckCount(1);
 
-        for (BlockProperties properties : BlockProperties.getAllBlocks()) {
-            if (!properties.displayedInBuildMenu) continue;
+        BlockProperties.getAllBlocks().forEach(properties -> {
+            if (!properties.displayedInBuildMenu) return;
 
             VisImageButton button = new VisImageButton(
                     new TextureRegionDrawable(Game.assets.get(properties.getFullTexturePath(), Texture.class)),
@@ -87,7 +85,7 @@ public class PlayerHud extends Group {
                 buildWindow.add(newCategory).width(300).row();
                 buildSelectionCategories.put(properties.category, newCategory);
             }
-        }
+        });
 
         buildWindow.pack();
         buildWindow.setPosition(VIEWPORT_WIDTH, 0, Align.bottomRight);
@@ -117,10 +115,7 @@ public class PlayerHud extends Group {
 
         healthBar.setValue(screen.getWorld().getPlayer().getHealth());
         staminaBar.setValue(screen.getWorld().getPlayer().getStamina());
-        waveWindow.setName(Localization.get("hudWave") + screen.getWorld().getPlayer().getBeastWave());
-
-        for (Map.Entry<Material, Label> material : materialLabels.entrySet()) {
-            material.getValue().setText(screen.getWorld().getPlayer().inventory.get(material.getKey()));
-        }
+        waveWindow.setName(Localization.get("hudWave", screen.getWorld().getPlayer().getBeastWave()));
+        materialLabels.entries().forEach(material -> material.value.setText(screen.getWorld().getPlayer().inventory.get(material.key)));
     }
 }

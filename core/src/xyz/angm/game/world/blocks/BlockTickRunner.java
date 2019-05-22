@@ -17,7 +17,6 @@ public class BlockTickRunner implements Runnable {
      * @param world The world. */
     public BlockTickRunner(World world) {
         this.world = world;
-
         tmpBlockArray[0] = new TileVector().set(0, -1);
         tmpBlockArray[1] = new TileVector().set(-1, 0);
         tmpBlockArray[2] = new TileVector().set(0, 1);
@@ -36,23 +35,12 @@ public class BlockTickRunner implements Runnable {
 
         if (props.materialProduced != null) processMaterialProduced(block);
 
-        if (props.range > -1) tmpCircle.set(position.getX(), position.getY(), props.range);
+        if (props.range > -1) {
+            tmpCircle.set(position.getX(), position.getY(), props.range);
 
-        // Run type-specific actions
-        if (props.type == BlockType.TURRET) {
-            for (Beast beast : world.getBeasts()) {
-                if (tmpCircle.contains(beast.getPosition())) {
-                    beast.removeHealth(props.turretDamage);
-                    if (beast.getHealth() < 0) world.removeBeast(beast);
-                    break;
-                }
-            }
-        } else if (props.type == BlockType.HEALER) {
-            world.map.iterateBlocks(otherBlock -> {
-                if (tmpCircle.contains(otherBlock.getPosition().getX() + 0.5f, otherBlock.getPosition().getY() + 0.5f)) {
-                    otherBlock.addToHealth(props.healerRecovery);
-                }
-            });
+            // Run type-specific actions
+            if (props.type == BlockType.TURRET) processTurret(props);
+            else if (props.type == BlockType.HEALER) processHealer(props);
         }
 
         block.decrementMaterial();
@@ -75,5 +63,25 @@ public class BlockTickRunner implements Runnable {
     // Is the block a conveyor able to receive items?
     private static boolean isConveyor(Block block, Block.Direction direction) {
         return block != null && block.getProperties().type == BlockType.CONVEYOR && block.getDirection() != direction;
+    }
+
+    // Process turret. tmpCircle should be set to the block already.
+    private void processTurret(BlockProperties props) {
+        for (Beast beast : world.getBeasts()) {
+            if (tmpCircle.contains(beast.getPosition())) {
+                beast.removeHealth(props.turretDamage);
+                if (beast.getHealth() < 0) world.removeBeast(beast);
+                return;
+            }
+        }
+    }
+
+    // Process healer. tmpCircle should be set to the block already.
+    private void processHealer(BlockProperties props) {
+        world.map.iterateBlocks(otherBlock -> {
+            if (tmpCircle.contains(otherBlock.getPosition().getX() + 0.5f, otherBlock.getPosition().getY() + 0.5f)) {
+                otherBlock.addToHealth(props.healerRecovery);
+            }
+        });
     }
 }

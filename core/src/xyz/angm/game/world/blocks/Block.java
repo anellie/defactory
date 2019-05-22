@@ -122,7 +122,7 @@ public class Block implements Disposable {
         }
     }
 
-    /** A simple health bar displaying at the bottom of a block. LibGDX ProgressBar did not want to work. */
+    /** A simple health bar displaying at the bottom of a block. */
     private class HealthBar extends Actor {
 
         @Override

@@ -10,6 +10,8 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import xyz.angm.game.Game;
+import xyz.angm.game.network.Client;
+import xyz.angm.game.network.NetworkInterface;
 import xyz.angm.game.ui.BlockPlacementPreview;
 import xyz.angm.game.world.blocks.Block;
 import xyz.angm.game.world.blocks.BlockTickRunner;
@@ -38,14 +40,16 @@ public class World implements Disposable {
     public final long seed;
     /** Map containing the map. (Thanks, Sherlock.) */
     public final WorldMap map;
+    private final NetworkInterface netIface = ((Game) Gdx.app.getApplicationListener()).getNetworkInterface();
     private final Player player = new Player();
     private final Array<Item> items = new Array<>(false, 16);
     private final Array<Beast> beasts = new Array<>(true, 16);
     private final Array<Vector2> beastPositions = new Array<>(true, 16);
+    private int beastsLeft = 0;
     private final PhysicsEngine physics;
 
     private final Stage stage = new Stage(new FitViewport(WORLD_VIEWPORT_WIDTH, WORLD_VIEWPORT_HEIGHT));
-    private Vector2 cameraPosition = player.getPosition();
+    private Vector2 cameraPosition;
     private final Group blockGroup = new Group();
     private final BlockPlacementPreview blockPreview = new BlockPlacementPreview();
     private final Vector2 tmpV = new Vector2();
@@ -62,19 +66,25 @@ public class World implements Disposable {
             // Schedule the block ticker to run every BLOCK_TICK_FREQ
             Executors.newSingleThreadScheduledExecutor()
                     .scheduleAtFixedRate(new BlockTickRunner(this), BLOCK_TICK_FREQ, BLOCK_TICK_FREQ, TimeUnit.MILLISECONDS);
+            cameraPosition = player.getPosition(); // Lock camera on player
+        } else {
+            // Free the camera from the player. Allows moving it independently from the player for spectators.
+            cameraPosition = player.getPosition().cpy();
         }
 
         addBlock(player.getCore());
+        stage.addActor(map);
         stage.addActor(blockGroup);
         player.registerToStage(stage);
         stage.addActor(blockPreview);
         ((OrthographicCamera) stage.getCamera()).zoom = 0.2f;
     }
 
-    /** Returns the player entity.
-     * @return The player */
-    public Player getPlayer() {
-        return player;
+    /** Call when the wave status changed, eg on wave start or end.
+     * @param status The new status. */
+    public void waveStatusChanged(Client.Status status) {
+        if (status == Client.Status.WAVE_START) beastsLeft = 3 + player.getBeastWave();
+        else if (status == Client.Status.WAVE_END) beastsLeft = 0;
     }
 
     /** Should be called every frame on the server so the world can update.
@@ -90,19 +100,8 @@ public class World implements Disposable {
     /** Should be called every frame when the world should render itself and all components. */
     public void render() {
         updateCamera();
-
-        // Draw map first for lighting effects
-        stage.getBatch().begin();
-        map.draw(stage.getBatch(), 1f);
-        stage.getBatch().end();
-
-        physics.render((OrthographicCamera) stage.getCamera());
         stage.draw();
-    }
-
-    /** Causes the camera to be independent on the player's position. Call on client. */
-    public void freeCamera() {
-        cameraPosition = cameraPosition.cpy();
+        physics.render((OrthographicCamera) stage.getCamera());
     }
 
     /** Moves the camera. Requires freeCamera to be called; will throw exception otherwise.
@@ -130,19 +129,35 @@ public class World implements Disposable {
                 Math.max(0, Math.min(WORLD_SIZE_MULTIPLICATOR, ((OrthographicCamera) stage.getCamera()).zoom + zoom));
     }
 
-    /** Should be called when the player clicked a tile. Will place or break a block.
-     * @param position The tile clicked
-     * @param rightClick If the click was a right click. Left click assumed if false.
-     * @return The block that was placed; null indicates the block was removed. */
-    public Block mapClicked(TileVector position, boolean rightClick) {
+    /** Should be called when the player clicked the map/screen. Will place or break a block and sync to clients.
+     * @param x The x position of the click in screen coordinates.
+     * @param y The y position of the click in screen coordinates.
+     * @param rightClick If the click was a right click. Left click assumed if false. */
+    public void mapClicked(int x, int y, boolean rightClick) {
+        tmpV.set(x, y);
+        stage.screenToStageCoordinates(tmpV);
+        TileVector position = new TileVector().set(tmpV);
+
         if (rightClick) {
             removeBlock(position);
+            netIface.send(position);
         } else if (getPlayer().getBlockSelected() != -1) {
             Block block = new Block(position, getPlayer().getBlockSelected(), getPlayer().getBlockDirection());
             addBlock(block);
-            return block;
+            netIface.send(block);
         }
-        return null;
+    }
+
+    /** Should be called when a spectator clicked the map/screen. Will tell the server to spawn a beast at the clicked position.
+     * @param x The x position of the click in screen coordinates.
+     * @param y The y position of the click in screen coordinates. */
+    public void requestBeastSpawn(int x, int y) {
+        if (beastsLeft < 1) return;
+        tmpV.set(x, y);
+        stage.screenToStageCoordinates(tmpV);
+        TileVector position = new TileVector().set(tmpV);
+        netIface.send(position);
+        beastsLeft--;
     }
 
     /** Adds the block to the world.
@@ -194,17 +209,6 @@ public class World implements Disposable {
         physics.resizeViewport(stage.getViewport());
     }
 
-    @Override
-    public void dispose() {
-        stage.dispose();
-    }
-
-    /** Turns a vector with screen coordinates into one with corresponding world coordinates.
-     * @param v The vector to transform. */
-    public void screenToWorldCoordinates(Vector2 v) {
-        stage.screenToStageCoordinates(v);
-    }
-
     /** Creates a new item.
      * @param position The position of the item. Will be centered automatically.
      * @param material The type/material of the item to be spawned. */
@@ -223,13 +227,12 @@ public class World implements Disposable {
         items.removeValue(item, true);
     }
 
-    /** Spawn a beast.
-     * @param position The position of the beast.
-     * @return The beast spawned. */
-    public Beast spawnBeast(TileVector position) {
+    /** Spawn a beast and sync to clients.
+     * @param position The position of the beast. */
+    public void spawnBeast(TileVector position) {
         Beast beast = new Beast(new TileVector().set(position));
         addBeast(beast);
-        return beast;
+        netIface.send(beast);
     }
 
     /** Add a beast to the world.
@@ -249,7 +252,7 @@ public class World implements Disposable {
         beasts.removeValue(beast, true);
         beastPositions.removeValue(beast.getPosition(), true);
         physics.beastRemoved(beast);
-        ((Game) Gdx.app.getApplicationListener()).getServer().send(beast);
+        netIface.send(beast);
     }
 
     public Array<Beast> getBeasts() {
@@ -260,11 +263,28 @@ public class World implements Disposable {
         return beastPositions;
     }
 
+    /** Returns the player entity.
+     * @return The player */
+    public Player getPlayer() {
+        return player;
+    }
+
+    /** Returns the amount of beasts allowed to be spawned by this spectator at the moment. */
+    public int getBeastsLeft() {
+        return beastsLeft;
+    }
+
     /** Update beast positions.
      * @param positions The array to copy positions from. */
     public void updateBeastPositions(Array<Vector2> positions) {
         for (int i = 0; i < beastPositions.size; i++) {
             beastPositions.get(i).set(positions.get(i));
         }
+    }
+
+    @Override
+    public void dispose() {
+        stage.dispose();
+        physics.dispose();
     }
 }

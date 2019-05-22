@@ -4,9 +4,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.OrderedMap;
 import xyz.angm.game.world.blocks.Block;
 
-import java.util.HashMap;
 import java.util.function.Consumer;
 
 import static xyz.angm.game.world.TerrainGenerator.WORLD_SIZE_MULTIPLICATOR;
@@ -19,7 +20,7 @@ import static xyz.angm.game.world.World.WORLD_VIEWPORT_WIDTH;
  * - All blocks placed on the terrain. */
 public class WorldMap extends Image {
 
-    private final HashMap<TileVector, Block> blocks = new HashMap<>();
+    private final ObjectMap<TileVector, Block> blocks = new OrderedMap<>();
 
     /** Constructs a map.
      * @param generator The world generator to obtain data from. */
@@ -59,6 +60,6 @@ public class WorldMap extends Image {
     /** Calls the given method on all blocks in the map.
      * @param toRun The consumer to run. Will be run for all blocks. */
     public void iterateBlocks(Consumer<Block> toRun) {
-        for (Block block : blocks.values()) toRun.accept(block);
+        blocks.values().forEach(toRun);
     }
 }

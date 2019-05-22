@@ -16,7 +16,7 @@ public class TerrainGenerator {
     /** Chance for stone to generate. */
     private static final double STONE_CHANCE = 0.35f;
     /** The amount of lines to be rendered per continueLoading call. */
-    private static final int LINES_PER_STEP = 15;
+    private static final int LINES_PER_STEP = 30;
     /** Multiplicator for the world map. Takes the viewport size as base. */
     public static final int WORLD_SIZE_MULTIPLICATOR = 3;
 

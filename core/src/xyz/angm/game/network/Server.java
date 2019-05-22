@@ -70,7 +70,7 @@ public class Server extends NetworkInterface {
             @Override
             public void received(Connection connection, Object object) {
                 if (object instanceof TileVector) {
-                    ((GameScreen) game.getScreen()).spawnBeast((TileVector) object);
+                    ((GameScreen) game.getScreen()).getWorld().spawnBeast((TileVector) object);
                 }
             }
         });

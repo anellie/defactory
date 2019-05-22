@@ -15,7 +15,7 @@ public class SpectatorHud extends PlayerHud {
 
     private final GameScreen screen;
     private final VisProgressBar healthBar = new VisProgressBar(0, PLAYER_HEALTH, 1, false, "health-bar");
-    private final VisWindow beastsLeftWindow = new VisWindow(Localization.get("hudBeastsLeft") + 0);
+    private VisWindow beastsLeftWindow;
 
     /** Construct a new HUD.
      * @param screen The screen the HUD will be a part of */
@@ -36,7 +36,9 @@ public class SpectatorHud extends PlayerHud {
         addActor(barWindow);
 
         // Window containing the amount of beasts the spectator can spawn
+        beastsLeftWindow = new VisWindow(Localization.get("hudBeastsLeft", 0));
         beastsLeftWindow.setPosition(VIEWPORT_WIDTH, VIEWPORT_HEIGHT, Align.topRight);
+        beastsLeftWindow.pack();
         addActor(beastsLeftWindow);
     }
 
@@ -44,6 +46,6 @@ public class SpectatorHud extends PlayerHud {
     public void act(float delta) {
         super.act(delta);
         healthBar.setValue(screen.getWorld().getPlayer().getHealth());
-        beastsLeftWindow.setName(Localization.get("hudBeastsLeft") + screen.getBeastsLeft());
+        beastsLeftWindow.setName(Localization.get("hudBeastsLeft", screen.getWorld().getBeastsLeft()));
     }
 }

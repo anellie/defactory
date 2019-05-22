@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.physics.box2d.Box2D;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.utils.ObjectMap;
 import com.kotcrab.vis.ui.VisUI;
 import xyz.angm.game.network.Client;
 import xyz.angm.game.network.NetworkInterface;
@@ -17,9 +18,6 @@ import xyz.angm.game.ui.screens.MapLoadingScreen;
 import xyz.angm.game.ui.screens.MessageScreen;
 import xyz.angm.game.world.blocks.BlockProperties;
 import xyz.angm.game.world.blocks.Material;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /** The main class of the game. */
 public class Game extends com.badlogic.gdx.Game {
@@ -32,7 +30,7 @@ public class Game extends com.badlogic.gdx.Game {
 
     @Override
     public void create() {
-        VisUI.load(); // VisUI is a framework for game GUIs like menus
+        VisUI.load(); // VisUI is a framework for game GUIs
         Box2D.init(); // Box2D is a 2D physics engine
         registerAllAssets();
         createSkin();
@@ -63,6 +61,10 @@ public class Game extends com.badlogic.gdx.Game {
         });
         boolean connected = client.start();
         if (!connected) setScreen(new MessageScreen(this, "failedToConnect"));
+    }
+
+    public NetworkInterface getNetworkInterface() {
+        return netIface;
     }
 
     /** Only callable on the server.
@@ -99,10 +101,7 @@ public class Game extends com.badlogic.gdx.Game {
         assets.load("textures/map/grass.png", Texture.class);
         assets.load("textures/map/stone.png", Texture.class);
         Material.loadTextures();
-
-        for (BlockProperties properties : BlockProperties.getAllBlocks()) {
-            assets.load(properties.getFullTexturePath(), Texture.class);
-        }
+        BlockProperties.getAllBlocks().forEach(properties -> assets.load(properties.getFullTexturePath(), Texture.class));
     }
 
     // Creates the libGDX skin used for some elements.
@@ -110,16 +109,16 @@ public class Game extends com.badlogic.gdx.Game {
         Skin skin = VisUI.getSkin();
 
         // Create a map of all colors needed; loop over it and create a drawable for each
-        Map<String, Color> colors = new HashMap<>();
+        ObjectMap<String, Color> colors = new ObjectMap<>();
         colors.put("red", Color.RED);
         colors.put("green", Color.GREEN);
         colors.put("black-transparent", new Color(0x00000088));
-        for (Map.Entry<String, Color> color : colors.entrySet()) {
+        colors.entries().forEach(color -> {
             Pixmap pm = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
-            pm.setColor(color.getValue());
+            pm.setColor(color.value);
             pm.fill();
-            skin.add(color.getKey(), new Texture(pm));
-        }
+            skin.add(color.key, new Texture(pm));
+        });
 
         // Progress bars
         ProgressBar.ProgressBarStyle healthBarStyle = new ProgressBar.ProgressBarStyle(skin.get("default-horizontal", ProgressBar.ProgressBarStyle.class));

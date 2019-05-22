@@ -9,6 +9,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import xyz.angm.game.world.blocks.Block;
 import xyz.angm.game.world.blocks.BlockType;
@@ -16,11 +18,9 @@ import xyz.angm.game.world.entities.Beast;
 import xyz.angm.game.world.entities.Item;
 import xyz.angm.game.world.entities.Player;
 
-import java.util.HashMap;
-
 /** A 'simple' physics 'engine' wrapping the Box2D physics library.
  * See the LibGDX wiki for explanations of the different parts of Box2D: https://github.com/libgdx/libgdx/wiki/box2d */
-class PhysicsEngine {
+class PhysicsEngine implements Disposable {
 
     /** The step size of every Box2D engine step. */
     private static final float TIME_STEP = 1 / 60f;
@@ -34,12 +34,12 @@ class PhysicsEngine {
     private final xyz.angm.game.world.World gameWorld;
     private final World pWorld = new World(new Vector2(0, 0), true);
     private final WorldContactListener contactListener = new WorldContactListener();
-    private final HashMap<TileVector, Body> blocks = new HashMap<>();
+    private final ObjectMap<TileVector, Body> blocks = new ObjectMap<>();
     private final Array<Body> items = new Array<>();
     private final Array<Body> beasts = new Array<>();
     private final Body playerBody;
     private final RayHandler rayHandler = new RayHandler(pWorld);
-    private final HashMap<Body, Light> blockLights = new HashMap<>();
+    private final ObjectMap<Body, Light> blockLights = new ObjectMap<>();
     private final boolean authority;
 
     private float timeSinceLastStep = 0f;
@@ -56,11 +56,11 @@ class PhysicsEngine {
         this.authority = authority;
         Player player = world.getPlayer();
         this.playerBody = createBody(BodyDef.BodyType.DynamicBody, player, player.getPosition(),
-                player.entitySize / 2f, 1f, 0.4f, 0.6f, false);
+                player.entitySize / 2.1f, 1f, 0.4f, 0.6f, false);
 
         pWorld.setContactListener(contactListener);
 
-        rayHandler.setAmbientLight(0f, 0f, 0f, 0.4f);
+        rayHandler.setAmbientLight(0f, 0f, 0f, 0.3f);
         PointLight playerLight = new PointLight(rayHandler, 128, new Color(1f, 1f, 1f, 0.5f), 10, 0, 0);
         playerLight.attachToBody(playerBody);
     }
@@ -85,12 +85,6 @@ class PhysicsEngine {
     /** Step the engine. Only called when engine is authority. */
     private void stepEngine(float deltaTime) {
         Player player = (Player) playerBody.getUserData();
-        beasts.forEach(beast -> { // Remove all beasts marked for deletion
-            if (beast.getUserData() == "DESTROY") {
-                pWorld.destroyBody(beast);
-                beasts.removeValue(beast, true);
-            }
-        });
 
         // Update velocities
         playerBody.setLinearVelocity(tmpV.set(player.getVelocity()).scl(player.getMovementMultiplier()));
@@ -122,6 +116,7 @@ class PhysicsEngine {
     private Body createBody(BodyDef.BodyType type, Object userData, Vector2 position, float size,
                             float density, float friction, float restitution, boolean sensor) {
         bodyDef.position.set(position).add(size, size);
+        bodyDef.fixedRotation = true;
         Body body = pWorld.createBody(bodyDef);
         body.setType(type);
 
@@ -145,7 +140,9 @@ class PhysicsEngine {
      * Blocks that can be walked through should NOT be part of the simulation; and not added with this method.
      * @param block The block added to the world. */
     void blockPlaced(Block block) {
-        Body blockBody = createBody(BodyDef.BodyType.StaticBody, block, block.getPosition().setToItself(tmpV),
+        block.getPosition().setToItself(tmpV);
+        if (block.getProperties().isSensor) tmpV.add(0.5f - SENSOR_BODY_SIZE, 0.5f - SENSOR_BODY_SIZE);
+        Body blockBody = createBody(BodyDef.BodyType.StaticBody, block, tmpV,
                 block.getProperties().isSensor ? SENSOR_BODY_SIZE : 0.5f, 0f, 0.2f, 0f, block.getProperties().isSensor);
         blocks.put(block.getPosition(), blockBody);
 
@@ -168,7 +165,7 @@ class PhysicsEngine {
     /** Call when an item has been added to the world.
      * @param item The item to add. */
     void itemAdded(Item item) {
-        Body itemBody = createBody(BodyDef.BodyType.DynamicBody, item, item.getPosition(), ITEM_SIZE, 1f, 0.8f, 0f, true);
+        Body itemBody = createBody(BodyDef.BodyType.DynamicBody, item, item.getPosition().add(ITEM_SIZE, ITEM_SIZE), ITEM_SIZE, 1f, 0.8f, 0f, true);
         items.add(itemBody);
     }
 
@@ -196,7 +193,8 @@ class PhysicsEngine {
     void beastRemoved(Beast beast) {
         for (Body body : beasts) {
             if (body.getUserData() == beast) {
-                body.setUserData("DESTROY");
+                pWorld.destroyBody(body);
+                beasts.removeValue(body, true);
                 return;
             }
         }
@@ -206,6 +204,11 @@ class PhysicsEngine {
      * @param viewport The viewport post-change */
     void resizeViewport(Viewport viewport) {
         rayHandler.useCustomViewport(viewport.getScreenX(), viewport.getScreenY(), viewport.getScreenWidth(), viewport.getScreenHeight());
+    }
+
+    @Override
+    public void dispose() {
+        pWorld.dispose();
     }
 
     /** Listens for contacts between entities and handles all contact-based interactions. */
@@ -236,20 +239,19 @@ class PhysicsEngine {
                 processBlock(block, blockBody, otherBody);
             } else if (b1.getUserData() instanceof Item || b2.getUserData() instanceof Item) {
                 Item item = (Item) ((b1.getUserData() instanceof Item) ? b1.getUserData() : b2.getUserData());
-                Body blockBody = (b1.getUserData() instanceof Item) ? b1 : b2;
-                Body otherBody = (blockBody == b1) ? b2 : b1;
-                processItem(item, blockBody, otherBody);
+                Body otherBody = (b1.getUserData() instanceof Item) ? b2 : b1;
+                processItem(item, otherBody);
             }
         }
 
         // Process contact between a block and another body
         private void processBlock(Block block, Body blockBody, Body otherBody) {
             if (otherBody.getUserData() instanceof Beast) {
-                processBlockAndBeast((Beast) otherBody.getUserData(), otherBody, block);
+                processBlockAndBeast(block);
             } else if (block.getProperties().type == BlockType.CONVEYOR) {
                 processConveyor(block, blockBody, otherBody);
             } else if (otherBody.getUserData() instanceof Item) {
-                processBlockAndItem((Item) otherBody.getUserData(), otherBody, block);
+                processBlockAndItem((Item) otherBody.getUserData(), block);
             }
         }
 
@@ -279,25 +281,25 @@ class PhysicsEngine {
         }
 
         // Process contact between an item and another body
-        private void processItem(Item item, Body itemBody, Body otherBody) {
+        private void processItem(Item item, Body otherBody) {
             if (otherBody.getUserData() instanceof Player) {
-                processPlayerAndItem(item, itemBody, (Player) otherBody.getUserData());
+                processPlayerAndItem(item, (Player) otherBody.getUserData());
             }
         }
 
-        private void processPlayerAndItem(Item item, Body itemBody, Player player) {
+        private void processPlayerAndItem(Item item, Player player) {
             player.inventory.add(item.material, 1);
             gameWorld.removeItem(item);
         }
 
-        private void processBlockAndItem(Item item, Body itemBody, Block block) {
+        private void processBlockAndItem(Item item, Block block) {
             if (block.getProperties().materialRequired == item.material) {
                 block.incrementMaterial();
                 gameWorld.removeItem(item);
             }
         }
 
-        private void processBlockAndBeast(Beast beast, Body beastBody, Block block) {
+        private void processBlockAndBeast(Block block) {
             block.onHit();
             if (block.getHealth() <= 0) deadBlocks.add(block);
         }
