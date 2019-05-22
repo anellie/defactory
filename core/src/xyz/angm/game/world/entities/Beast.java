@@ -41,12 +41,6 @@ public class Beast extends Entity {
         return tmpV;
     }
 
-    /** Subtract from the health of the beast.
-     * @param amount The amount of health lost. */
-    public void removeHealth(int amount) {
-        health -= amount;
-    }
-
     @Override
     public void registerToStage(Stage stage) {
         super.registerToStage(stage);

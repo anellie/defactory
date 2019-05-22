@@ -51,7 +51,7 @@ public class GameScreen extends Screen {
         Gdx.gl.glClearColor(0.05f, 0.05f, 0.05f, 1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        if (world.getPlayer().getCore().getHealth() < 0) onGameLoss();
+        if (world.getPlayer().getCore().getHealth() < 0 || world.getPlayer().getHealth() <= 0) onGameLoss();
 
         world.act(delta);
         world.render();     // World render is separate to allow for different camera positions.
@@ -66,6 +66,8 @@ public class GameScreen extends Screen {
             Player serverPlayer = (Player) packet;
             Player localPlayer = world.getPlayer();
             localPlayer.getPosition().set(serverPlayer.getPosition());
+            localPlayer.setHealth(serverPlayer.getHealth());
+            localPlayer.getCore().setHealth(serverPlayer.getCore().getHealth());
         }
         else if (packet == Client.Status.DISCONNECTED) { // Disconnect from server
             Gdx.app.postRunnable(this::onServerDisconnect); // Disposing game screen requires render context

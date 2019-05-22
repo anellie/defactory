@@ -51,6 +51,10 @@ public class Block implements Disposable {
         return health;
     }
 
+    public void setHealth(int health) {
+        this.health = health;
+    }
+
     public BlockProperties getProperties() {
         return BlockProperties.getProperties(type);
     }

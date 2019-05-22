@@ -62,6 +62,12 @@ public abstract class Entity implements Disposable {
         return health;
     }
 
+    /** Subtract from the health of the entity.
+     * @param amount The amount of health lost. */
+    public void removeHealth(int amount) {
+        health -= amount;
+    }
+
     @Override
     public void dispose() {
         if (actor != null) actor.remove();

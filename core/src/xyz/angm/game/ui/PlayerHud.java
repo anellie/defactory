@@ -112,7 +112,6 @@ public class PlayerHud extends Group {
     @Override
     public void act(float delta) {
         super.act(delta);
-
         healthBar.setValue(screen.getWorld().getPlayer().getHealth());
         staminaBar.setValue(screen.getWorld().getPlayer().getStamina());
         waveWindow.setName(Localization.get("hudWave", screen.getWorld().getPlayer().getBeastWave()));

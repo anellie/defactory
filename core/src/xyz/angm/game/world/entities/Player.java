@@ -15,7 +15,7 @@ import static xyz.angm.game.world.World.WORLD_VIEWPORT_WIDTH;
 public class Player extends Entity {
 
     /** The maximum player health. */
-    public static final int PLAYER_HEALTH = 20;
+    public static final int PLAYER_HEALTH = 300;
     /** The maximum stamina. Sprinting depletes stamina; not sprinting refills */
     public static final float PLAYER_STAMINA = 7.5f;
     /** The movement multiplier when sprinting, in (percent / 100). */
@@ -29,7 +29,7 @@ public class Player extends Entity {
     public final transient Inventory inventory = new Inventory();
     /** The CORE. The player loses once this block is destroyed.  */
     private final Block core;
-    /** The wave of beasts the player has survived. TODO implement waves */
+    /** The wave of beasts the player has survived. */
     private int beastWave;
 
     /** Constructs a Player. Requires AssetManager in Game to be ready. */
@@ -84,6 +84,10 @@ public class Player extends Entity {
 
     public void setBlockSelected(int blockSelected) {
         this.blockSelected = blockSelected;
+    }
+
+    public void setHealth(int health) {
+        this.health = health;
     }
 
     /** Cycles to the next block direction. */

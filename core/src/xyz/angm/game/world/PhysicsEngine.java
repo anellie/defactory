@@ -241,6 +241,9 @@ class PhysicsEngine implements Disposable {
                 Item item = (Item) ((b1.getUserData() instanceof Item) ? b1.getUserData() : b2.getUserData());
                 Body otherBody = (b1.getUserData() instanceof Item) ? b2 : b1;
                 processItem(item, otherBody);
+            } else if (b1.getUserData() instanceof Beast || b2.getUserData() instanceof Beast) {
+                Body player = (b1.getUserData() instanceof Beast) ? b2 : b1;
+                processBeastAndPlayer((Player) player.getUserData());
             }
         }
 
@@ -302,6 +305,10 @@ class PhysicsEngine implements Disposable {
         private void processBlockAndBeast(Block block) {
             block.onHit();
             if (block.getHealth() <= 0) deadBlocks.add(block);
+        }
+
+        private void processBeastAndPlayer(Player player) {
+            player.removeHealth(1);
         }
 
         @Override
