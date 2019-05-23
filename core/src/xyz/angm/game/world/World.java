@@ -156,8 +156,12 @@ public class World implements Disposable {
         tmpV.set(x, y);
         stage.screenToStageCoordinates(tmpV);
         TileVector position = new TileVector().set(tmpV);
-        netIface.send(position);
-        beastsLeft--;
+
+        // Prevent spawning a beast within the middle of the screen, beasts could be spawned unfairly otherwise
+        if (!position.isInBounds((int) (WORLD_VIEWPORT_WIDTH / 4), (int) ((WORLD_VIEWPORT_WIDTH / 4) * 3))) {
+            netIface.send(position);
+            beastsLeft--;
+        }
     }
 
     /** Adds the block to the world.

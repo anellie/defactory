@@ -57,6 +57,14 @@ public class TileVector {
         return set(this.getX() + v.x, this.getY() + v.y);
     }
 
+    /** Checks if both axes are in the given bounds.
+     * @param min The minimum coordinate.
+     * @param max The maximum coordinate.
+     * @return If both axes are between min and max. */
+    boolean isInBounds(int min, int max) {
+        return x > min && x < max && y > min && y < max;
+    }
+
     /** Returns true if both axes match. */
     @Override
     public boolean equals(Object o) {
