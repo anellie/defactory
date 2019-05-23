@@ -11,7 +11,7 @@ public class BlockTickRunner implements Runnable {
     private final World world;
     private final TileVector tmpTV = new TileVector();
     private final TileVector[] tmpBlockArray = new TileVector[4];
-    private final Circle tmpCircle = new Circle();
+    private final Circle rangeCircle = new Circle();
 
     /** Create a new runnable.
      * @param world The world. */
@@ -36,7 +36,7 @@ public class BlockTickRunner implements Runnable {
         if (props.materialProduced != null) processMaterialProduced(block);
 
         if (props.range > -1) {
-            tmpCircle.set(position.getX(), position.getY(), props.range);
+            rangeCircle.set(position.getX(), position.getY(), props.range);
 
             // Run type-specific actions
             if (props.type == BlockType.TURRET) processTurret(props);
@@ -65,21 +65,23 @@ public class BlockTickRunner implements Runnable {
         return block != null && block.getProperties().type == BlockType.CONVEYOR && block.getDirection() != direction;
     }
 
-    // Process turret. tmpCircle should be set to the block already.
+    // Process turret. rangeCircle should be set to the block already.
     private void processTurret(BlockProperties props) {
+        int shotsLeft = props.turretFireRate;
         for (Beast beast : world.getBeasts()) {
-            if (tmpCircle.contains(beast.getPosition())) {
+            if (rangeCircle.contains(beast.getPosition())) {
                 beast.removeHealth(props.turretDamage);
+                shotsLeft--;
                 if (beast.getHealth() < 0) world.removeBeast(beast);
-                return;
+                if (shotsLeft <= 0) return;
             }
         }
     }
 
-    // Process healer. tmpCircle should be set to the block already.
+    // Process healer. rangeCircle should be set to the block already.
     private void processHealer(BlockProperties props) {
         world.map.iterateBlocks(otherBlock -> {
-            if (tmpCircle.contains(otherBlock.getPosition().getX() + 0.5f, otherBlock.getPosition().getY() + 0.5f)) {
+            if (rangeCircle.contains(otherBlock.getPosition().getX() + 0.5f, otherBlock.getPosition().getY() + 0.5f)) {
                 otherBlock.addToHealth(props.healerRecovery);
             }
         });

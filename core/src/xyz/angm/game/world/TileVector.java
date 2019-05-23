@@ -3,6 +3,7 @@ package xyz.angm.game.world;
 import com.badlogic.gdx.math.Vector2;
 
 /** A 2D vector using integers for storing its values. Used for storing positions of blocks in the world map. */
+@SuppressWarnings("UnusedReturnValue")
 public class TileVector {
 
     /** The first axis of the vector. */
@@ -47,14 +48,6 @@ public class TileVector {
      * @return v. */
     Vector2 setToItself(Vector2 v) {
         return v.set(getX(), getY());
-    }
-
-    /** Adds the values to itself.
-     * @param x Added to the X axis.
-     * @param y Added to the Y axis.
-     * @return Itself. */
-    public TileVector add(int x, int y) {
-        return set(this.getX() + x, this.getY() + y);
     }
 
     /** Adds the vector to itself.

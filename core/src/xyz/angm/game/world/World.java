@@ -45,11 +45,11 @@ public class World implements Disposable {
     private final Array<Item> items = new Array<>(false, 16);
     private final Array<Beast> beasts = new Array<>(true, 16);
     private final Array<Vector2> beastPositions = new Array<>(true, 16);
-    private int beastsLeft = 0;
     private final PhysicsEngine physics;
+    private int beastsLeft = 0;
 
     private final Stage stage = new Stage(new FitViewport(WORLD_VIEWPORT_WIDTH, WORLD_VIEWPORT_HEIGHT));
-    private Vector2 cameraPosition;
+    private final Vector2 cameraPosition;
     private final Group blockGroup = new Group();
     private final BlockPlacementPreview blockPreview = new BlockPlacementPreview();
     private final Vector2 tmpV = new Vector2();

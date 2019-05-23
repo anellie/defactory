@@ -26,7 +26,7 @@ public class BlockProperties {
     /** Set the block to be a physics sensor (meaning it cannot collide with other entities). */
     public boolean isSensor = false;
 
-    /** Will this block be part of the build menu/can the player place it? */
+    /** If this block is in the build menu. */
     public boolean displayedInBuildMenu = true;
     /** The path to the blocks texture relative to '@/core/assets/textures'. Does not include '.png' suffix. */
     public String texture = "";
@@ -43,13 +43,11 @@ public class BlockProperties {
     /** TURRET & HEALER specific: The range of the block. */
     public float range = -1;
 
-    /** TURRET specific: The interval in which the turret fires. */
-    public float turretFireRate = 1f;
+    /** TURRET specific: The amount of beasts the turret can hit at once. */
+    public int turretFireRate = 1;
     /** TURRET specific: The damage of the turret per shot. */
     public int turretDamage = 1;
 
-    /** HEALER specific: The interval in which the healer heals surrounding blocks. */
-    public float healerRate = 1f;
     /** HEALER specific: The damage recovered per heal cycle per block. */
     public int healerRecovery = 1;
 

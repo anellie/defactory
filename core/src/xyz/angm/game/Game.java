@@ -67,13 +67,6 @@ public class Game extends com.badlogic.gdx.Game {
         return netIface;
     }
 
-    /** Only callable on the server.
-     * @return The server if one exists.
-     * @throws ClassCastException when called on client. */
-    public Server getServer() {
-        return (Server) netIface;
-    }
-
     /** Only callable on the client.
      * @return The client if one exists.
      * @throws ClassCastException when called on server. */

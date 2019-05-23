@@ -21,8 +21,8 @@ import xyz.angm.game.world.entities.Player;
 /** The screen active while the game is running. */
 public class GameScreen extends Screen {
 
-    private World world;
-    private PlayerHud hud;
+    private final World world;
+    private final PlayerHud hud;
     private final InputMultiplexer inputMultiplexer = new InputMultiplexer();
     private boolean pauseMenuActive = false;
 
@@ -60,7 +60,7 @@ public class GameScreen extends Screen {
         stage.draw();
     }
 
-    // Called when a packet/object was received from the server. Only call on client instances. TODO packets.
+    // Called when a packet/object was received from the server. Only call on client instances.
     private void serverPacketReceived(Object packet) {
         if (packet instanceof Player) {  // Player should be synced
             Player serverPlayer = (Player) packet;
@@ -84,6 +84,7 @@ public class GameScreen extends Screen {
             else world.addBeast(beast);
         }
         else if (packet instanceof Array) { // Beast positions
+            // noinspection unchecked
             world.updateBeastPositions((Array<Vector2>) packet);
         }
         else if (packet == Client.Status.WAVE_START || packet == Client.Status.WAVE_END) {
