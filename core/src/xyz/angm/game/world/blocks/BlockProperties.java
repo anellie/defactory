@@ -5,7 +5,9 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /** A class holding all (static) properties of a block.
  * All block types (and their properties) are loaded from a JSON document on boot.
@@ -34,6 +36,8 @@ public class BlockProperties {
     public String name = "Unknown";
     /** The category the block will be placed in. */
     public String category = "General";
+    /** A map of all materials this block requires the player to have to build it. */
+    public Map<Material, Integer> buildMaterials = new HashMap<>();
 
     /** The material this block produces. Will be output to conveyor belts or put in the players inventory if none present. */
     public Material materialProduced = null;

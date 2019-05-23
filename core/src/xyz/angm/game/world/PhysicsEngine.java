@@ -15,6 +15,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import xyz.angm.game.world.blocks.Block;
 import xyz.angm.game.world.blocks.BlockType;
 import xyz.angm.game.world.entities.Beast;
+import xyz.angm.game.world.entities.Bullet;
 import xyz.angm.game.world.entities.Item;
 import xyz.angm.game.world.entities.Player;
 
@@ -37,6 +38,7 @@ class PhysicsEngine implements Disposable {
     private final ObjectMap<TileVector, Body> blocks = new ObjectMap<>();
     private final Array<Body> items = new Array<>();
     private final Array<Body> beasts = new Array<>();
+    private final Array<Body> bullets = new Array<>();
     private final Body playerBody;
     private final RayHandler rayHandler = new RayHandler(pWorld);
     private final ObjectMap<Body, Light> blockLights = new ObjectMap<>();
@@ -110,6 +112,11 @@ class PhysicsEngine implements Disposable {
                 ((Item) item.getUserData()).getPosition().set(item.getPosition().sub(ITEM_SIZE, ITEM_SIZE));
                 item.setLinearVelocity(0, 0);
             }
+        });
+        bullets.forEach(bulletBody -> {
+            Bullet bullet = (Bullet) bulletBody.getUserData();
+            bullet.getPosition().set(bulletBody.getPosition().sub(bullet.entitySize / 2f, bullet.entitySize / 2f));
+            bullet.setRotation(bulletBody.getAngle());
         });
     }
 
@@ -200,6 +207,17 @@ class PhysicsEngine implements Disposable {
         }
     }
 
+    /** Call when a bullet was added to the world.
+     * @param bullet The new bullet. */
+    void bulletAdded(Bullet bullet) {
+        Body bulletBody =
+                createBody(BodyDef.BodyType.DynamicBody, bullet, bullet.getPosition(), 0.05f, 1f, 0.5f, 1f, false);
+        bulletBody.setBullet(true);
+        bulletBody.setFixedRotation(false);
+        bulletBody.applyForceToCenter(bullet.getVelocity().scl(100f), true);
+        bullets.add(bulletBody);
+    }
+
     /** Call when viewport size changed. Needs to be independent since RayHandler changes the viewport on its own otherwise.
      * @param viewport The viewport post-change */
     void resizeViewport(Viewport viewport) {
@@ -242,8 +260,8 @@ class PhysicsEngine implements Disposable {
                 Body otherBody = (b1.getUserData() instanceof Item) ? b2 : b1;
                 processItem(item, otherBody);
             } else if (b1.getUserData() instanceof Beast || b2.getUserData() instanceof Beast) {
-                Body player = (b1.getUserData() instanceof Beast) ? b2 : b1;
-                processBeastAndPlayer((Player) player.getUserData());
+                Body other = (b1.getUserData() instanceof Beast) ? b2 : b1;
+                if (other.getUserData() instanceof Player) processBeastAndPlayer((Player) other.getUserData());
             }
         }
 

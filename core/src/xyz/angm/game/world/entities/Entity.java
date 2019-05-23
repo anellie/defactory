@@ -21,7 +21,7 @@ public abstract class Entity implements Disposable {
     /** The size of the actor. */
     public final float entitySize;
     /** Actor for displaying on the screen. */
-    private transient Image actor;
+    transient Image actor;
     /** Location of the actor's texture. */
     transient String actorTexture;
 

@@ -12,7 +12,10 @@
     "name": "Torch",
     "texture": "torch",
     "type": "TORCH",
-    "isSensor": true
+    "isSensor": true,
+    "buildMaterials": {
+      "WOOD": 5
+    }
   },
   {
     "id": 2,

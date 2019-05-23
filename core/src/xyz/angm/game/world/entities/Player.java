@@ -2,10 +2,12 @@ package xyz.angm.game.world.entities;
 
 import xyz.angm.game.world.TileVector;
 import xyz.angm.game.world.blocks.Block;
+import xyz.angm.game.world.blocks.BlockProperties;
 import xyz.angm.game.world.blocks.Material;
 
 import java.util.Arrays;
 import java.util.EnumMap;
+import java.util.Map;
 
 import static xyz.angm.game.world.TerrainGenerator.WORLD_SIZE_MULTIPLICATOR;
 import static xyz.angm.game.world.World.WORLD_VIEWPORT_HEIGHT;
@@ -102,6 +104,14 @@ public class Player extends Entity {
         beastWave++;
     }
 
+    /** Call when the player wants to build a block.
+     * @param position The position to place the block at.
+     * @return The new block. Can be null if the player does not have the material to build it. */
+    public Block buildBlock(TileVector position) {
+        if (!inventory.buildBlock(getBlockSelected())) return null;
+        else return new Block(position, getBlockSelected(), getBlockDirection());
+    }
+
     /** The players inventory containing all material the player has. */
     @SuppressWarnings("JavaDoc") // Self-explanatory for the most part
     public class Inventory {
@@ -128,14 +138,27 @@ public class Player extends Entity {
             set(material, get(material) + amount);
         }
 
+        /** Call when the player wants to build a block.
+         * @param blockId The id of the block.
+         * @return If the player had enough material. No material will be taken if not. */
+        private boolean buildBlock(int blockId) {
+            BlockProperties props = BlockProperties.getProperties(blockId);
+
+            for (Map.Entry<Material, Integer> material : props.buildMaterials.entrySet())
+                if (!isLeft(material.getKey(), material.getValue())) return false;
+
+            props.buildMaterials.forEach(this::remove);
+            return true;
+        }
+
         /** Remove the amount from the material. */
-        public void remove(Material material, int amount) {
+        private void remove(Material material, int amount) {
             set(material, get(material) - amount);
             if (get(material) < 0) set(material, 0);
         }
 
         /** Returns if the player has enough of the item left. */
-        public boolean isLeft(Material material, int amount) {
+        private boolean isLeft(Material material, int amount) {
             return get(material) >= amount;
         }
     }

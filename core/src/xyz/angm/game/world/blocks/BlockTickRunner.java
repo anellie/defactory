@@ -39,7 +39,7 @@ public class BlockTickRunner implements Runnable {
             rangeCircle.set(position.getX(), position.getY(), props.range);
 
             // Run type-specific actions
-            if (props.type == BlockType.TURRET) processTurret(props);
+            if (props.type == BlockType.TURRET) processTurret(position, props);
             else if (props.type == BlockType.HEALER) processHealer(props);
         }
 
@@ -66,13 +66,12 @@ public class BlockTickRunner implements Runnable {
     }
 
     // Process turret. rangeCircle should be set to the block already.
-    private void processTurret(BlockProperties props) {
+    private void processTurret(TileVector turretPos, BlockProperties props) {
         int shotsLeft = props.turretFireRate;
         for (Beast beast : world.getBeasts()) {
             if (rangeCircle.contains(beast.getPosition())) {
                 beast.removeHealth(props.turretDamage);
                 shotsLeft--;
-                if (beast.getHealth() < 0) world.removeBeast(beast);
                 if (shotsLeft <= 0) return;
             }
         }

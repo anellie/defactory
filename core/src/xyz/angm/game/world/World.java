@@ -18,6 +18,7 @@ import xyz.angm.game.world.blocks.BlockTickRunner;
 import xyz.angm.game.world.blocks.BlockType;
 import xyz.angm.game.world.blocks.Material;
 import xyz.angm.game.world.entities.Beast;
+import xyz.angm.game.world.entities.Bullet;
 import xyz.angm.game.world.entities.Item;
 import xyz.angm.game.world.entities.Player;
 
@@ -142,7 +143,8 @@ public class World implements Disposable {
             removeBlock(position);
             netIface.send(position);
         } else if (getPlayer().getBlockSelected() != -1) {
-            Block block = new Block(position, getPlayer().getBlockSelected(), getPlayer().getBlockDirection());
+            Block block = getPlayer().buildBlock(position);
+            if (block == null) return;
             addBlock(block);
             netIface.send(block);
         }
@@ -158,7 +160,7 @@ public class World implements Disposable {
         TileVector position = new TileVector().set(tmpV);
 
         // Prevent spawning a beast within the middle of the screen, beasts could be spawned unfairly otherwise
-        if (!position.isInBounds((int) (WORLD_VIEWPORT_WIDTH / 4), (int) ((WORLD_VIEWPORT_WIDTH / 4) * 3))) {
+        if (!position.isInBounds((int) (WORLD_VIEWPORT_WIDTH / 3), (int) ((WORLD_VIEWPORT_WIDTH / 3) * 2))) {
             netIface.send(position);
             beastsLeft--;
         }
@@ -257,6 +259,16 @@ public class World implements Disposable {
         beastPositions.removeValue(beast.getPosition(), true);
         physics.beastRemoved(beast);
         netIface.send(beast);
+    }
+
+    /** Spawn a new bullet shot by a turret.
+     * @param turret The position of the turret that shot.
+     * @param target The target location of the bullet. */
+    public void spawnBullet(TileVector turret, Beast target) {
+        Bullet bullet = new Bullet(turret);
+        bullet.getVelocity().set(turret.setToItself(tmpV).sub(target.getPosition()));
+        bullet.registerToStage(stage);
+        physics.bulletAdded(bullet);
     }
 
     public Array<Beast> getBeasts() {

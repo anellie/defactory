@@ -88,9 +88,8 @@ public class Game extends com.badlogic.gdx.Game {
     // Registers all assets required by the game
     private void registerAllAssets() {
         assets.load("textures/beast.png", Texture.class);
+        assets.load("textures/bullet.png", Texture.class);
         assets.load("textures/player.png", Texture.class);
-        assets.load("textures/cursor.png", Texture.class);
-        assets.load("textures/selector.png", Texture.class);
         assets.load("textures/map/grass.png", Texture.class);
         assets.load("textures/map/stone.png", Texture.class);
         Material.loadTextures();
