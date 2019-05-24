@@ -49,8 +49,6 @@ public class BlockProperties {
 
     /** TURRET specific: The amount of beasts the turret can hit at once. */
     public int turretFireRate = 1;
-    /** TURRET specific: The damage of the turret per shot. */
-    public int turretDamage = 1;
 
     /** HEALER specific: The damage recovered per heal cycle per block. */
     public int healerRecovery = 1;

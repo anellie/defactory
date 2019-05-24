@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Disposable;
 import xyz.angm.game.Game;
 
@@ -46,7 +47,7 @@ public abstract class Entity implements Disposable {
     /** Should be called every frame on the server so the entity can update.
      * @param delta Time since last call to this method in seconds. */
     public void act(float delta) {
-        actor.setPosition(position.x, position.y);
+        actor.setPosition(position.x, position.y, Align.center);
     }
 
     /** Adds itself to the given stage.

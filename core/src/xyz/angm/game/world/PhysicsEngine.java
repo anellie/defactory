@@ -5,23 +5,20 @@ import box2dLight.PointLight;
 import box2dLight.RayHandler;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import xyz.angm.game.world.blocks.Block;
 import xyz.angm.game.world.blocks.BlockType;
-import xyz.angm.game.world.entities.Beast;
-import xyz.angm.game.world.entities.Bullet;
-import xyz.angm.game.world.entities.Item;
-import xyz.angm.game.world.entities.Player;
+import xyz.angm.game.world.entities.*;
 
 /** A 'simple' physics 'engine' wrapping the Box2D physics library.
  * See the LibGDX wiki for explanations of the different parts of Box2D: https://github.com/libgdx/libgdx/wiki/box2d */
-class PhysicsEngine implements Disposable {
+class PhysicsEngine {
 
     /** The step size of every Box2D engine step. */
     private static final float TIME_STEP = 1 / 60f;
@@ -38,9 +35,8 @@ class PhysicsEngine implements Disposable {
     private final World pWorld = new World(new Vector2(0, 0), true);
     private final WorldContactListener contactListener = new WorldContactListener();
     private final ObjectMap<TileVector, Body> blocks = new ObjectMap<>();
-    private final Array<Body> items = new Array<>();
-    private final Array<Body> beasts = new Array<>();
-    private final Array<Body> bullets = new Array<>();
+    private final Array<Body> entities = new Array<>();
+    private final Player player;
     private final Body playerBody;
     private final RayHandler rayHandler = new RayHandler(pWorld);
     private final ObjectMap<Body, Light> blockLights = new ObjectMap<>();
@@ -49,7 +45,6 @@ class PhysicsEngine implements Disposable {
     private float timeSinceLastStep = 0f;
     private final BodyDef bodyDef = new BodyDef();
     private final Vector2 tmpV = new Vector2();
-    private final Box2DDebugRenderer debugRenderer = new Box2DDebugRenderer();
 
     /** Construct a new engine.
      * @param world The game world.
@@ -59,25 +54,14 @@ class PhysicsEngine implements Disposable {
     PhysicsEngine(xyz.angm.game.world.World world, boolean authority) {
         this.gameWorld = world;
         this.authority = authority;
-        Player player = world.getPlayer();
+        this.player = world.getPlayer();
         this.playerBody = createBody(BodyDef.BodyType.DynamicBody, player, player.getPosition(),
                 player.entitySize / 2.1f, 1f, 0.4f, 0.6f, false);
 
         pWorld.setContactListener(contactListener);
-
         rayHandler.setAmbientLight(0f, 0f, 0f, 0.3f);
         PointLight playerLight = new PointLight(rayHandler, 128, new Color(1f, 1f, 1f, 0.5f), 10, 0, 0);
         playerLight.attachToBody(playerBody);
-    }
-
-    /** Updates the physics engine. Should be called every frame.
-     * @param deltaTime Time since last call */
-    void act(float deltaTime) {
-        if (authority) stepEngine(deltaTime);
-        else {
-            playerBody.setTransform(((Player) playerBody.getUserData()).getPosition(), 0);
-            beasts.forEach(beastBody -> beastBody.setTransform(((Beast) beastBody.getUserData()).getPosition(), 0));
-        }
     }
 
     /** Renders the lighting parts of the world, using Box2DLights.
@@ -85,17 +69,21 @@ class PhysicsEngine implements Disposable {
     void render(OrthographicCamera camera) {
         rayHandler.setCombinedMatrix(camera);
         rayHandler.updateAndRender();
-        debugRenderer.render(pWorld, camera.combined);
+    }
+
+    /** Updates the physics engine. Should be called every frame.
+     * @param deltaTime Time since last call */
+    void act(float deltaTime) {
+        if (authority) stepEngine(deltaTime);
+        else {
+            // All client entities are beasts; safe assumption
+            entities.forEach(beastBody -> beastBody.setTransform(((Beast) beastBody.getUserData()).getPosition(), 0));
+            playerBody.setTransform(((Player) playerBody.getUserData()).getPosition(), 0);
+        }
     }
 
     /** Step the engine. Only called when engine is authority. */
     private void stepEngine(float deltaTime) {
-        Player player = (Player) playerBody.getUserData();
-
-        // Update velocities
-        playerBody.setLinearVelocity(tmpV.set(player.getVelocity()).scl(player.getMovementMultiplier()));
-        beasts.forEach(beast -> beast.setLinearVelocity(((Beast) beast.getUserData()).getTargetLocation(player)));
-
         // Step physics engine
         float frameTime = Math.min(deltaTime, 0.25f);
         timeSinceLastStep += frameTime;
@@ -105,24 +93,18 @@ class PhysicsEngine implements Disposable {
             timeSinceLastStep -= TIME_STEP;
         }
 
-        // Update positions from physics simulation; also set item velocity to 0 to prevent buildup
-        player.getPosition().set(playerBody.getPosition().sub(player.entitySize / 2f, player.entitySize / 2f));
-        beasts.forEach(beastBody -> {
-            if (checkDestroy(beastBody, beasts))
-                ((Beast) beastBody.getUserData()).getPosition().set(beastBody.getPosition().sub(0.5f, 0.5f));
-        });
-        items.forEach(itemBody -> {
-            if (checkDestroy(itemBody, items)) {
-                ((Item) itemBody.getUserData()).getPosition().set(itemBody.getPosition().sub(ITEM_SIZE, ITEM_SIZE));
-                itemBody.setLinearVelocity(0, 0);
-            }
-        });
-        bullets.forEach(bulletBody -> {
-            if (checkDestroy(bulletBody, bullets)) {
-                Bullet bullet = (Bullet) bulletBody.getUserData();
-                bullet.getPosition().set(bulletBody.getPosition().sub(bullet.entitySize / 2f, bullet.entitySize / 2f));
-                bullet.setRotation(bulletBody.getAngle());
-            }
+        // Update player + entities
+        player.getPosition().set(playerBody.getPosition());
+        playerBody.setLinearVelocity(tmpV.set(player.getVelocity()).scl(player.getMovementMultiplier()));
+        entities.forEach(body -> {
+            if (!checkDestroy(body, entities)) return;
+
+            Entity entity = (Entity) body.getUserData();
+            entity.getPosition().set(body.getPosition());
+
+            if (entity instanceof Item) body.setLinearVelocity(0, 0);
+            if (entity instanceof Beast) body.setLinearVelocity(((Beast) entity).getTargetLocation(player));
+            if (entity instanceof Bullet) ((Bullet) entity).setRotation(body.getAngle() * MathUtils.radiansToDegrees);
         });
     }
 
@@ -135,8 +117,7 @@ class PhysicsEngine implements Disposable {
             pWorld.destroyBody(body);
             array.removeValue(body, true);
             return false;
-        }
-        return true;
+        } else return true;
     }
 
     private Body createBody(BodyDef.BodyType type, Object userData, Vector2 position, float size,
@@ -159,6 +140,8 @@ class PhysicsEngine implements Disposable {
         body.createFixture(fixDef);
         body.setUserData(userData);
         shape.dispose();
+
+        if (type == BodyDef.BodyType.DynamicBody) entities.add(body);
         return body;
     }
 
@@ -191,38 +174,13 @@ class PhysicsEngine implements Disposable {
     /** Call when an item has been added to the world.
      * @param item The item to add. */
     void itemAdded(Item item) {
-        Body itemBody = createBody(BodyDef.BodyType.DynamicBody, item, item.getPosition().add(ITEM_SIZE, ITEM_SIZE), ITEM_SIZE, 1f, 0.8f, 0f, true);
-        items.add(itemBody);
-    }
-
-    /** Call when an item was removed from the world.
-     * @param item The item removed. */
-    void itemRemoved(Item item) {
-        for (Body body : items) {
-            if (body.getUserData() == item) {
-                body.setUserData("DESTROY");
-                return;
-            }
-        }
+        createBody(BodyDef.BodyType.DynamicBody, item, item.getPosition(), ITEM_SIZE, 1f, 0.8f, 0f, true);
     }
 
     /** Call when a beast was added to the world.
      * @param beast The beast to add. */
     void beastAdded(Beast beast) {
-        Body beastBody = createBody(BodyDef.BodyType.DynamicBody, beast, beast.getPosition(),
-                beast.entitySize / 2f, 0.8f, 0.6f, 0.6f, false);
-        beasts.add(beastBody);
-    }
-
-    /** Call when a beast was removed from the world.
-     * @param beast The beast removed. */
-    void beastRemoved(Beast beast) {
-        for (Body body : beasts) {
-            if (body.getUserData() == beast) {
-                body.setUserData("DESTROY");
-                return;
-            }
-        }
+        createBody(BodyDef.BodyType.DynamicBody, beast, beast.getPosition(), beast.entitySize / 2f, 0.8f, 0.6f, 0.6f, false);
     }
 
     /** Call when a bullet was added to the world.
@@ -233,14 +191,13 @@ class PhysicsEngine implements Disposable {
         bulletBody.setBullet(true);
         bulletBody.setFixedRotation(false);
         bulletBody.applyForceToCenter(bullet.getVelocity().scl(BULLET_SPEED), true);
-        bullets.add(bulletBody);
     }
 
-    /** Call when a bullet was removed from the world.
-     * @param bullet Bulled removed. */
-    void bulletRemoved(Bullet bullet) {
-        for (Body body : bullets) {
-            if (body.getUserData() == bullet) {
+    /** Call when an entity was removed from the world.
+     * @param entity Entity removed. */
+    void entityRemoved(Entity entity) {
+        for (Body body : entities) {
+            if (body.getUserData() == entity) {
                 body.setUserData("DESTROY");
                 return;
             }
@@ -251,11 +208,6 @@ class PhysicsEngine implements Disposable {
      * @param viewport The viewport post-change */
     void resizeViewport(Viewport viewport) {
         rayHandler.useCustomViewport(viewport.getScreenX(), viewport.getScreenY(), viewport.getScreenWidth(), viewport.getScreenHeight());
-    }
-
-    @Override
-    public void dispose() {
-        pWorld.dispose();
     }
 
     /** Listens for contacts between entities and handles all contact-based interactions. */
@@ -279,7 +231,7 @@ class PhysicsEngine implements Disposable {
             Body b1 = contact.getFixtureA().getBody();
             Body b2 = contact.getFixtureB().getBody();
 
-            // I am so sorry... just ignore this and read the methods below
+            // Sorry... just ignore this and read the methods below
             if (b1.getUserData() instanceof Block || b2.getUserData() instanceof Block) {
                 Block block = (Block) ((b1.getUserData() instanceof Block) ? b1.getUserData() : b2.getUserData());
                 Body blockBody = (b1.getUserData() instanceof Block) ? b1 : b2;
@@ -309,7 +261,7 @@ class PhysicsEngine implements Disposable {
 
         // Process contact between a conveyor and another body
         private void processConveyor(Block conveyor, Body conveyorBody, Body otherBody) {
-            switch (conveyor.getDirection()) {
+            switch (conveyor.getDirection()) { // #justjavathings
                 case DOWN:
                     tmpV.set(0, -CONVEYOR_BELT_IMPULSE);
                     break;
@@ -339,26 +291,6 @@ class PhysicsEngine implements Disposable {
             }
         }
 
-        // Process contact between an item and the player
-        private void processPlayerAndItem(Item item, Player player) {
-            player.inventory.add(item.material, 1);
-            gameWorld.removeItem(item);
-        }
-
-        // Process contact between a block and an item
-        private void processBlockAndItem(Item item, Block block) {
-            if (block.getProperties().materialRequired == item.material) {
-                block.incrementMaterial();
-                gameWorld.removeItem(item);
-            }
-        }
-
-        // Process contact between a block and a beast
-        private void processBlockAndBeast(Block block) {
-            block.onHit();
-            if (block.getHealth() <= 0) deadBlocks.add(block);
-        }
-
         // Process contact between a beast and another body
         private void processBeast(Beast beast, Body otherBody) {
             if (otherBody.getUserData() instanceof Player) {
@@ -368,12 +300,27 @@ class PhysicsEngine implements Disposable {
             }
         }
 
-        // Process contact between a beast and the player
+        private void processPlayerAndItem(Item item, Player player) {
+            player.inventory.add(item.material, 1);
+            gameWorld.removeItem(item);
+        }
+
+        private void processBlockAndItem(Item item, Block block) {
+            if (block.getProperties().materialRequired == item.material) {
+                block.incrementMaterial();
+                gameWorld.removeItem(item);
+            }
+        }
+
+        private void processBlockAndBeast(Block block) {
+            block.onHit();
+            if (block.getHealth() <= 0) deadBlocks.add(block);
+        }
+
         private void processBeastAndPlayer(Player player) {
             player.removeHealth(1);
         }
 
-        // Process contact between a beast and a bullet
         private void processBeastAndBullet(Beast beast, Bullet bullet) {
             beast.removeHealth(1);
             if (beast.getHealth() <= 0) gameWorld.removeBeast(beast);
@@ -386,18 +333,10 @@ class PhysicsEngine implements Disposable {
         }
 
         @Override
-        public void endContact(Contact contact) {
-            // Not needed; interface requires it to be implemented
-        }
-
+        public void endContact(Contact contact) {}
         @Override
-        public void preSolve(Contact contact, Manifold oldManifold) {
-            // Not needed; interface requires it to be implemented
-        }
-
+        public void preSolve(Contact contact, Manifold oldManifold) {}
         @Override
-        public void postSolve(Contact contact, ContactImpulse impulse) {
-            // Not needed; interface requires it to be implemented
-        }
+        public void postSolve(Contact contact, ContactImpulse impulse) {}
     }
 }

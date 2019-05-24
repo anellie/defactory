@@ -84,7 +84,7 @@ public class World implements Disposable {
         ((OrthographicCamera) stage.getCamera()).zoom = 0.2f;
     }
 
-    /** Call when the wave status changed, eg on wave start or end.
+    /** Call on the client when the wave status changed, eg on wave start or end.
      * @param status The new status. */
     public void waveStatusChanged(Client.Status status) {
         if (status == Client.Status.WAVE_START) beastsLeft = 3 + player.getBeastWave();
@@ -97,6 +97,7 @@ public class World implements Disposable {
         physics.act(delta);
         player.act(delta);
         stage.act(delta);
+
         items.forEach(item -> item.act(delta));
         beasts.forEach(beast -> beast.act(delta));
         bullets.forEach(bullet -> bullet.act(delta));
@@ -109,7 +110,7 @@ public class World implements Disposable {
         physics.render((OrthographicCamera) stage.getCamera());
     }
 
-    /** Moves the camera. Requires freeCamera to be called; will throw exception otherwise.
+    /** Moves the camera. Will throw on server; player should not be able to move the camera.
      * @param v The vector added to the camera position. */
     public void moveCamera(Vector2 v) {
         if (player.getPosition() == cameraPosition) throw new UnsupportedOperationException("Camera needs to be freed first!");
@@ -129,9 +130,9 @@ public class World implements Disposable {
     /** Zooms the world map; scaling it bigger or smaller.
      * @param zoom The zoom amount. */
     public void zoomMap(float zoom) {
-        // Limit the zoom from 0 to world size to prevent unwanted behavior
+        // Limit the zoom to prevent unwanted behavior
         ((OrthographicCamera) stage.getCamera()).zoom =
-                Math.max(0, Math.min(WORLD_SIZE_MULTIPLICATOR, ((OrthographicCamera) stage.getCamera()).zoom + zoom));
+                Math.max(0.05f, Math.min(WORLD_SIZE_MULTIPLICATOR, ((OrthographicCamera) stage.getCamera()).zoom + zoom));
     }
 
     /** Should be called when the player clicked the map/screen. Will place or break a block and sync to clients.
@@ -212,8 +213,8 @@ public class World implements Disposable {
     }
 
     /** The world's viewport needs to be updated as well.
-     * @param height The new viewport height
-     * @param width The new viewport width*/
+     * @param height The new viewport height.
+     * @param width The new viewport width. */
     public void resizeViewport(int width, int height) {
         stage.getViewport().update(width, height, true);
         physics.resizeViewport(stage.getViewport());
@@ -233,7 +234,7 @@ public class World implements Disposable {
      * @param item The item to remove. */
     void removeItem(Item item) {
         item.dispose();
-        physics.itemRemoved(item);
+        physics.entityRemoved(item);
         items.removeValue(item, true);
     }
 
@@ -261,7 +262,7 @@ public class World implements Disposable {
         beast.dispose();
         beasts.removeValue(beast, true);
         beastPositions.removeValue(beast.getPosition(), true);
-        physics.beastRemoved(beast);
+        physics.entityRemoved(beast);
         netIface.send(beast);
     }
 
@@ -282,27 +283,8 @@ public class World implements Disposable {
      * @param bullet The bullet to remove. */
     void removeBullet(Bullet bullet) {
         bullets.removeValue(bullet, true);
-        physics.bulletRemoved(bullet);
+        physics.entityRemoved(bullet);
         bullet.dispose();
-    }
-
-    public Array<Beast> getBeasts() {
-        return beasts;
-    }
-
-    public Array<Vector2> getBeastPositions() {
-        return beastPositions;
-    }
-
-    /** Returns the player entity.
-     * @return The player */
-    public Player getPlayer() {
-        return player;
-    }
-
-    /** Returns the amount of beasts allowed to be spawned by this spectator at the moment. */
-    public int getBeastsLeft() {
-        return beastsLeft;
     }
 
     /** Update beast positions.
@@ -313,9 +295,25 @@ public class World implements Disposable {
         }
     }
 
+    public Array<Beast> getBeasts() {
+        return beasts;
+    }
+
+    public Array<Vector2> getBeastPositions() {
+        return beastPositions;
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    /** Returns the amount of beasts allowed to be spawned by this spectator at the moment. */
+    public int getBeastsLeft() {
+        return beastsLeft;
+    }
+
     @Override
     public void dispose() {
         stage.dispose();
-        physics.dispose();
     }
 }
