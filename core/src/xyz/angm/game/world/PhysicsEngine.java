@@ -31,6 +31,8 @@ class PhysicsEngine implements Disposable {
     private static final float ITEM_SIZE = 0.25f;
     /** Size of sensor blocks. Smaller to improve interactions between conveyors and items. */
     private static final float SENSOR_BODY_SIZE = 0.25f;
+    /** Speed the bullets travel at. (Scales the vector of the force applied to them) */
+    private static final float BULLET_SPEED = 50f;
 
     private final xyz.angm.game.world.World gameWorld;
     private final World pWorld = new World(new Vector2(0, 0), true);
@@ -47,6 +49,7 @@ class PhysicsEngine implements Disposable {
     private float timeSinceLastStep = 0f;
     private final BodyDef bodyDef = new BodyDef();
     private final Vector2 tmpV = new Vector2();
+    private final Box2DDebugRenderer debugRenderer = new Box2DDebugRenderer();
 
     /** Construct a new engine.
      * @param world The game world.
@@ -82,6 +85,7 @@ class PhysicsEngine implements Disposable {
     void render(OrthographicCamera camera) {
         rayHandler.setCombinedMatrix(camera);
         rayHandler.updateAndRender();
+        debugRenderer.render(pWorld, camera.combined);
     }
 
     /** Step the engine. Only called when engine is authority. */
@@ -103,21 +107,36 @@ class PhysicsEngine implements Disposable {
 
         // Update positions from physics simulation; also set item velocity to 0 to prevent buildup
         player.getPosition().set(playerBody.getPosition().sub(player.entitySize / 2f, player.entitySize / 2f));
-        beasts.forEach(beastBody -> ((Beast) beastBody.getUserData()).getPosition().set(beastBody.getPosition().sub(0.5f, 0.5f)));
-        items.forEach(item -> {
-            if (item.getUserData() == "DESTROY") { // Remove all items marked for deletion
-                pWorld.destroyBody(item);
-                items.removeValue(item, true);
-            } else {
-                ((Item) item.getUserData()).getPosition().set(item.getPosition().sub(ITEM_SIZE, ITEM_SIZE));
-                item.setLinearVelocity(0, 0);
+        beasts.forEach(beastBody -> {
+            if (checkDestroy(beastBody, beasts))
+                ((Beast) beastBody.getUserData()).getPosition().set(beastBody.getPosition().sub(0.5f, 0.5f));
+        });
+        items.forEach(itemBody -> {
+            if (checkDestroy(itemBody, items)) {
+                ((Item) itemBody.getUserData()).getPosition().set(itemBody.getPosition().sub(ITEM_SIZE, ITEM_SIZE));
+                itemBody.setLinearVelocity(0, 0);
             }
         });
         bullets.forEach(bulletBody -> {
-            Bullet bullet = (Bullet) bulletBody.getUserData();
-            bullet.getPosition().set(bulletBody.getPosition().sub(bullet.entitySize / 2f, bullet.entitySize / 2f));
-            bullet.setRotation(bulletBody.getAngle());
+            if (checkDestroy(bulletBody, bullets)) {
+                Bullet bullet = (Bullet) bulletBody.getUserData();
+                bullet.getPosition().set(bulletBody.getPosition().sub(bullet.entitySize / 2f, bullet.entitySize / 2f));
+                bullet.setRotation(bulletBody.getAngle());
+            }
         });
+    }
+
+    /** Checks if the body should be destroyed.
+     * @param body The body to check.
+     * @param array The array the body is in.
+     * @return If the body still exists. */
+    private boolean checkDestroy(Body body, Array<Body> array) {
+        if (body.getUserData() == "DESTROY") {
+            pWorld.destroyBody(body);
+            array.removeValue(body, true);
+            return false;
+        }
+        return true;
     }
 
     private Body createBody(BodyDef.BodyType type, Object userData, Vector2 position, float size,
@@ -200,8 +219,7 @@ class PhysicsEngine implements Disposable {
     void beastRemoved(Beast beast) {
         for (Body body : beasts) {
             if (body.getUserData() == beast) {
-                pWorld.destroyBody(body);
-                beasts.removeValue(body, true);
+                body.setUserData("DESTROY");
                 return;
             }
         }
@@ -211,11 +229,22 @@ class PhysicsEngine implements Disposable {
      * @param bullet The new bullet. */
     void bulletAdded(Bullet bullet) {
         Body bulletBody =
-                createBody(BodyDef.BodyType.DynamicBody, bullet, bullet.getPosition(), 0.05f, 1f, 0.5f, 1f, false);
+                createBody(BodyDef.BodyType.DynamicBody, bullet, bullet.getPosition(), 0.05f, 20f, 0.5f, 0.7f, false);
         bulletBody.setBullet(true);
         bulletBody.setFixedRotation(false);
-        bulletBody.applyForceToCenter(bullet.getVelocity().scl(100f), true);
+        bulletBody.applyForceToCenter(bullet.getVelocity().scl(BULLET_SPEED), true);
         bullets.add(bulletBody);
+    }
+
+    /** Call when a bullet was removed from the world.
+     * @param bullet Bulled removed. */
+    void bulletRemoved(Bullet bullet) {
+        for (Body body : bullets) {
+            if (body.getUserData() == bullet) {
+                body.setUserData("DESTROY");
+                return;
+            }
+        }
     }
 
     /** Call when viewport size changed. Needs to be independent since RayHandler changes the viewport on its own otherwise.
@@ -250,6 +279,7 @@ class PhysicsEngine implements Disposable {
             Body b1 = contact.getFixtureA().getBody();
             Body b2 = contact.getFixtureB().getBody();
 
+            // I am so sorry... just ignore this and read the methods below
             if (b1.getUserData() instanceof Block || b2.getUserData() instanceof Block) {
                 Block block = (Block) ((b1.getUserData() instanceof Block) ? b1.getUserData() : b2.getUserData());
                 Body blockBody = (b1.getUserData() instanceof Block) ? b1 : b2;
@@ -260,8 +290,9 @@ class PhysicsEngine implements Disposable {
                 Body otherBody = (b1.getUserData() instanceof Item) ? b2 : b1;
                 processItem(item, otherBody);
             } else if (b1.getUserData() instanceof Beast || b2.getUserData() instanceof Beast) {
+                Beast beast = (Beast) ((b1.getUserData() instanceof Beast) ? b1.getUserData() : b2.getUserData());
                 Body other = (b1.getUserData() instanceof Beast) ? b2 : b1;
-                if (other.getUserData() instanceof Player) processBeastAndPlayer((Player) other.getUserData());
+                processBeast(beast, other);
             }
         }
 
@@ -308,11 +339,13 @@ class PhysicsEngine implements Disposable {
             }
         }
 
+        // Process contact between an item and the player
         private void processPlayerAndItem(Item item, Player player) {
             player.inventory.add(item.material, 1);
             gameWorld.removeItem(item);
         }
 
+        // Process contact between a block and an item
         private void processBlockAndItem(Item item, Block block) {
             if (block.getProperties().materialRequired == item.material) {
                 block.incrementMaterial();
@@ -320,13 +353,31 @@ class PhysicsEngine implements Disposable {
             }
         }
 
+        // Process contact between a block and a beast
         private void processBlockAndBeast(Block block) {
             block.onHit();
             if (block.getHealth() <= 0) deadBlocks.add(block);
         }
 
+        // Process contact between a beast and another body
+        private void processBeast(Beast beast, Body otherBody) {
+            if (otherBody.getUserData() instanceof Player) {
+                processBeastAndPlayer((Player) otherBody.getUserData());
+            } else if (otherBody.getUserData() instanceof Bullet) {
+                processBeastAndBullet(beast, (Bullet) otherBody.getUserData());
+            }
+        }
+
+        // Process contact between a beast and the player
         private void processBeastAndPlayer(Player player) {
             player.removeHealth(1);
+        }
+
+        // Process contact between a beast and a bullet
+        private void processBeastAndBullet(Beast beast, Bullet bullet) {
+            beast.removeHealth(1);
+            if (beast.getHealth() <= 0) gameWorld.removeBeast(beast);
+            gameWorld.removeBullet(bullet);
         }
 
         @Override

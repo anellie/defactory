@@ -23,6 +23,7 @@ import xyz.angm.game.world.entities.Item;
 import xyz.angm.game.world.entities.Player;
 
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import static xyz.angm.game.world.TerrainGenerator.WORLD_SIZE_MULTIPLICATOR;
@@ -46,6 +47,8 @@ public class World implements Disposable {
     private final Array<Item> items = new Array<>(false, 16);
     private final Array<Beast> beasts = new Array<>(true, 16);
     private final Array<Vector2> beastPositions = new Array<>(true, 16);
+    private final Array<Bullet> bullets = new Array<>(false, 32);
+    private final ScheduledExecutorService bulletTimer = Executors.newSingleThreadScheduledExecutor();
     private final PhysicsEngine physics;
     private int beastsLeft = 0;
 
@@ -96,6 +99,7 @@ public class World implements Disposable {
         stage.act(delta);
         items.forEach(item -> item.act(delta));
         beasts.forEach(beast -> beast.act(delta));
+        bullets.forEach(bullet -> bullet.act(delta));
     }
 
     /** Should be called every frame when the world should render itself and all components. */
@@ -253,7 +257,7 @@ public class World implements Disposable {
     /** Remove a beast from the world.
      * @param beast The beast to get rid of. */
     public void removeBeast(Beast beast) {
-        beast.removeHealth(999); // Make sure its dead
+        beast.removeHealth(999); // Make sure its dead so clients will remove it as well
         beast.dispose();
         beasts.removeValue(beast, true);
         beastPositions.removeValue(beast.getPosition(), true);
@@ -264,11 +268,22 @@ public class World implements Disposable {
     /** Spawn a new bullet shot by a turret.
      * @param turret The position of the turret that shot.
      * @param target The target location of the bullet. */
-    public void spawnBullet(TileVector turret, Beast target) {
-        Bullet bullet = new Bullet(turret);
-        bullet.getVelocity().set(turret.setToItself(tmpV).sub(target.getPosition()));
+    public void spawnBullet(TileVector turret, Vector2 target) {
+        Bullet bullet = new Bullet(turret, target);
         bullet.registerToStage(stage);
         physics.bulletAdded(bullet);
+        bullets.add(bullet);
+
+        // Remove the bullet again after a delay
+        bulletTimer.schedule(() -> removeBullet(bullet), 30, TimeUnit.SECONDS);
+    }
+
+    /** Remove a bullet. Called when it hits a beast, or after 10sec of being active.
+     * @param bullet The bullet to remove. */
+    void removeBullet(Bullet bullet) {
+        bullets.removeValue(bullet, true);
+        physics.bulletRemoved(bullet);
+        bullet.dispose();
     }
 
     public Array<Beast> getBeasts() {

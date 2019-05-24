@@ -12,7 +12,7 @@ import xyz.angm.game.world.TileVector;
 public class Beast extends Entity {
 
     /** The maximum beast health. */
-    private static final int BEAST_HEALTH = 20;
+    private static final int BEAST_HEALTH = 15;
 
     private final transient Vector2 tmpV = new Vector2();
     private final transient HealthBar healthBar = new HealthBar();

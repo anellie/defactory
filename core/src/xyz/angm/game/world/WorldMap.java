@@ -21,6 +21,7 @@ import static xyz.angm.game.world.World.WORLD_VIEWPORT_WIDTH;
 public class WorldMap extends Image {
 
     private final ObjectMap<TileVector, Block> blocks = new OrderedMap<>();
+    private final ObjectMap.Values<Block> blocksIterator2 = new ObjectMap.Values<>(blocks);
 
     /** Constructs a map.
      * @param generator The world generator to obtain data from. */
@@ -61,5 +62,11 @@ public class WorldMap extends Image {
      * @param toRun The consumer to run. Will be run for all blocks. */
     public void iterateBlocks(Consumer<Block> toRun) {
         blocks.values().forEach(toRun);
+    }
+
+    /** Same as iterateBlocks, but uses a different iterator. Use this for nested iterations.
+     * @param toRun The consumer to run. Will be run for all blocks. */
+    public void iterateBlocksNested(Consumer<Block> toRun) {
+        blocksIterator2.forEach(toRun);
     }
 }

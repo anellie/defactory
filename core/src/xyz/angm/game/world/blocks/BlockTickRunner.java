@@ -70,7 +70,7 @@ public class BlockTickRunner implements Runnable {
         int shotsLeft = props.turretFireRate;
         for (Beast beast : world.getBeasts()) {
             if (rangeCircle.contains(beast.getPosition())) {
-                beast.removeHealth(props.turretDamage);
+                world.spawnBullet(turretPos, beast.getPosition());
                 shotsLeft--;
                 if (shotsLeft <= 0) return;
             }
@@ -79,7 +79,7 @@ public class BlockTickRunner implements Runnable {
 
     // Process healer. rangeCircle should be set to the block already.
     private void processHealer(BlockProperties props) {
-        world.map.iterateBlocks(otherBlock -> {
+        world.map.iterateBlocksNested(otherBlock -> {
             if (rangeCircle.contains(otherBlock.getPosition().getX() + 0.5f, otherBlock.getPosition().getY() + 0.5f)) {
                 otherBlock.addToHealth(props.healerRecovery);
             }
