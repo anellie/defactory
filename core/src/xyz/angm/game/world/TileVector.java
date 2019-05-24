@@ -2,6 +2,8 @@ package xyz.angm.game.world;
 
 import com.badlogic.gdx.math.Vector2;
 
+import java.util.Objects;
+
 /** A 2D vector using integers for storing its values. Used for storing positions of blocks in the world map. */
 @SuppressWarnings("UnusedReturnValue")
 public class TileVector {
@@ -73,6 +75,6 @@ public class TileVector {
 
     @Override
     public int hashCode() {
-        return x + y;
+        return Objects.hash(x, y);
     }
 }
