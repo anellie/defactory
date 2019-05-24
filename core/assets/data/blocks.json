@@ -111,7 +111,7 @@
   {
     "id": 14,
     "name": "HealerTier1",
-    "texture": "turretTier1",
+    "texture": "healerTier1",
     "type": "HEALER",
     "category": "Defense",
     "range": 3,
