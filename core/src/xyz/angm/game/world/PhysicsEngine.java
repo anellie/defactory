@@ -1,5 +1,6 @@
 package xyz.angm.game.world;
 
+import box2dLight.DirectionalLight;
 import box2dLight.Light;
 import box2dLight.PointLight;
 import box2dLight.RayHandler;
@@ -38,9 +39,11 @@ class PhysicsEngine {
     private final Array<Body> entities = new Array<>();
     private final Player player;
     private final Body playerBody;
+    private final boolean authority;
+
     private final RayHandler rayHandler = new RayHandler(pWorld);
     private final ObjectMap<Body, Light> blockLights = new ObjectMap<>();
-    private final boolean authority;
+    private final DirectionalLight sunLight = new DirectionalLight(rayHandler, 512, new Color(0.75f, 0.75f, 0.5f, 0.3f), -30);
 
     private float timeSinceLastStep = 0f;
     private final BodyDef bodyDef = new BodyDef();
