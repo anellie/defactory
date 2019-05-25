@@ -46,6 +46,6 @@ public class SpectatorHud extends PlayerHud {
     public void act(float delta) {
         super.act(delta);
         healthBar.setValue(screen.getWorld().getPlayer().getHealth());
-        beastsLeftWindow.setName(Localization.get("hudBeastsLeft", screen.getWorld().getBeastsLeft()));
+        beastsLeftWindow.getTitleLabel().setText(Localization.get("hudBeastsLeft", screen.getWorld().getBeastsLeft()));
     }
 }
