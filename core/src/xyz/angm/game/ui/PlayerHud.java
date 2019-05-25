@@ -163,6 +163,7 @@ public class PlayerHud extends Group {
             if (props.materialProduced != null) add(new VisLabel(Localization.get("hudTooltipMaterialProduced"))).row();
             if (props.materialRequired != null) add(new VisImage(props.materialRequired.getTexture())).size(32);
             if (props.materialProduced != null) add(new VisImage(props.materialProduced.getTexture())).size(32).row();
+            if (props.range > -1) add(new VisLabel(Localization.get("hudTooltipRange", props.range))).colspan(2).width(300).padTop(20).row();
 
             padBottom(5f);
             pack();
