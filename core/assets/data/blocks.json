@@ -116,5 +116,32 @@
     "category": "Defense",
     "range": 3,
     "healerRecovery": 100
+  },
+  {
+    "id": 15,
+    "name": "HealerTier2",
+    "texture": "healerTier2",
+    "type": "HEALER",
+    "category": "Defense",
+    "range": 4,
+    "healerRecovery": 100
+  },
+  {
+    "id": 16,
+    "name": "HealerTier3",
+    "texture": "healerTier3",
+    "type": "HEALER",
+    "category": "Defense",
+    "range": 5,
+    "healerRecovery": 100
+  },
+  {
+    "id": 17,
+    "name": "HealerTier4",
+    "texture": "healerTier4",
+    "type": "HEALER",
+    "category": "Defense",
+    "range": 6,
+    "healerRecovery": 100
   }
 ]
