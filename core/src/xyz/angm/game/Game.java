@@ -91,7 +91,11 @@ public class Game extends com.badlogic.gdx.Game {
         assets.load("textures/bullet.png", Texture.class);
         assets.load("textures/player.png", Texture.class);
         assets.load("textures/map/grass.png", Texture.class);
+        assets.load("textures/map/grassOne.png", Texture.class);
+        assets.load("textures/map/grassTwo.png", Texture.class);
+        assets.load("textures/map/grassThree.png", Texture.class);
         assets.load("textures/map/stone.png", Texture.class);
+        assets.load("textures/map/stoneTile.png", Texture.class);
         Material.loadTextures();
         BlockProperties.getAllBlocks().forEach(properties -> assets.load(properties.getFullTexturePath(), Texture.class));
     }
