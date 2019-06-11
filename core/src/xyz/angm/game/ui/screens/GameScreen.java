@@ -116,6 +116,7 @@ public class GameScreen extends Screen {
         dispose();
         game.setScreen(new MessageScreen(game, "gameLost"));
     }
+
     // Called on client when server disconnects
     private void onServerDisconnect() {
         dispose();

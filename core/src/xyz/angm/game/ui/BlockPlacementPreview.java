@@ -27,7 +27,7 @@ public class BlockPlacementPreview extends Image {
         setColor(1, 1, 1, 0.5f);
         setOrigin(Align.center);
 
-        shapeRenderer.setColor(0.1f, 0.1f, 0.1f,0.4f);
+        shapeRenderer.setColor(0.1f, 0.1f, 0.1f, 0.4f);
     }
 
     @Override

@@ -16,7 +16,7 @@ public class TerrainGenerator {
     /** Chance for stone to generate. */
     private static final double STONE_CHANCE = 0.02f;
     /** Chance for stoneTile to generate. */
-    private static final  double STONE_TILE_CHANCE = 0.30f;
+    private static final double STONE_TILE_CHANCE = 0.30f;
     /** Chance for enhanced-grass-direction to generate. */
     private static final double GRASS_CHANCE = 0.20f;
     /** The amount of lines to be rendered per continueLoading call. */
@@ -41,7 +41,7 @@ public class TerrainGenerator {
     public TerrainGenerator(long seed) {
         this.seed = seed;
         random = new Random(seed);
-        noiseGenerator = new SimplexNoiseGenerator(seed);
+        noiseGenerator = new SimplexNoiseGenerator();
 
         TextureData[] grassTD = new TextureData[4];
         for (int i = 0; i < grassTD.length; i++) {
@@ -100,7 +100,7 @@ public class TerrainGenerator {
                 {0, 1, -1}, {0, -1, -1}};
         private final int[] perm = new int[512];
 
-        SimplexNoiseGenerator(long seed) {
+        SimplexNoiseGenerator() {
             int[] p = new int[256];
             for (int i = 0; i < p.length; i++) p[i] = random.nextInt(255);
             for (int i = 0; i < perm.length; i++) perm[i] = p[i & 255];

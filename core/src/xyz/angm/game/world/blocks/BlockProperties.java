@@ -91,7 +91,8 @@ public class BlockProperties {
             allBlockTypes = Collections.unmodifiableList(
                     mapper.readValue(
                             Gdx.files.internal("data/blocks.json").readString(),
-                            new TypeReference<List<BlockProperties>>() {}
+                            new TypeReference<List<BlockProperties>>() {
+                            }
                     )
             );
         } catch (Exception e) {

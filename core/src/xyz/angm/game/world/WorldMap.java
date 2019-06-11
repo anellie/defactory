@@ -16,7 +16,6 @@ import static xyz.angm.game.world.World.WORLD_VIEWPORT_WIDTH;
 
 /** A class containing all map data:
  * - Texture data for rendering the map
- * - Tile data for getting the terrain type (TODO)
  * - All blocks placed on the terrain. */
 public class WorldMap extends Image {
 

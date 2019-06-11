@@ -43,8 +43,6 @@ class PhysicsEngine {
 
     private final RayHandler rayHandler = new RayHandler(pWorld);
     private final ObjectMap<Body, Light> blockLights = new ObjectMap<>();
-    private final DirectionalLight sunLight = new DirectionalLight(rayHandler, 512, new Color(0.75f, 0.75f, 0.5f, 0.3f), -30);
-
     private float timeSinceLastStep = 0f;
     private final BodyDef bodyDef = new BodyDef();
     private final Vector2 tmpV = new Vector2();
@@ -65,6 +63,9 @@ class PhysicsEngine {
         rayHandler.setAmbientLight(0f, 0f, 0f, 0.3f);
         PointLight playerLight = new PointLight(rayHandler, 128, new Color(1f, 1f, 1f, 0.5f), 10, 0, 0);
         playerLight.attachToBody(playerBody);
+
+        // Sunlight
+        new DirectionalLight(rayHandler, 512, new Color(0.75f, 0.75f, 0.5f, 0.3f), -30);
     }
 
     /** Renders the lighting parts of the world, using Box2DLights.
@@ -337,8 +338,10 @@ class PhysicsEngine {
 
         @Override
         public void endContact(Contact contact) {}
+
         @Override
         public void preSolve(Contact contact, Manifold oldManifold) {}
+
         @Override
         public void postSolve(Contact contact, ContactImpulse impulse) {}
     }
