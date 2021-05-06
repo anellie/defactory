@@ -11,8 +11,8 @@ import xyz.angm.game.Defactory;
 /** An abstract class shared between all screens. */
 public abstract class Screen extends ScreenAdapter {
 
-    private static int viewportHeight;
-    private static int viewportWidth;
+    private static int viewportHeight = 1080;
+    private static int viewportWidth = 1920;
     
     /** Height to be used for VisTextButton. */
     public static final float BUTTON_HEIGHT = 48f;

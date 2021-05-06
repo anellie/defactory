@@ -66,7 +66,7 @@ public class TerrainGenerator {
      * @return Loading progress. */
     public float continueLoading() {
         for (int x = 0; x < map.getWidth(); x++) {
-            for (int y = index; y < (index + LINES_PER_STEP); y++) {
+            for (int y = index; y < (index + LINES_PER_STEP) && y < map.getHeight(); y++) {
                 double noise = noiseGenerator.generateDot(x, y);
 
                 Pixmap copyFrom;
