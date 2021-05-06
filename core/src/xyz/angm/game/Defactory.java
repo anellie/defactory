@@ -20,10 +20,10 @@ import xyz.angm.game.world.blocks.BlockProperties;
 import xyz.angm.game.world.blocks.Material;
 
 /** The main class of the game. */
-public class Game extends com.badlogic.gdx.Game {
+public class Defactory extends com.badlogic.gdx.Game {
 
     /** Static since loading texture more than once is pointless. Also prevents having to pass textures around everywhere. */
-    @SuppressWarnings("LibGDXStaticResource") // Only applies to Android
+    @SuppressWarnings({"LibGDXStaticResource", "GDXJavaStaticResource"}) // Only applies to Android
     public static final AssetManager assets = new AssetManager();
 
     private NetworkInterface netIface;

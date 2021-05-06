@@ -1,6 +1,7 @@
-# School Project
+# Defactory
 
-Project for school (who'dve thought)
+A simple, local LAN multiplayer tower defense game. Written as a school project in 2018
+in Java.
 
 ### Build
 
@@ -11,8 +12,3 @@ Project for school (who'dve thought)
 # Create jarfile
 ./gradlew desktop:dist
 ```
-
-### Code style
-
-Follow the style used by the default code formatter in IntelliJ IDEA.
-Max line length is 150.

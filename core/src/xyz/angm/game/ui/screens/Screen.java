@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.kotcrab.vis.ui.widget.VisTable;
-import xyz.angm.game.Game;
+import xyz.angm.game.Defactory;
 
 /** An abstract class shared between all screens. */
 public abstract class Screen extends ScreenAdapter {
@@ -21,7 +21,7 @@ public abstract class Screen extends ScreenAdapter {
     public static final float BUTTON_WIDTH = 400f;
 
     /** The game the screen is running under. */
-    final Game game;
+    final Defactory game;
     /** The stage containing all 2D actors. */
     final Stage stage = new Stage(new FitViewport(VIEWPORT_WIDTH, VIEWPORT_HEIGHT));
     /** A table for GUI elements. Is empty by default, and part of the stage. */
@@ -29,7 +29,7 @@ public abstract class Screen extends ScreenAdapter {
 
     /** Constructs an empty screen.
      * @param game The game the screen is running under. */
-    Screen(Game game) {
+    Screen(Defactory game) {
         this.game = game;
         Gdx.input.setInputProcessor(stage);
         stage.addActor(table);

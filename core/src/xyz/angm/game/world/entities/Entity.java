@@ -6,7 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Disposable;
-import xyz.angm.game.Game;
+import xyz.angm.game.Defactory;
 
 /** An entity is a component capable of changing its position and interacting with the world. */
 public abstract class Entity implements Disposable {
@@ -53,7 +53,7 @@ public abstract class Entity implements Disposable {
     /** Adds itself to the given stage.
      * @param stage Stage to be added to */
     public void registerToStage(Stage stage) {
-        if (actor == null) actor = new Image(Game.assets.get(actorTexture, Texture.class));
+        if (actor == null) actor = new Image(Defactory.assets.get(actorTexture, Texture.class));
         stage.addActor(actor);
         actor.setPosition(position.x, position.y);
         actor.setSize(entitySize, entitySize);

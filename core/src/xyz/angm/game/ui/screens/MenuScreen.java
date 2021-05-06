@@ -9,7 +9,7 @@ import com.badlogic.gdx.utils.Align;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisSelectBox;
 import com.kotcrab.vis.ui.widget.VisTextButton;
-import xyz.angm.game.Game;
+import xyz.angm.game.Defactory;
 import xyz.angm.game.ui.Localization;
 
 /** The main menu screen. */
@@ -17,7 +17,7 @@ class MenuScreen extends Screen {
 
     /** Constructs the screen with the main menu active.
      * @param game The game the screen is running under. */
-    MenuScreen(Game game) {
+    MenuScreen(Defactory game) {
         super(game);
 
         table.add(new VisLabel(Localization.get("gameName"))).padBottom(BUTTON_HEIGHT).row();

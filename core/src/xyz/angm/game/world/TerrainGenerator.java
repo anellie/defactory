@@ -3,7 +3,7 @@ package xyz.angm.game.world;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.TextureData;
-import xyz.angm.game.Game;
+import xyz.angm.game.Defactory;
 
 import java.util.Random;
 
@@ -45,13 +45,13 @@ public class TerrainGenerator {
 
         TextureData[] grassTD = new TextureData[4];
         for (int i = 0; i < grassTD.length; i++) {
-            grassTD[i] = Game.assets.get("textures/map/grass" + i + ".png", Texture.class).getTextureData();
+            grassTD[i] = Defactory.assets.get("textures/map/grass" + i + ".png", Texture.class).getTextureData();
             grassTD[i].prepare();
             grass[i] = grassTD[i].consumePixmap();
         }
 
-        TextureData stoneTD = Game.assets.get("textures/map/stone.png", Texture.class).getTextureData();
-        TextureData stoneTileTD = Game.assets.get("textures/map/stoneTile.png", Texture.class).getTextureData();
+        TextureData stoneTD = Defactory.assets.get("textures/map/stone.png", Texture.class).getTextureData();
+        TextureData stoneTileTD = Defactory.assets.get("textures/map/stoneTile.png", Texture.class).getTextureData();
         stoneTD.prepare();
         stoneTileTD.prepare();
         stone = stoneTD.consumePixmap();

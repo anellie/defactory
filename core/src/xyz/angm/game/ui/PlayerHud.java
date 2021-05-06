@@ -14,7 +14,7 @@ import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.OrderedMap;
 import com.kotcrab.vis.ui.layout.GridGroup;
 import com.kotcrab.vis.ui.widget.*;
-import xyz.angm.game.Game;
+import xyz.angm.game.Defactory;
 import xyz.angm.game.ui.screens.GameScreen;
 import xyz.angm.game.world.blocks.BlockProperties;
 import xyz.angm.game.world.blocks.Material;
@@ -68,7 +68,7 @@ public class PlayerHud extends Group {
         BlockProperties.getAllBlocks().forEach(properties -> {
             if (!properties.displayedInBuildMenu) return;
 
-            VisImageButton button = new VisImageButton(new TextureRegionDrawable(Game.assets.get(properties.getFullTexturePath(), Texture.class)));
+            VisImageButton button = new VisImageButton(new TextureRegionDrawable(Defactory.assets.get(properties.getFullTexturePath(), Texture.class)));
             buildSelectionButtons.add(button);
             button.addListener(buildTooltip.getClickListener(properties));
             button.addListener(new ChangeListener() {

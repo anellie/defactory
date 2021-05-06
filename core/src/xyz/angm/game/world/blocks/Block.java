@@ -8,7 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Disposable;
 import com.kotcrab.vis.ui.VisUI;
-import xyz.angm.game.Game;
+import xyz.angm.game.Defactory;
 import xyz.angm.game.world.TileVector;
 
 /** A block can be placed by the player, onto a tile in the world map.
@@ -63,7 +63,7 @@ public class Block implements Disposable {
      * @param group Group to be added to */
     public void registerToGroup(Group group) {
         if (actor == null) {
-            actor = new Image(Game.assets.get(getProperties().getFullTexturePath(), Texture.class));
+            actor = new Image(Defactory.assets.get(getProperties().getFullTexturePath(), Texture.class));
             healthBar = new HealthBar();
         }
         group.addActor(actor);

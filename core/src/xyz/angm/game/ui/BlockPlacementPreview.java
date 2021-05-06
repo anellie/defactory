@@ -10,7 +10,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
-import xyz.angm.game.Game;
+import xyz.angm.game.Defactory;
 import xyz.angm.game.world.blocks.Block;
 import xyz.angm.game.world.blocks.BlockProperties;
 
@@ -53,6 +53,6 @@ public class BlockPlacementPreview extends Image {
         blockProperties = BlockProperties.getProperties(blockId);
         setPosition((int) position.x, (int) position.y);
         setRotation(rotation.toDegrees());
-        setDrawable(new TextureRegionDrawable(new TextureRegion(Game.assets.get(blockProperties.getFullTexturePath(), Texture.class))));
+        setDrawable(new TextureRegionDrawable(new TextureRegion(Defactory.assets.get(blockProperties.getFullTexturePath(), Texture.class))));
     }
 }

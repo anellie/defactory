@@ -2,7 +2,7 @@ package xyz.angm.game.ui.screens;
 
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisProgressBar;
-import xyz.angm.game.Game;
+import xyz.angm.game.Defactory;
 import xyz.angm.game.ui.Localization;
 import xyz.angm.game.world.TerrainGenerator;
 import xyz.angm.game.world.World;
@@ -16,7 +16,7 @@ public class MapLoadingScreen extends Screen {
     /** Constructs the screen to start generating the map.
      * @param game The game the screen is running under.
      * @param seed The seed to generate with. */
-    public MapLoadingScreen(Game game, long seed) {
+    public MapLoadingScreen(Defactory game, long seed) {
         super(game);
         table.add(new VisLabel(Localization.get("loadingMap"))).row();
         table.add(progressBar).size(500f, 10f);

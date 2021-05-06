@@ -3,7 +3,7 @@ package xyz.angm.game.network;
 import com.badlogic.gdx.Gdx;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
-import xyz.angm.game.Game;
+import xyz.angm.game.Defactory;
 import xyz.angm.game.ui.screens.GameScreen;
 import xyz.angm.game.ui.screens.MapLoadingScreen;
 import xyz.angm.game.world.TileVector;
@@ -22,11 +22,11 @@ public class Server extends NetworkInterface {
 
     private final com.esotericsoftware.kryonet.Server kryoServer = new com.esotericsoftware.kryonet.Server();
     private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
-    private final Game game;
+    private final Defactory game;
 
     /** Create a new server.
      * @param game The game to use for syncing with clients. */
-    public Server(Game game) {
+    public Server(Defactory game) {
         this.game = game;
     }
 

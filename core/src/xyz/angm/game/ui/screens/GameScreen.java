@@ -5,7 +5,7 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
-import xyz.angm.game.Game;
+import xyz.angm.game.Defactory;
 import xyz.angm.game.network.Client;
 import xyz.angm.game.ui.PausePanel;
 import xyz.angm.game.ui.PlayerHud;
@@ -29,7 +29,7 @@ public class GameScreen extends Screen {
     /** Constructs the screen. Automatically determines if player or spectator.
      * @param game The game the screen is running under.
      * @param world The world to use. */
-    GameScreen(Game game, World world) {
+    GameScreen(Defactory game, World world) {
         super(game);
         this.world = world;
         this.hud = game.isServer() ? new PlayerHud(this) : new SpectatorHud(this);

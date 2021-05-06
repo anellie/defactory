@@ -9,7 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import xyz.angm.game.Game;
+import xyz.angm.game.Defactory;
 import xyz.angm.game.network.Client;
 import xyz.angm.game.network.NetworkInterface;
 import xyz.angm.game.ui.BlockPlacementPreview;
@@ -42,7 +42,7 @@ public class World implements Disposable {
     public final long seed;
     /** Map containing the map. (Thanks, Sherlock.) */
     public final WorldMap map;
-    private final NetworkInterface netIface = ((Game) Gdx.app.getApplicationListener()).getNetworkInterface();
+    private final NetworkInterface netIface = ((Defactory) Gdx.app.getApplicationListener()).getNetworkInterface();
     private final Player player = new Player();
     private final Array<Item> items = new Array<>(false, 16);
     private final Array<Beast> beasts = new Array<>(true, 16);
