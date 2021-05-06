@@ -4,17 +4,16 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.kotcrab.vis.ui.widget.VisTable;
 import xyz.angm.game.Defactory;
 
 /** An abstract class shared between all screens. */
 public abstract class Screen extends ScreenAdapter {
 
-    /** Height to be used for all viewports. */
-    public static final int VIEWPORT_HEIGHT = 1080;
-    /** Width to be used for all viewports. */
-    public static final int VIEWPORT_WIDTH = 1920;
+    private static int viewportHeight;
+    private static int viewportWidth;
+    
     /** Height to be used for VisTextButton. */
     public static final float BUTTON_HEIGHT = 48f;
     /** Width to be used for VisTextButton. */
@@ -23,7 +22,7 @@ public abstract class Screen extends ScreenAdapter {
     /** The game the screen is running under. */
     final Defactory game;
     /** The stage containing all 2D actors. */
-    final Stage stage = new Stage(new FitViewport(VIEWPORT_WIDTH, VIEWPORT_HEIGHT));
+    final Stage stage = new Stage(new ScreenViewport());
     /** A table for GUI elements. Is empty by default, and part of the stage. */
     final VisTable table = new VisTable(true);
 
@@ -34,6 +33,16 @@ public abstract class Screen extends ScreenAdapter {
         Gdx.input.setInputProcessor(stage);
         stage.addActor(table);
         table.setFillParent(true);
+    }
+
+    /** Height to be used for all viewports. */
+    public static int getViewportHeight() {
+        return viewportHeight;
+    }
+
+    /** Width to be used for all viewports. */
+    public static int getViewportWidth() {
+        return viewportWidth;
     }
 
     @Override
@@ -48,6 +57,8 @@ public abstract class Screen extends ScreenAdapter {
     @Override
     public void resize(int width, int height) {
         stage.getViewport().update(width, height, true);
+        viewportHeight = stage.getViewport().getScreenHeight();
+        viewportWidth = stage.getViewport().getScreenWidth();
     }
 
     @Override

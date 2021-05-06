@@ -16,11 +16,10 @@ import com.kotcrab.vis.ui.layout.GridGroup;
 import com.kotcrab.vis.ui.widget.*;
 import xyz.angm.game.Defactory;
 import xyz.angm.game.ui.screens.GameScreen;
+import xyz.angm.game.ui.screens.Screen;
 import xyz.angm.game.world.blocks.BlockProperties;
 import xyz.angm.game.world.blocks.Material;
 
-import static xyz.angm.game.ui.screens.Screen.VIEWPORT_HEIGHT;
-import static xyz.angm.game.ui.screens.Screen.VIEWPORT_WIDTH;
 import static xyz.angm.game.world.entities.Player.PLAYER_HEALTH;
 import static xyz.angm.game.world.entities.Player.PLAYER_STAMINA;
 
@@ -90,10 +89,10 @@ public class PlayerHud extends Group {
         });
 
         buildWindow.pack();
-        buildWindow.setPosition(VIEWPORT_WIDTH, 0, Align.bottomRight);
+        buildWindow.setPosition(Screen.getViewportWidth(), 0, Align.bottomRight);
         addActor(buildWindow);
         buildTooltip.pack();
-        buildTooltip.setPosition(VIEWPORT_WIDTH, buildWindow.getHeight(), Align.bottomRight);
+        buildTooltip.setPosition(Screen.getViewportWidth(), buildWindow.getHeight(), Align.bottomRight);
         addActor(buildTooltip);
 
         // Window containing the players inventory
@@ -105,12 +104,12 @@ public class PlayerHud extends Group {
             inventoryWindow.add(label).size(32).align(Align.right).padBottom(5).row();
         }
         inventoryWindow.pack();
-        inventoryWindow.setPosition(0, VIEWPORT_HEIGHT, Align.topLeft);
+        inventoryWindow.setPosition(0, Screen.getViewportHeight(), Align.topLeft);
         addActor(inventoryWindow);
 
         // Window containing the current wave of monsters
         waveWindow.pack();
-        waveWindow.setPosition(VIEWPORT_WIDTH, VIEWPORT_HEIGHT, Align.topRight);
+        waveWindow.setPosition(Screen.getViewportWidth(), Screen.getViewportHeight(), Align.topRight);
         addActor(waveWindow);
     }
 
@@ -167,7 +166,7 @@ public class PlayerHud extends Group {
 
             padBottom(5f);
             pack();
-            setPosition(VIEWPORT_WIDTH, getY(), Align.bottomRight);
+            setPosition(Screen.getViewportWidth(), getY(), Align.bottomRight);
             setVisible(true);
         }
     }

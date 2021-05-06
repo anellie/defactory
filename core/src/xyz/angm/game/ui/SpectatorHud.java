@@ -4,9 +4,8 @@ import com.badlogic.gdx.utils.Align;
 import com.kotcrab.vis.ui.widget.VisProgressBar;
 import com.kotcrab.vis.ui.widget.VisWindow;
 import xyz.angm.game.ui.screens.GameScreen;
+import xyz.angm.game.ui.screens.Screen;
 
-import static xyz.angm.game.ui.screens.Screen.VIEWPORT_HEIGHT;
-import static xyz.angm.game.ui.screens.Screen.VIEWPORT_WIDTH;
 import static xyz.angm.game.world.entities.Player.PLAYER_HEALTH;
 
 /** The spectator HUD containing all GUI elements of a spectator.
@@ -37,7 +36,7 @@ public class SpectatorHud extends PlayerHud {
 
         // Window containing the amount of beasts the spectator can spawn
         beastsLeftWindow = new VisWindow(Localization.get("hudBeastsLeft", 0));
-        beastsLeftWindow.setPosition(VIEWPORT_WIDTH, VIEWPORT_HEIGHT, Align.topRight);
+        beastsLeftWindow.setPosition(Screen.getViewportWidth(), Screen.getViewportHeight(), Align.topRight);
         beastsLeftWindow.pack();
         addActor(beastsLeftWindow);
     }

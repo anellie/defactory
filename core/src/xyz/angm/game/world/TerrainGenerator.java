@@ -4,11 +4,9 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.TextureData;
 import xyz.angm.game.Defactory;
+import xyz.angm.game.ui.screens.Screen;
 
 import java.util.Random;
-
-import static xyz.angm.game.ui.screens.Screen.VIEWPORT_HEIGHT;
-import static xyz.angm.game.ui.screens.Screen.VIEWPORT_WIDTH;
 
 /** Generates random terrain using a noise function. */
 public class TerrainGenerator {
@@ -32,7 +30,7 @@ public class TerrainGenerator {
     private final Pixmap stone;
     private final Pixmap stoneTile;
     private final Pixmap map = new Pixmap(
-            WORLD_SIZE_MULTIPLICATOR * VIEWPORT_WIDTH, WORLD_SIZE_MULTIPLICATOR * VIEWPORT_HEIGHT, Pixmap.Format.RGB888);
+            WORLD_SIZE_MULTIPLICATOR * Screen.getViewportWidth(), WORLD_SIZE_MULTIPLICATOR * Screen.getViewportHeight(), Pixmap.Format.RGB888);
     private int index = 0;
     private int grassDirection = 1;
 
